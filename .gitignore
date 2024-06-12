@@ -32,3 +32,14 @@ desktop.ini
 # Default
 # /!\ KEEP THIS SECTION THE LAST ONE
 !.gitkeep
+
+# Yarn
+.yarn/
+.yarnrc.yml
+yarn.lock
+
+# Husky
+.husky/
+
+# ESLint
+eslint.config.js
