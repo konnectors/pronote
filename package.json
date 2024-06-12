@@ -18,11 +18,6 @@
     "build",
     "data"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
-  },
   "scripts": {
     "start": "node ./src/index.js",
     "dev": "cozy-konnector-dev",
@@ -33,13 +28,16 @@
     "lint": "eslint --fix .",
     "deploy": "git-directory-deploy --directory build/ --branch ${DEPLOY_BRANCH:-build} --repo=${DEPLOY_REPOSITORY:-$npm_package_repository_url}",
     "cozyPublish": "cozy-app-publish --token $REGISTRY_TOKEN --build-commit $(git rev-parse ${DEPLOY_BRANCH:-build})",
-    "travisDeployKey": "./bin/generate_travis_deploy_key"
+    "travisDeployKey": "./bin/generate_travis_deploy_key",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "cozy-konnector-libs": "5.11.0"
+    "cozy-konnector-libs": "5.11.0",
+    "eslint": "^9.4.0"
   },
   "devDependencies": {
     "cozy-jobs-cli": "2.4.2",
-    "cozy-konnector-build": "1.7.0"
+    "cozy-konnector-build": "1.7.0",
+    "husky": "^8.0.0"
   }
 }
