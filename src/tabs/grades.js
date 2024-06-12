@@ -2,6 +2,8 @@ const { saveFiles, log } = require('cozy-konnector-libs');
 const { use_stream, create_file } = require('../utils');
 const { authenticatePronoteCredentials, PronoteApiAccountId, PronoteApiGradeType } = require('pawnote');
 
+const SUBPATH = 'Notes';
+
 async function save_averages(pronote, fields) {
   const period = await pronote.readDefaultPeriodForGradesOverview();
   const gradesOverview = await pronote.getGradesOverview(period);
@@ -22,7 +24,7 @@ async function save_averages(pronote, fields) {
     create_file({
       filename: 'pronote-grades-overview.txt',
       filestream: await use_stream(res),
-      subPath: 'pronote-grades-overview'
+      subPath: SUBPATH
     })
   ];
 

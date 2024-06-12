@@ -1,6 +1,8 @@
 const { saveFiles, log } = require('cozy-konnector-libs');
 const { use_stream, create_file } = require('../utils');
 
+const SUBPATH = 'Informations de l\'utilisateur';
+
 async function parse_user_data(type, pronote, information) {
   return new Promise((resolve, reject) => {
     if (type == 'csv') {
@@ -56,22 +58,22 @@ async function generate_documents(pronote) {
         filename: 'pronote-profile-picture.jpg',
         fileurl: pronote.studentProfilePictureURL,
         shouldReplaceFile: false,
-        subPath: 'pronote-student-information'
+        subPath: SUBPATH
       }),
       create_file({
         filename: 'pronote-student-information.txt',
         filestream: await parse_user_data('default', pronote, information),
-        subPath: 'pronote-student-information'
+        subPath: SUBPATH
       }),
       create_file({
         filename: 'pronote-student-information.csv',
         filestream: await parse_user_data('csv', pronote, information),
-        subPath: 'pronote-student-information'
+        subPath: SUBPATH
       }),
       create_file({
         filename: 'pronote-student-information.json',
         filestream: await parse_user_data('json', pronote, information),
-        subPath: 'pronote-student-information'
+        subPath: SUBPATH
       })
     ]
 
