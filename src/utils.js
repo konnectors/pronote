@@ -20,7 +20,8 @@ async function create_file(data) {
     ...data,
     date: new Date(),
     vendor: 'Pronote',
-    shouldReplaceFile: true
+    shouldReplaceFile: true,
+    shouldReplaceName: true
   }
 }
 

@@ -5,6 +5,7 @@ const {
 } = require('./pronote');
 const { save_user_metadata } = require('./actions/save_user_metadata');
 const { save_user_identity } = require('./actions/save_user_identity');
+const { save_averages } = require('./tabs/grades');
 
 const rq = request()
 
@@ -23,4 +24,8 @@ async function start(fields, cozyParameters) {
   // Saving data
   log('info', 'Saving data to Cozy')
   save_user_metadata(pronote, fields);
+
+  // Saving grades report
+  log('info', 'Saving grades report to Cozy')
+  save_averages(pronote, fields);
 }

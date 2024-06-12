@@ -84,7 +84,9 @@ async function save_user_metadata(pronote, fields) {
 
   await saveFiles(documents, fields, {
     sourceAccount: this.accountId,
-    sourceAccountIdentifier: fields.login
+    sourceAccountIdentifier: fields.login,
+    concurrency: 4,
+    validateFile: false,
   });
 }
 
