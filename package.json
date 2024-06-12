@@ -1,10 +1,10 @@
 {
-  "name": "cozy-konnector-template",
+  "name": "cozy-konnector-pronote",
   "version": "1.0.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git@github.com:konnectors/cozy-konnector-template.git"
+    "url": "git@github.com:ecnivtwelve/cozy-konnector-pronote.git"
   },
   "keywords": [],
   "author": "Cozy Cloud",
@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "cozy-konnector-libs": "5.11.0",
-    "eslint": "^9.4.0"
+    "eslint": "^9.4.0",
+    "pawnote": "^0.21.2"
   },
   "devDependencies": {
     "cozy-jobs-cli": "2.4.2",
