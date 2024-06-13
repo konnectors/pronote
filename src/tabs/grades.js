@@ -1,6 +1,5 @@
 const { saveFiles, log } = require('cozy-konnector-libs');
 const { use_stream, create_file } = require('../utils');
-const { authenticatePronoteCredentials, PronoteApiAccountId, PronoteApiGradeType } = require('pawnote');
 
 const SUBPATH = 'Notes';
 

@@ -1,19 +1,20 @@
 {
   "version": "1.0.0",
-  "name": "Pronote / Pawnote connector",
+  "name": "Pronote",
   "type": "konnector",
   "language": "node",
   "icon": "icon.svg",
   "slug": "pronote",
   "source": "git@github.com:konnectors/pronote.git",
   "editor": "Cozy",
-  "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
+  "vendor_link": "https://getpapillon.xyz",
   "categories": ["others"],
   "fields": {
     "pronote_url": {
       "type": "text",
       "label": "fields.pronote_url.label",
-      "description": "fields.pronote_url.description"
+      "description": "fields.pronote_url.description",
+      "pattern": "^https?://.*\\/pronote(\\/eleve\\.html)?(\\/)?(\\?.*)?$"
     },
     "login": {
       "type": "text",
@@ -24,14 +25,6 @@
       "type": "password",
       "label": "fields.password.label",
       "description": "fields.password.description"
-    },
-    "account_type": {
-      "type": "dropdown",
-      "label": "fields.account_type.label",
-      "description": "fields.account_type.description",
-      "options": ["student"],
-      "default": "student",
-      "advanced": true
     }
   },
   "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
