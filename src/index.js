@@ -1,31 +1,27 @@
-const { BaseKonnector, saveFiles, saveIdentity, saveAccountData, request, log } = require('cozy-konnector-libs')
-
+// Importation des fonctions de cozy-konnector-libs
 const {
-  login_Pronote
-} = require('./pronote');
-const { save_user_metadata } = require('./actions/save_user_metadata');
-const { save_user_identity } = require('./actions/save_user_identity');
-const { save_averages } = require('./tabs/grades');
+  BaseKonnector,
+  log
+} = require('cozy-konnector-libs');
 
-const rq = request()
+// Importation de la fonction Pronote
+const { Pronote } = require('./fetch/session');
 
-module.exports = new BaseKonnector(start)
+// Importation de la fonction cozy_save
+const cozy_save = require('./cozy');
 
+// Fonction start qui va être exportée
 async function start(fields, cozyParameters) {
-  // Login to Pronote (using Pawnote)
-  log('info', 'Authenticating ...')
-  const pronote = await login_Pronote(fields);
-  log('info', 'Successfully logged in');
+  // Initialisation de la session Pronote
+  const pronote = await Pronote({
+    url: fields.pronote_url,
+    login: fields.login,
+    password: fields.password
+  });
 
-  // Saving identity
-  log('info', 'Saving identity to Cozy')
-  save_user_identity(pronote, fields);
-
-  // Saving data
-  log('info', 'Saving data to Cozy')
-  save_user_metadata(pronote, fields);
-
-  // Saving grades report
-  log('info', 'Saving grades report to Cozy')
-  save_averages(pronote, fields);
+  // Sauvegarde de l'identité de l'utilisateur
+  await cozy_save('identity', pronote, fields);
 }
+
+// Exportation de la fonction start
+module.exports = new BaseKonnector(start);
