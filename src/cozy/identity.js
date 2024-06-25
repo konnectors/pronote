@@ -1,26 +1,30 @@
-const { saveFiles, log, cozyClient, saveIdentity } = require("cozy-konnector-libs");
-const extract_pronote_name = require("../utils/extract_pronote_name");
+const {
+  saveFiles,
+  log,
+  cozyClient,
+  saveIdentity
+} = require('cozy-konnector-libs')
+const extract_pronote_name = require('../utils/extract_pronote_name')
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
     // Getting personal information
-    const information = await pronote.getPersonalInformation();
+    const information = await pronote.getPersonalInformation()
 
     // Getting profile picture
-    const profile_pic = await save_profile_picture(pronote, fields);
+    const profile_pic = await save_profile_picture(pronote, fields)
 
     // Formatting the JSON
-    const json = await format_json(pronote, information, profile_pic);
+    const json = await format_json(pronote, information, profile_pic)
 
     // Returning the identity
-    resolve(json);
-  });
+    resolve(json)
+  })
 }
 
 async function format_json(pronote, information, profile_pic) {
   return new Promise(async (resolve, reject) => {
-    const identity =
-    {
+    const identity = {
       // _id: genUUID(),
       source: 'connector',
       identifier: pronote.username,
@@ -38,26 +42,25 @@ async function format_json(pronote, information, profile_pic) {
           }
         ],
         company: pronote.schoolName,
-        jobTitle: 'Élève de ' + pronote.studentClass,
-
+        jobTitle: 'Élève de ' + pronote.studentClass
       },
       student: {
         ine: information.INE,
         class: pronote.studentClass,
-        school: pronote.schoolName,
+        school: pronote.schoolName
       },
       relationships: profile_pic._id && {
         picture: {
           // photo de profil
-          data: { "_id": profile_pic._id, "_type": "io.cozy.files" }
+          data: { _id: profile_pic._id, _type: 'io.cozy.files' }
         }
       }
     }
 
-    log('info', JSON.stringify(identity));
+    log('info', JSON.stringify(identity))
 
-    resolve(identity);
-  });
+    resolve(identity)
+  })
 }
 
 async function save_profile_picture(pronote, fields) {
@@ -74,17 +77,25 @@ async function save_profile_picture(pronote, fields) {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 1,
-    validateFile: false,
-  });
+    validateFile: false
+  })
 
-  const meta = await cozyClient.files.statByPath(fields.folderPath + '/Documents/Élève/Photo de classe.jpg');
+  const meta = await cozyClient.files.statByPath(
+    fields.folderPath + '/Documents/Élève/Photo de classe.jpg'
+  )
 
-  return meta || null;
+  return meta || null
 }
 
 async function init(pronote, fields) {
-  let identity = await create_identity(pronote, fields);
-  return saveIdentity(identity, fields.login);
+  try {
+    let identity = await create_identity(pronote, fields)
+    return saveIdentity(identity, fields.login)
+  }
+  catch (error) {
+    log('error', error)
+    return false
+  }
 }
 
-module.exports = init;
+module.exports = init

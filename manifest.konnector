@@ -9,28 +9,6 @@
   "editor": "Cozy",
   "vendor_link": "https://getpapillon.xyz",
   "categories": ["others"],
-  "fields": {
-    "pronote_url": {
-      "type": "text",
-      "label": "fields.pronote_url.label",
-      "description": "fields.pronote_url.description",
-      "pattern": "^https?://.*\\/pronote(\\/eleve\\.html)?(\\/)?(\\?.*)?$"
-    },
-    "login": {
-      "type": "text",
-      "label": "fields.login.label",
-      "description": "fields.login.description"
-    },
-    "password": {
-      "type": "password",
-      "label": "fields.password.label",
-      "description": "fields.password.description"
-    }
-  },
-  "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
-  "data_types": [
-    "bill"
-  ],
   "screenshots": [],
   "permissions": {
     "bank operations": {

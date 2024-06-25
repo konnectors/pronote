@@ -4,6 +4,9 @@ const {
   PronoteApiAccountId
 } = require('pawnote');
 
+// Importation de la fonction de log
+const { log } = require('cozy-konnector-libs')
+
 // Fonction qui génère un UUID
 const uuid = require('../utils/uuid');
 
@@ -21,6 +24,8 @@ async function Pronote({
         password: password,
         deviceUUID: uuid()
       });
+
+      log('info', 'Pronote session created [' + pronote.username + ' : ' + pronote.studentName + ']');
 
       resolve(pronote);
     } catch (error) {
