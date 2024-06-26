@@ -35,7 +35,7 @@ async function format_json(pronote, information, profile_pic) {
         name: pronote.studentName && extract_pronote_name(pronote.studentName),
         email: information.email && [
           {
-            adress: information.email
+            address: information.email
           }
         ],
         phone: information.phone && [
@@ -49,6 +49,7 @@ async function format_json(pronote, information, profile_pic) {
             region: information.province,
             street: information.address[0],
             country: information.country,
+            formattedAddress: information.address.join(' '),
           },
         ],
         company: pronote.schoolName,
