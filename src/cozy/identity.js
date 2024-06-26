@@ -49,6 +49,7 @@ async function format_json(pronote, information, profile_pic) {
             region: information.province,
             street: information.address[0],
             country: information.country,
+            code: information.postalCode,
             formattedAddress: information.address.join(' '),
           },
         ],
