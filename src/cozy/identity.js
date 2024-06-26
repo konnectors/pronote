@@ -43,7 +43,7 @@ async function format_json(pronote, information, profile_pic) {
             number: information.phone
           }
         ],
-        address: [
+        address: information.city && [
           information.city && {
             city: information.city,
             region: information.province,
