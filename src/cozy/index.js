@@ -1,7 +1,11 @@
+const { log } = require('cozy-konnector-libs')
+
 const identity = require("./identity");
 const timetable = require("./timetable");
 
 async function cozy_save(type, pronote, fields, options = {}) {
+  log('info', 'Saving ' + type);
+
   switch (type) {
     case 'identity':
       return identity(pronote, fields, options);
