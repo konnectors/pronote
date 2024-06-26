@@ -4,8 +4,6 @@ const {
   cozyClient
 } = require('cozy-konnector-libs')
 
-const { authenticatePronoteCredentials, PronoteApiAccountId, TimetableDetention, TimetableLesson, TimetableOverview } = require('pawnote')
-
 const use_stream = require('../utils/use_stream')
 
 function create_dates(options) {
@@ -70,37 +68,45 @@ END:VEVENT
 END:VCALENDAR
       `.trim();
 
-      data.push(vevent);
+      let stream = await use_stream(vevent, 'text/calendar');
+
+      data.push(stream);
     }
+
+    resolve(data);
   });
 }
 
 async function init(pronote, fields, options) {
-  try {
-    let files = await create_timetable(pronote, fields, options)
+  return new Promise(async (resolve, reject) => {
+    try {
+      let files = await create_timetable(pronote, fields, options)
 
-    const documents = files.map((file, index) => {
-      return {
-        filename: `pronote-timetable-${index}.ics`,
-        fileStream: use_stream(file, 'text/calendar'),
-        shouldReplaceFile: false,
-        subPath: 'Emploi du temps'
-      }
-    });
+      const documents = await files.map((file, index) => {
+        return {
+          filename: `pronote-timetable-${index}.ics`,
+          filestream: file,
+          shouldReplaceFile: true,
+          shouldReplaceName: true,
+        }
+      });
+      // log('info', 'documents : ' + JSON.stringify(documents));
 
-    await saveFiles(documents, fields, {
-      sourceAccount: this.accountId,
-      sourceAccountIdentifier: fields.login,
-      concurrency: 10,
-      validateFile: false,
-    });
+      await saveFiles(documents, fields, {
+        sourceAccount: this.accountId,
+        sourceAccountIdentifier: fields.login,
+        concurrency: 10,
+        validateFile: false,
+        subPath: 'Documents/Emploi du temps',
+        verboseFilesLog: true
+      });
 
-    log('info', 'Timetable saved');
-  }
-  catch (error) {
-    log('error', error)
-    return false
-  }
+      resolve(true);
+    }
+    catch (error) {
+      reject(error);
+    }
+  });
 }
 
 module.exports = init;

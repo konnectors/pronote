@@ -1,6 +1,7 @@
+const stream = require('stream');
+
 async function use_stream(text, force_mime) {
   return new Promise((resolve, reject) => {
-    const stream = require('stream');
     const bufferStream = new stream.PassThrough();
 
     if (force_mime) {
@@ -11,3 +12,5 @@ async function use_stream(text, force_mime) {
     resolve(bufferStream);
   });
 }
+
+module.exports = use_stream;

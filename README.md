@@ -1,4 +1,4 @@
-[Cozy][cozy] Pronote
+[Cozy][cozy] __YOUR_SUPER_NEW_KONNECTOR_NAME__
 =======================================
 
 What's Cozy?
@@ -11,7 +11,9 @@ What's Cozy?
 What is this konnector about ?
 ------------------------------
 
-This konnector retrieves your student data and files from Pronote.
+This konnector retrieves your __SOME_DATA__ and __SOME_OTHER_DATA__ from __SERVICE__
+
+__YOUR_DESCRIPTION_HERE__
 
 ### Open a Pull-Request
 
@@ -44,7 +46,7 @@ This connector uses [cozy-konnector-libs](https://github.com/cozy/cozy-konnector
 
 ### Maintainer
 
-The lead maintainer for this konnector is [@ecnivtwelve](https://github.com/ecnivtwelve/)
+The lead maintainer for this konnector is __YOUR_NAME__
 
 
 ### Get in touch
@@ -61,7 +63,7 @@ You can reach the Cozy Community by:
 License
 -------
 
-[cozy-konnector-pronote](https://github.com/ecnivtwelve/cozy-konnector-pronote) is developed by Vince Linise and distributed under the [AGPL v3 license][agpl-3.0].
+__YOUR_KONNECTOR_NAME__ is developed by __YOUR_NAME__ and distributed under the [AGPL v3 license][agpl-3.0].
 
 [cozy]: https://cozy.io "Cozy Cloud"
 [agpl-3.0]: https://www.gnu.org/licenses/agpl-3.0.html

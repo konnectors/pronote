@@ -5,10 +5,25 @@
   "language": "node",
   "icon": "icon.svg",
   "slug": "pronote",
-  "source": "git@github.com:konnectors/pronote.git",
+  "source": "git@github.com:ecnivtwelve/cozy-konnector-pronote.git",
   "editor": "Cozy",
   "vendor_link": "https://getpapillon.xyz",
   "categories": ["others"],
+  "fields": {
+    "pronote_url": {
+      "type": "text"
+    },
+    "login": {
+      "type": "text"
+    },
+    "password": {
+      "type": "password"
+    }
+  },
+  "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
+  "data_types": [
+    "bill"
+  ],
   "screenshots": [],
   "permissions": {
     "bank operations": {
@@ -28,14 +43,14 @@
     }
   },
   "developer": {
-    "name": "Cozy Cloud",
-    "url": "https://cozy.io"
+    "name": "Vince Linise",
+    "url": "https://vincelinise.com"
   },
   "langs": ["fr", "en"],
   "locales": {
     "fr": {
-      "short_description": "Récupère les données Pronote d'un élève",
-      "long_description": "Récupère les données Pronote d'un élève sur une instance donnée",
+      "short_description": "Récupère la liste de livres",
+      "long_description": "Récupère la liste de livre sur le site exemple",
       "permissions": {
         "bank operations": {
           "description": "Utilisé pour relier les factures à des operations bancaires"
@@ -48,33 +63,12 @@
         },
         "accounts": {
           "description": "Utilisé pour obtenir les données du compte"
-        },
-        "identities": {
-          "description": "Utilisé pour obtenir les données de l'identité"
-        }
-      },
-      "fields": {
-        "pronote_url": {
-          "label": "URL de l'instance Pronote",
-          "description": "URL de l'instance Pronote à laquelle se connecter"
-        },
-        "login": {
-          "label": "Identifiant",
-          "description": "Identifiant de l'élève sur Pronote"
-        },
-        "password": {
-          "label": "Mot de passe",
-          "description": "Mot de passe de l'élève sur Pronote"
-        },
-        "account_type": {
-          "label": "Type de compte",
-          "description": "Type de compte à utiliser pour se connecter"
         }
       }
     },
     "en": {
-      "short_description": "Fetch a student's Pronote data",
-      "long_description": "Fetch a student's Pronote data on a given instance",
+      "short_description": "Fetch a list of books",
+      "long_description": "Fetch a list of books from the example website",
       "permissions": {
         "bank operations": {
           "description": "Required to link bank operations to bills"
@@ -87,27 +81,6 @@
         },
         "accounts": {
           "description": "Required to get the account's data"
-        },
-        "identities": {
-          "description": "Required to get the identity's data"
-        }
-      },
-      "fields": {
-        "pronote_url": {
-          "label": "Pronote instance URL",
-          "description": "URL of the Pronote instance to connect to"
-        },
-        "login": {
-          "label": "Login",
-          "description": "Student's login on Pronote"
-        },
-        "password": {
-          "label": "Password",
-          "description": "Student's password on Pronote"
-        },
-        "account_type": {
-          "label": "Account type",
-          "description": "Account type to use to connect"
         }
       }
     }
