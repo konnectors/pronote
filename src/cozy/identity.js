@@ -4,7 +4,9 @@ const {
   cozyClient,
   saveIdentity
 } = require('cozy-konnector-libs')
+
 const extract_pronote_name = require('../utils/extract_pronote_name')
+const censor = require('../utils/use_censor')
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
@@ -40,6 +42,14 @@ async function format_json(pronote, information, profile_pic) {
           {
             number: information.phone
           }
+        ],
+        address: [
+          information.city && {
+            city: information.city,
+            region: information.province,
+            street: information.address[0],
+            country: information.country,
+          },
         ],
         company: pronote.schoolName,
         jobTitle: 'Élève de ' + pronote.studentClass
