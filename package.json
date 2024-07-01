@@ -40,8 +40,11 @@
     "pawnote": "^0.21.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
     "cozy-jobs-cli": "2.4.2",
-    "cozy-konnector-build": "1.7.0"
+    "cozy-konnector-build": "1.7.0",
+    "eslint": "9.x",
+    "globals": "^15.7.0"
   },
   "packageManager": "yarn@3.5.0+sha512.2dc70be5fce9f66756d25b00a888f3ca66f86b502b76750e72ba54cec89da767b938c54124595e26f868825688e0fe3552c26c76a330673343057acadd5cfcf2"
 }
