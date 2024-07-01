@@ -6,6 +6,7 @@ const {
 
 const use_stream = require('../utils/use_stream');
 const genUUID = require('../utils/uuid');
+const findObjectByPronoteString = require('../utils/format_cours_name');
 
 function create_dates(options) {
   // Setting the date range
@@ -54,15 +55,31 @@ async function create_timetable(pronote, fields, options) {
     const data = []
 
     for (const lesson of timetable) {
+      const pronoteString = findObjectByPronoteString(lesson.subject?.name);
+      const processedCoursName = pronoteString.label;
+      const prettyCoursName = pronoteString.pretty;
+
+      const dates = {
+        start: getIcalDate(new Date(lesson.startDate)),
+        end: getIcalDate(new Date(lesson.endDate))
+      }
+
+      const status =
+        lesson.canceled ?
+          'CANCELLED'
+          : 'CONFIRMED';
+
       let json = {
         "_id": genUUID(),
-        "start": getIcalDate(new Date(lesson.startDate)),
-        "end": getIcalDate(new Date(lesson.endDate)),
-        "label": lesson.subject?.name || 'Cours',
+        "start": dates.start,
+        "end": dates.end,
+        "label": prettyCoursName,
+        "subject": processedCoursName,
+        "sourceSubject": lesson.subject?.name || 'Cours',
         "location": lesson.classrooms.join(', '),
         "organizer": lesson.teacherNames.join(', ') + lesson.personalNames.join(', '),
         "attendee": lesson.groupNames,
-        "status": lesson.canceled ? 'CANCELLED' : 'CONFIRMED',
+        "status": status,
         "description": lesson.memo,
         "xComment": lesson.status,
       }
@@ -71,8 +88,12 @@ async function create_timetable(pronote, fields, options) {
       let stream = await use_stream(strg, 'application/json')
 
       data.push({
-        name: `pronote-timetable-${lesson.subject?.name}-${getIcalDate(new Date(lesson.startDate))}.json`,
-        stream: stream
+        name: `pronote-timetable-${processedCoursName}-${getIcalDate(new Date(lesson.startDate))}.txt`,
+        stream: stream,
+        date: {
+          string: new Date(lesson.startDate).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+          object: new Date(lesson.startDate)
+        }
       })
     }
 
@@ -87,10 +108,11 @@ async function init(pronote, fields, options) {
 
       const documents = await files.map((file, index) => {
         return {
-          filename: file.name || `pronote-timetable-${index}.json`,
+          filename: file.name,
           filestream: file.stream,
           shouldReplaceFile: true,
           shouldReplaceName: true,
+          subPath: 'Documents/Emploi du temps/' + file.date.string
         }
       });
 
