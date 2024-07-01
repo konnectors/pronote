@@ -4,6 +4,11 @@ String.prototype.uppercaseFirst = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+function cw(text, width) {
+  const padding = width - text.length;
+  return text + ' '.repeat(padding);
+}
+
 function findObjectByPronoteString(pronoteString) {
   // Process the input string: replace dots and underscores with spaces, trim, and convert to lowercase
   let processedString = pronoteString.replace(/[,._]/g, ' ').trim().toLowerCase();
@@ -27,14 +32,14 @@ function findObjectByPronoteString(pronoteString) {
   for (let item of cozy_lesson_formats) {
     for (let format of item.formats.default) {
       if (format.toLowerCase() === processedString) {
-        console.log(`✅ Match found: ${pronoteString} (${processedString}) === ${item.label}`);
+        console.log(`✅ Match found | ${cw(pronoteString, 20)} | ${cw(processedString, 20)} | ${cw(item.label, 20)}`);
 
         return item;
       }
     }
   }
 
-  console.log(`❌ Match found for ${pronoteString} (${processedString})`);
+  console.log(`❌ Match found | ${cw(pronoteString, 20)} | ${cw(processedString, 20)} | ${cw(processedString, 20)}`);
 
   // Return null if no match is found
   return {
