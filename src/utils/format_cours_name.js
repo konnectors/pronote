@@ -25,7 +25,7 @@ function findObjectByPronoteString(pronoteString) {
 
   // Search for the object in the data
   for (let item of cozy_lesson_formats) {
-    for (let format of item.formats.pronote) {
+    for (let format of item.formats.default) {
       if (format.toLowerCase() === processedString) {
         console.log(`✅ Match found: ${pronoteString} (${processedString}) === ${item.label}`);
 

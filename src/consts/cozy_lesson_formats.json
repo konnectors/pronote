@@ -3,7 +3,7 @@
     "label": "accompagnementperso",
     "pretty": "Accompagnement personnalisé",
     "formats": {
-      "pronote": [
+      "default": [
         "accompagnement personnalise",
         "accompagnemt perso"
       ]
@@ -13,7 +13,7 @@
     "label": "atprofessionnalis",
     "pretty": "Atelier de professionnalisation",
     "formats": {
-      "pronote": [
+      "default": [
         "atelier de professionnalisation",
         "at professionnalis"
       ]
@@ -23,7 +23,7 @@
     "label": "bloc1smdsi",
     "pretty": "Bloc 1 : Support et mise a disposition des services informatiques",
     "formats": {
-      "pronote": [
+      "default": [
         "bloc 1 support et mise a disposition des services informatiques",
         "bloc 1 smdsi"
       ]
@@ -33,7 +33,7 @@
     "label": "bloc2sisr",
     "pretty": "Bloc 2 : Solutions d’infrastructure systemes et réseaux",
     "formats": {
-      "pronote": [
+      "default": [
         "bloc 2 solutions d’infrastructure systemes et reseaux",
         "bloc 2 sisr"
       ]
@@ -43,7 +43,7 @@
     "label": "bloc2slam",
     "pretty": "Bloc 2 : Solutions logicielles et applications métiers",
     "formats": {
-      "pronote": [
+      "default": [
         "bloc 2 solutions logicielles et applications metiers",
         "bloc 2 slam"
       ]
@@ -53,7 +53,7 @@
     "label": "bloc3tp",
     "pretty": "Bloc 3 : Travaux pratiques",
     "formats": {
-      "pronote": [
+      "default": [
         "bloc 3 travaux pratiques",
         "bloc 3 tp"
       ]
@@ -63,7 +63,7 @@
     "label": "culecojurmanapp",
     "pretty": "Culture économique, juridique et managériale appliquée",
     "formats": {
-      "pronote": [
+      "default": [
         "culture economique juridique et manageriale appliquee",
         "cul eco jur man app"
       ]
@@ -73,7 +73,7 @@
     "label": "culturegeneetexpr",
     "pretty": "Culture génerale et expression",
     "formats": {
-      "pronote": [
+      "default": [
         "culture generale et expression",
         "culture gene et expr"
       ]
@@ -83,7 +83,7 @@
     "label": "cultecojurmanag",
     "pretty": "Culture économique, juridique et managériale",
     "formats": {
-      "pronote": [
+      "default": [
         "culture economique juridique et manageriale",
         "cult eco jur manag"
       ]
@@ -93,7 +93,7 @@
     "label": "educationcivique",
     "pretty": "Éducation civique",
     "formats": {
-      "pronote": [
+      "default": [
         "education civique",
         "education civique"
       ]
@@ -103,7 +103,7 @@
     "label": "enseignscientifique",
     "pretty": "Enseignement scientifique",
     "formats": {
-      "pronote": [
+      "default": [
         "enseignement scientifique",
         "enseign scientifique"
       ]
@@ -113,7 +113,7 @@
     "label": "edphysiquesport",
     "pretty": "Éducation physique & sportive",
     "formats": {
-      "pronote": [
+      "default": [
         "education physique et sportive",
         "ed physique sport",
         "education physique et sportive",
@@ -125,7 +125,7 @@
     "label": "educationmusicale",
     "pretty": "Éducation musicale",
     "formats": {
-      "pronote": [
+      "default": [
         "education musicale",
         "education musicale"
       ]
@@ -135,7 +135,7 @@
     "label": "francais",
     "pretty": "Français",
     "formats": {
-      "pronote": [
+      "default": [
         "français",
         "francais"
       ]
@@ -145,7 +145,7 @@
     "label": "histoiregeo",
     "pretty": "Histoire-Géographie",
     "formats": {
-      "pronote": [
+      "default": [
         "histoire geographie",
         "histoire geo",
         "histoire geograph",
@@ -158,7 +158,7 @@
     "label": "humanlitterphilo",
     "pretty": "Humanites, Littérature & Philosophie",
     "formats": {
-      "pronote": [
+      "default": [
         "humanites litterature philosophie",
         "human litter philo"
       ]
@@ -168,7 +168,7 @@
     "label": "llcanglmondcont",
     "pretty": "LLCER Anglais Monde Contemporain",
     "formats": {
-      "pronote": [
+      "default": [
         "llcer anglais monde contemporain",
         "llc angl mond cont"
       ]
@@ -178,7 +178,7 @@
     "label": "mathspourinformatq",
     "pretty": "Mathématiques pour l’Informatique",
     "formats": {
-      "pronote": [
+      "default": [
         "mathematiques pour l’informatique",
         "maths pour informatq"
       ]
@@ -188,7 +188,7 @@
     "label": "mathematiques",
     "pretty": "Mathématiques",
     "formats": {
-      "pronote": [
+      "default": [
         "mathematiques",
         "mathematiques",
         "mathematiques 1ere",
@@ -200,7 +200,7 @@
     "label": "numeriquescinform",
     "pretty": "Numérique & Sciences Informatiques",
     "formats": {
-      "pronote": [
+      "default": [
         "numerique et sciences informatiques",
         "numerique sc inform"
       ]
@@ -210,7 +210,7 @@
     "label": "physiquechimie",
     "pretty": "Physique-Chimie",
     "formats": {
-      "pronote": [
+      "default": [
         "physique chimie",
         "phys chim"
       ]
@@ -220,7 +220,7 @@
     "label": "sceconosociales",
     "pretty": "Sciences Économiques & Sociales",
     "formats": {
-      "pronote": [
+      "default": [
         "sciences economiques et sociales",
         "sc econo sociales",
         "sciences economiques et sociales"
@@ -231,7 +231,7 @@
     "label": "sciencesvieterre",
     "pretty": "Sciences de la Vie & de la Terre",
     "formats": {
-      "pronote": [
+      "default": [
         "sciences de la vie et de la terre",
         "sciences de la vie et de la terre",
         "sciences vie terre"
@@ -242,7 +242,7 @@
     "label": "scnumeriqtechnol",
     "pretty": "Sciences Numériques & Technologie",
     "formats": {
-      "pronote": [
+      "default": [
         "sciences numeriques et technologie",
         "sc numeriq technol"
       ]
@@ -252,7 +252,7 @@
     "label": "viedeclasse",
     "pretty": "Vie de classe",
     "formats": {
-      "pronote": [
+      "default": [
         "vie de classe",
         "vie de classe"
       ]
