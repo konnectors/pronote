@@ -4,7 +4,8 @@ const {
   cozyClient
 } = require('cozy-konnector-libs')
 
-const use_stream = require('../utils/use_stream')
+const use_stream = require('../utils/use_stream');
+const genUUID = require('../utils/uuid');
 
 function create_dates(options) {
   // Setting the date range
@@ -47,33 +48,30 @@ function getIcalDate(date) {
 
 async function create_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
-    const timetable = await get_timetable(pronote, fields, options);
-    const data = [];
+    const timetable = await get_timetable(pronote, fields, options)
+    const data = []
 
     for (const lesson of timetable) {
-      let vevent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//hacksw/handcal//NONSGML v1.0//EN
-BEGIN:VEVENT
-DTSTAMP:${getIcalDate(new Date())}
-UID:${lesson.id}
-DTSTART:${getIcalDate((new Date(lesson.startDate)))}
-DTEND:${getIcalDate((new Date(lesson.endDate)))}
-SUMMARY:${lesson.subject?.name || 'Cours'}
-LOCATION:${lesson.classrooms.join(', ')}
-ORGANIZER:CN=${lesson.teacherNames.join(', ')}
-STATUS:${lesson.canceled ? 'CANCELLED' : 'CONFIRMED'}
-END:VEVENT
-END:VCALENDAR
-      `.trim();
+      let json = {
+        "_id": genUUID(),
+        "start": getIcalDate(new Date()),
+        "end": getIcalDate((new Date(lesson.endDate))),
+        "label": lesson.subject?.name || 'Cours',
+        "location": lesson.classrooms.join(', '),
+        "organizer": lesson.teacherNames.join(', '),
+        "status": lesson.canceled ? 'CANCELLED' : 'CONFIRMED',
+        "description": lesson.memo,
+        "xComment": lesson.status,
+      }
 
-      let stream = await use_stream(vevent, 'text/calendar');
+      let strg = JSON.stringify(json, null, 2)
+      let stream = await use_stream(strg, 'application/json')
 
-      data.push(stream);
+      data.push(stream)
     }
 
-    resolve(data);
+    log('info', 'data : ' + JSON.stringify(data));
+    resolve(data)
   });
 }
 
@@ -84,7 +82,7 @@ async function init(pronote, fields, options) {
 
       const documents = await files.map((file, index) => {
         return {
-          filename: `pronote-timetable-${index}.ics`,
+          filename: `pronote-timetable-${index}.json`,
           filestream: file,
           shouldReplaceFile: true,
           shouldReplaceName: true,
