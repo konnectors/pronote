@@ -38,6 +38,9 @@
     "files": {
       "type": "io.cozy.files"
     },
+    "calendar": {
+      "type": "io.cozy.calendar.event"
+    },
     "accounts": {
       "type": "io.cozy.accounts"
     },

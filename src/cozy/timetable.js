@@ -81,8 +81,6 @@ async function create_timetable(pronote, fields, options) {
               : 'CONFIRMED';
 
       let json = {
-        "_id": genUUID(),
-        "_type": doctypes['timetable']['lesson'],
         "start": dates.start,
         "end": dates.end,
         "label": prettyCoursName,
@@ -108,17 +106,12 @@ async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
       let files = await create_timetable(pronote, fields, options)
-
-      stack_log(`💾 Saving ${files.length} files to ${doctypes['timetable']['lesson']}`);
-
-      const dtps = await addData(files, doctypes['timetable']['lesson'], {
+      const res = await addData(files, doctypes['timetable']['lesson'], {
         sourceAccount: this.accountId,
         sourceAccountIdentifier: fields.login,
       });
 
-      stack_log(JSON.stringify(dtps, null, 2));
-
-      resolve(true);
+      resolve(res);
     }
     catch (error) {
       reject(error);

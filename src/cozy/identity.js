@@ -10,6 +10,7 @@ const subPaths = require('../consts/sub_paths.json');
 const extract_pronote_name = require('../utils/extract_pronote_name')
 const censor = require('../utils/use_censor');
 const stack_log = require('../utils/stack_log');
+const gen_pronoteIdentifier = require('../utils/gen_pronoteIdentifier');
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
@@ -60,10 +61,12 @@ async function format_json(pronote, information, profile_pic) {
       })
     }
 
+    const identifier = gen_pronoteIdentifier(pronote);
+
     const identity = {
       // _id: genUUID(),
       source: 'connector',
-      identifier: pronote.username,
+      identifier: identifier,
       contact: {
         fullname: pronote.studentName && pronote.studentName,
         name: pronote.studentName && extract_pronote_name(pronote.studentName),
@@ -130,6 +133,7 @@ async function save_profile_picture(pronote, fields) {
 async function init(pronote, fields) {
   try {
     let identity = await create_identity(pronote, fields)
+    stack_log('🗣️ Saving identity for ' + identity.identifier);
     return saveIdentity(identity, fields.login)
   }
   catch (error) {
