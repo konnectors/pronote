@@ -5,7 +5,9 @@ String.prototype.uppercaseFirst = function () {
 }
 
 function cw(text, width) {
-  const padding = width - text.length;
+  let padding = width - text.length;
+  padding = padding > 0 ? padding : 0;
+  text = text.length > width ? text.slice(0, width - 3) + '...' : text;
   return text + ' '.repeat(padding);
 }
 
@@ -19,11 +21,11 @@ function findObjectByPronoteString(pronoteString) {
   // remove everything in parentheses
   processedString = processedString.replace(/\(.*\)/g, '').trim();
 
-  // remove special characters
-  processedString = processedString.replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
-
   // normalize accents
   processedString = processedString.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // remove special characters
+  processedString = processedString.replace(/[^a-zA-Z0-9 ]/g, ' ').trim();
 
   // remove multiple spaces into one
   processedString = processedString.replace(/\s+/g, ' ');

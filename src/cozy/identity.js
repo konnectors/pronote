@@ -5,6 +5,8 @@ const {
   saveIdentity
 } = require('cozy-konnector-libs')
 
+const subPaths = require('../consts/sub_paths.json');
+
 const extract_pronote_name = require('../utils/extract_pronote_name')
 const censor = require('../utils/use_censor')
 
@@ -104,12 +106,14 @@ async function format_json(pronote, information, profile_pic) {
 }
 
 async function save_profile_picture(pronote, fields) {
+  console.log('Saving profile picture at ' + subPaths['identity']['profile_pic'])
+
   const documents = [
     {
       filename: 'Photo de classe.jpg',
       fileurl: pronote.studentProfilePictureURL,
       shouldReplaceFile: false,
-      subPath: 'Documents/Élève'
+      subPath: subPaths['identity']['profile_pic']
     }
   ]
 
@@ -120,10 +124,7 @@ async function save_profile_picture(pronote, fields) {
     validateFile: false
   })
 
-  const meta = await cozyClient.files.statByPath(
-    fields.folderPath + '/Documents/Élève/Photo de classe.jpg'
-  )
-
+  const meta = files[0];
   return meta || null
 }
 

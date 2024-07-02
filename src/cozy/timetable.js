@@ -4,6 +4,8 @@ const {
   cozyClient
 } = require('cozy-konnector-libs')
 
+const subPaths = require('../consts/sub_paths.json');
+
 const use_stream = require('../utils/use_stream');
 const genUUID = require('../utils/uuid');
 const findObjectByPronoteString = require('../utils/format_cours_name');
@@ -82,6 +84,7 @@ async function create_timetable(pronote, fields, options) {
         "status": status,
         "description": lesson.memo,
         "xComment": lesson.status,
+        "saveDate": new Date().toISOString(),
       }
 
       let strg = JSON.stringify(json, null, 2)
@@ -112,7 +115,7 @@ async function init(pronote, fields, options) {
           filestream: file.stream,
           shouldReplaceFile: true,
           shouldReplaceName: true,
-          subPath: 'Documents/Emploi du temps/' + file.date.string
+          subPath: subPaths['timetable']['timetable'] + file.date.string
         }
       });
 
@@ -120,8 +123,8 @@ async function init(pronote, fields, options) {
         sourceAccount: this.accountId,
         sourceAccountIdentifier: fields.login,
         concurrency: 10,
-        validateFile: false,
-        subPath: 'Documents/Emploi du temps',
+        validateFile: () => true,
+        subPath: subPaths['timetable']['timetable'],
         verboseFilesLog: true
       });
 
