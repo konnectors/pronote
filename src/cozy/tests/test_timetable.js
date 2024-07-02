@@ -8,7 +8,9 @@ const stack_log = require("../../utils/development/stack_log");
 
 async function find_elements(pronote, fields, options) {
   const existingLessons = await cozyClient.data.findAll(doctypes['timetable']['lesson']);
-  console.log(JSON.stringify(existingLessons, null, 2));
+  if (existingLessons.length === 0) {
+    throw 'No lessons found';
+  }
 }
 
 async function init(pronote, fields, options) {

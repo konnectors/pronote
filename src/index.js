@@ -28,6 +28,8 @@ async function start(fields, cozyParameters) {
       dateFrom: new Date('2024-06-03'),
     });
     await cozy_test('timetable', pronote, fields);
+
+    return true;
   }
   catch (error) {
     log('error', error);
