@@ -21,7 +21,7 @@ async function start(fields, cozyParameters) {
     });
 
     // Sauvegarde de l'identité de l'utilisateur
-    // await cozy_save('identity', pronote, fields);
+    await cozy_save('identity', pronote, fields);
 
     // Sauvegarde de l'emploi du temps de l'utilisateur
     await cozy_save('timetable', pronote, fields, {

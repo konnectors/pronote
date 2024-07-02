@@ -1,19 +1,11 @@
 const {
-  saveFiles,
-  log,
-  cozyClient,
   addData,
 } = require('cozy-konnector-libs')
 
-const subPaths = require('../consts/sub_paths.json');
-const doctypes = require('../consts/doctypes.json');
+const doctypes = require('../../consts/doctypes.json');
 
-const use_stream = require('../utils/use_stream');
-const genUUID = require('../utils/uuid');
 const findObjectByPronoteString = require('../utils/format_cours_name');
-const preprocessDoctype = require('../utils/preprocess_doctype');
-const censor = require('../utils/use_censor');
-const stack_log = require('../utils/stack_log');
+const preprocessDoctype = require('../../utils/format/preprocess_doctype');
 
 function create_dates(options) {
   // Setting the date range

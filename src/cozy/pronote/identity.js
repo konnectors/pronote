@@ -1,16 +1,14 @@
 const {
   saveFiles,
   log,
-  cozyClient,
   saveIdentity
 } = require('cozy-konnector-libs')
 
-const subPaths = require('../consts/sub_paths.json');
+const subPaths = require('../../consts/sub_paths.json');
 
-const extract_pronote_name = require('../utils/extract_pronote_name')
-const censor = require('../utils/use_censor');
-const stack_log = require('../utils/stack_log');
-const gen_pronoteIdentifier = require('../utils/gen_pronoteIdentifier');
+const extract_pronote_name = require('../../utils/format/extract_pronote_name')
+const stack_log = require('../../utils/development/stack_log');
+const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier');
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
