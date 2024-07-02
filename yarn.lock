@@ -3843,6 +3843,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cozy-flags@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "cozy-flags@npm:3.2.2"
+  dependencies:
+    microee: ^0.0.6
+  peerDependencies:
+    cozy-client: ">=20.0.0"
+    react: ^16.12.0
+  bin:
+    cozy-flags: bin/cozy-flags
+  checksum: 5fd3da11ca5de998809791c10a06c261b78f4c06a1c2ad8a420d8a0d6564a5cc5d131029085edede0c43fadb2cdcf201f8f40e8e87aac11b88de96de0f3fb74b
+  languageName: node
+  linkType: hard
+
 "cozy-jobs-cli@npm:2.4.2":
   version: 2.4.2
   resolution: "cozy-jobs-cli@npm:2.4.2"
@@ -3946,6 +3960,7 @@ __metadata:
   dependencies:
     "@eslint/js": ^9.6.0
     cozy-client: ^48.5.0
+    cozy-flags: ^3.2.2
     cozy-jobs-cli: 2.4.2
     cozy-konnector-build: 1.7.0
     cozy-konnector-libs: 5.11.0

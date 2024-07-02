@@ -5,7 +5,7 @@ const { BaseKonnector, log } = require('cozy-konnector-libs')
 const { Pronote } = require('./fetch/session');
 
 // Importation de la fonction cozy_save
-const cozy_save = require('./cozy');
+const { cozy_save, cozy_test } = require('./cozy');
 
 // Exportation de la fonction start
 module.exports = new BaseKonnector(start);
@@ -27,6 +27,7 @@ async function start(fields, cozyParameters) {
     await cozy_save('timetable', pronote, fields, {
       dateFrom: new Date('2024-06-03'),
     });
+    await cozy_test('timetable', pronote, fields);
   }
   catch (error) {
     log('error', error);

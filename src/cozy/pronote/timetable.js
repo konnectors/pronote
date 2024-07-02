@@ -4,7 +4,7 @@ const {
 
 const doctypes = require('../../consts/doctypes.json');
 
-const findObjectByPronoteString = require('../utils/format_cours_name');
+const findObjectByPronoteString = require('../../utils/format/format_cours_name');
 const preprocessDoctype = require('../../utils/format/preprocess_doctype');
 
 function create_dates(options) {

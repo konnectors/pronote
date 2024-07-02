@@ -1,4 +1,4 @@
-const cozy_lesson_formats = require('../consts/cozy_lesson_formats.json');
+const cozy_lesson_formats = require('../../consts/cozy_lesson_formats.json');
 
 String.prototype.uppercaseFirst = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
