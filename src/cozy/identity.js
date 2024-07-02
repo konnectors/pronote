@@ -26,6 +26,37 @@ async function create_identity(pronote, fields) {
 
 async function format_json(pronote, information, profile_pic) {
   return new Promise(async (resolve, reject) => {
+    const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0];
+    const scAdress = etabInfo['Coordonnees'];
+
+    const address = [];
+
+    if (information.city && information.city.trim() !== '') {
+      address.push({
+        type: 'Personnal',
+        label: 'home',
+        city: information.city,
+        region: information.province,
+        street: information.address[0],
+        country: information.country,
+        code: information.postalCode,
+        formattedAddress: information.address.join(' '),
+      });
+    }
+
+    if (scAdress && scAdress['LibelleVille']) {
+      address.push({
+        type: 'School',
+        label: 'work',
+        city: scAdress['LibelleVille'],
+        region: scAdress['Province'],
+        street: scAdress['Adresse1'],
+        country: scAdress['Pays'],
+        code: scAdress['CodePostal'],
+        formattedAddress: scAdress['Adresse1'] + ', ' + scAdress['CodePostal'] + ' ' + scAdress['LibelleVille'] + ', ' + scAdress['Pays']
+      })
+    }
+
     const identity = {
       // _id: genUUID(),
       source: 'connector',
@@ -35,24 +66,21 @@ async function format_json(pronote, information, profile_pic) {
         name: pronote.studentName && extract_pronote_name(pronote.studentName),
         email: information.email && [
           {
-            address: information.email
+            address: information.email,
+            type: "Profressional",
+            label: 'work',
+            primary: true
           }
         ],
         phone: information.phone && [
           {
-            number: information.phone
+            number: information.phone,
+            type: "Personnal",
+            label: 'home',
+            primary: true
           }
         ],
-        address: information.city && [
-          information.city && {
-            city: information.city,
-            region: information.province,
-            street: information.address[0],
-            country: information.country,
-            code: information.postalCode,
-            formattedAddress: information.address.join(' '),
-          },
-        ],
+        address: address,
         company: pronote.schoolName,
         jobTitle: 'Élève de ' + pronote.studentClass
       },
@@ -69,7 +97,7 @@ async function format_json(pronote, information, profile_pic) {
       }
     }
 
-    log('info', JSON.stringify(identity))
+    console.log(identity)
 
     resolve(identity)
   })
