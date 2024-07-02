@@ -9,6 +9,7 @@ const { log } = require('cozy-konnector-libs')
 
 // Fonction qui génère un UUID
 const uuid = require('../utils/uuid');
+const stack_log = require('../utils/stack_log');
 
 // Renvoie une session Pronote
 async function Pronote({
@@ -25,7 +26,7 @@ async function Pronote({
         deviceUUID: uuid()
       });
 
-      log('info', 'Pronote session created [' + pronote.username + ' : ' + pronote.studentName + ']');
+      stack_log('🦋 Pronote session created [' + pronote.username + ' : ' + pronote.studentName + ']');
 
       resolve(pronote);
     } catch (error) {

@@ -1,14 +1,19 @@
 const {
   saveFiles,
   log,
-  cozyClient
+  cozyClient,
+  addData,
 } = require('cozy-konnector-libs')
 
 const subPaths = require('../consts/sub_paths.json');
+const doctypes = require('../consts/doctypes.json');
 
 const use_stream = require('../utils/use_stream');
 const genUUID = require('../utils/uuid');
 const findObjectByPronoteString = require('../utils/format_cours_name');
+const preprocessDoctype = require('../utils/preprocess_doctype');
+const censor = require('../utils/use_censor');
+const stack_log = require('../utils/stack_log');
 
 function create_dates(options) {
   // Setting the date range
@@ -69,10 +74,15 @@ async function create_timetable(pronote, fields, options) {
       const status =
         lesson.canceled ?
           'CANCELLED'
-          : 'CONFIRMED';
+          : lesson.exempted ?
+            'EXEMPTED'
+            : lesson.test ?
+              'TEST'
+              : 'CONFIRMED';
 
       let json = {
         "_id": genUUID(),
+        "_type": doctypes['timetable']['lesson'],
         "start": dates.start,
         "end": dates.end,
         "label": prettyCoursName,
@@ -87,17 +97,7 @@ async function create_timetable(pronote, fields, options) {
         "saveDate": new Date().toISOString(),
       }
 
-      let strg = JSON.stringify(json, null, 2)
-      let stream = await use_stream(strg, 'application/json')
-
-      data.push({
-        name: `pronote-timetable-${processedCoursName}-${getIcalDate(new Date(lesson.startDate))}.txt`,
-        stream: stream,
-        date: {
-          string: new Date(lesson.startDate).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-          object: new Date(lesson.startDate)
-        }
-      })
+      data.push(preprocessDoctype(json));
     }
 
     resolve(data)
@@ -109,24 +109,14 @@ async function init(pronote, fields, options) {
     try {
       let files = await create_timetable(pronote, fields, options)
 
-      const documents = await files.map((file, index) => {
-        return {
-          filename: file.name,
-          filestream: file.stream,
-          shouldReplaceFile: true,
-          shouldReplaceName: true,
-          subPath: subPaths['timetable']['timetable'] + file.date.string
-        }
-      });
+      stack_log(`💾 Saving ${files.length} files to ${doctypes['timetable']['lesson']}`);
 
-      await saveFiles(documents, fields, {
+      const dtps = await addData(files, doctypes['timetable']['lesson'], {
         sourceAccount: this.accountId,
         sourceAccountIdentifier: fields.login,
-        concurrency: 10,
-        validateFile: () => true,
-        subPath: subPaths['timetable']['timetable'],
-        verboseFilesLog: true
       });
+
+      stack_log(JSON.stringify(dtps, null, 2));
 
       resolve(true);
     }

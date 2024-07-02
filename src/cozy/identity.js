@@ -8,7 +8,8 @@ const {
 const subPaths = require('../consts/sub_paths.json');
 
 const extract_pronote_name = require('../utils/extract_pronote_name')
-const censor = require('../utils/use_censor')
+const censor = require('../utils/use_censor');
+const stack_log = require('../utils/stack_log');
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
@@ -99,14 +100,12 @@ async function format_json(pronote, information, profile_pic) {
       }
     }
 
-    console.log(identity)
-
     resolve(identity)
   })
 }
 
 async function save_profile_picture(pronote, fields) {
-  console.log('Saving profile picture at ' + subPaths['identity']['profile_pic'])
+  stack_log('🖼️ Saving profile picture at ' + subPaths['identity']['profile_pic'])
 
   const documents = [
     {
