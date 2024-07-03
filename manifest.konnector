@@ -5,7 +5,7 @@
   "language": "node",
   "icon": "icon.svg",
   "slug": "pronote",
-  "source": "git@github.com:ecnivtwelve/cozy-konnector-pronote.git",
+  "source": "git@github.com:konnectors/pronote.git",
   "editor": "Cozy",
   "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
   "categories": ["education"],
@@ -54,8 +54,8 @@
     }
   },
   "developer": {
-    "name": "Vince Linise",
-    "url": "https://vincelinise.com"
+    "name": "Cozy",
+    "url": "https://cozy.io"
   },
   "langs": ["fr"],
   "locales": {
