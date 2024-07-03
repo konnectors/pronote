@@ -94,7 +94,7 @@ You can reach the Cozy Community by:
 License
 -------
 
-[cozy-konnector-pronote](https://github.com/ecnivtwelve/cozy-konnector-pronote) is developed by Vince Linise and distributed under the [AGPL v3 license][agpl-3.0].
+[konnectors/pronote](https://github.com/konnectors/pronote) is developed by Vince Linise and distributed under the [AGPL v3 license][agpl-3.0].
 
 [cozy]: https://cozy.io "Cozy Cloud"
 [agpl-3.0]: https://www.gnu.org/licenses/agpl-3.0.html
