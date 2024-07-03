@@ -30,9 +30,10 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde de l'emploi du temps de l'utilisateur (3 prochains jours)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      saveFiles: false
+      dateFrom: new Date(pronote.firstDate),
+      dateTo: new Date(pronote.lastDate),
+      saveFiles: false,
+      getLessonContent: false
     });
     await cozy_test('timetable', pronote, fields);
 

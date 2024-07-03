@@ -15,7 +15,7 @@ function removeSpaces(text) {
   return text.replace(/\s+/g, '');
 }
 
-function findObjectByPronoteString(pronoteString) {
+function findObjectByPronoteString(pronoteString = "") {
   // Process the input string: replace dots and underscores with spaces, trim, and convert to lowercase
   let processedString = pronoteString.replace(/[,._]/g, ' ').trim().toLowerCase();
 

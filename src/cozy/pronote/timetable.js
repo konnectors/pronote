@@ -40,17 +40,32 @@ async function create_timetable(pronote, fields, options) {
     }
     console.log('shouldSaveFiles', shouldSaveFiles);
 
+    let shouldGetContent = options['getLessonContent'];
+    if (shouldGetContent === undefined || shouldGetContent === null) {
+      shouldGetContent = true;
+    }
+    console.log('shouldGetContent', shouldGetContent);
+
     for (const lesson of timetable) {
       const pronoteString = findObjectByPronoteString(lesson.subject?.name);
       const processedCoursName = pronoteString.label;
       const prettyCoursName = pronoteString.pretty;
 
-      const resource = await lesson.getResource();
-      const content = resource && resource.contents && resource.contents[0];
       let relationships = [];
+      let content = null;
 
-      if (resource && shouldSaveFiles) {
-        relationships = await save_resources(resource, subPaths['timetable']['resource'], lesson.startDate, prettyCoursName, fields);
+      try {
+        if (typeof lesson.getResource === 'function' && shouldGetContent) {
+          const resource = await lesson.getResource();
+          content = resource && resource.contents && resource.contents[0];
+
+          if (resource && shouldSaveFiles) {
+            relationships = await save_resources(resource, subPaths['timetable']['resource'], lesson.startDate, prettyCoursName, fields);
+          }
+        }
+      }
+      catch (error) {
+        console.log('ressource getting : ', error);
       }
 
       const dates = {
