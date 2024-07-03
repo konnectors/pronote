@@ -127,4 +127,39 @@ async function init(pronote, fields, options) {
   });
 }
 
-module.exports = init;
+async function dispatcher(pronote, fields, options) {
+  const dates = create_dates(options);
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const data = [];
+  let from = new Date(dates.from);
+  let to = new Date(dates.to);
+
+  while (from < to) {
+    let newTo = new Date(from);
+    newTo.setDate(newTo.getDate() + 3);
+
+    if (newTo > to) {
+      newTo = to;
+    }
+
+    const res = await init(pronote, fields, {
+      ...options,
+      dateFrom: from,
+      dateTo: newTo
+    });
+
+    data.push(res);
+    from = new Date(newTo);
+    from.setDate(from.getDate() + 1);
+
+    if (res.length > 4) {
+      await delay(options.delay || 1000);
+    }
+  }
+
+  return data;
+}
+
+module.exports = dispatcher;
