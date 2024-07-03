@@ -8,9 +8,7 @@ const subPaths = require('../../consts/sub_paths.json');
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name');
 const preprocessDoctype = require('../../utils/format/preprocess_doctype');
-const stack_log = require('../../utils/development/stack_log');
 const remove_html = require('../../utils/format/remove_html');
-const use_stream = require('../../utils/misc/use_stream');
 const { create_dates, getIcalDate } = require('../../utils/misc/create_dates');
 const save_resources = require('../../utils/stack/save_resources');
 
