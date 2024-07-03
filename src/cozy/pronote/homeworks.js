@@ -154,9 +154,7 @@ async function dispatcher(pronote, fields, options) {
     from = new Date(newTo);
     from.setDate(from.getDate() + 1);
 
-    if (res.length > 4) {
-      await delay(options.delay || 1000);
-    }
+    await delay(options.delay || 1000);
   }
 
   return data;
