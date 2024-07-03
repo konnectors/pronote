@@ -228,7 +228,7 @@ async function dispatcher(pronote, fields, options) {
     from = new Date(newTo);
     from.setDate(from.getDate() + 1);
 
-    await delay(options.delay || 500);
+    await delay(options.delay || 1000);
   }
 
   return data;
