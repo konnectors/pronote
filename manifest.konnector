@@ -8,7 +8,7 @@
   "source": "git@github.com:ecnivtwelve/cozy-konnector-pronote.git",
   "editor": "Cozy",
   "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
-  "categories": ["other", "education"],
+  "categories": ["education"],
   "fields": {
     "pronote_url": {
       "type": "text",
@@ -25,7 +25,7 @@
   },
   "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
   "data_types": [
-    "bill"
+    "calendar", "event", "document"
   ],
   "screenshots": [],
   "permissions": {
@@ -60,8 +60,8 @@
   "langs": ["fr"],
   "locales": {
     "fr": {
-      "short_description": "Récupère la liste de livres",
-      "long_description": "Récupère la liste de livre sur le site exemple",
+      "short_description": "Ce connecteur récupère vos données d'élève sur le service Pronote",
+      "long_description": "Ce connecteur récupère vos données d'élève sur le service Pronote. Il peut récupérer votre emploi du temps, vos notes, vos moyennes, vos devoirs à faire, votre profil d'élève et vos informations de vie scolaire. Il peut également sauvegarder vos documents, devoirs rendus, fichiers de leçon, corrections, et plus encore.",
       "pronote_login_account_type": "Type de compte",
       "pronote_login_url": "URL de l'instance PRONOTE",
       "pronote_login_login": "Identifiant",
