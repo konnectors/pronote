@@ -4,10 +4,6 @@ const {
 } = require('cozy-konnector-libs')
 
 const doctypes = require('../../consts/doctypes.json');
-const subPaths = require('../../consts/sub_paths.json');
-
-const findObjectByPronoteString = require('../../utils/format/format_cours_name');
-const preprocessDoctype = require('../../utils/format/preprocess_doctype');
 
 function get_presence(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
