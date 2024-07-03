@@ -39,8 +39,8 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: dateFrom,
-      dateTo: dateTo,
+      dateFrom: new Date(pronote.firstDate),
+      dateTo: new Date(pronote.lastDate),
       saveFiles: false
     });
     await cozy_test('homeworks', pronote, fields);
