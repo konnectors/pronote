@@ -5,6 +5,8 @@ What's Cozy?
 ------------
 
 ![Cozy Logo](https://cdn.rawgit.com/cozy/cozy-guidelines/master/templates/cozy_logo_small.svg)
+![Pronote Logo](https://github.com/ecnivtwelve/cozy-konnector-pronote/assets/32978709/51241c0d-1b96-4db3-a83f-9fbc9a8a1fa0)
+
 
 [Cozy] is a personal data platform that brings all your web services in the same private space. With it, your webapps and your devices can share data easily, providing you with a new experience. You can install Cozy on your own hardware where no one's tracking you.
 
