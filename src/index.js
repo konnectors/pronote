@@ -23,7 +23,7 @@ async function start(fields, cozyParameters) {
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields);
 
-    // Sauvegarde de l'emploi du temps de l'utilisateur (3 prochains jours)
+    // Sauvegarde de l'emploi du temps de l'utilisateur (toute l'année scolaire)
     await cozy_save('timetable', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
