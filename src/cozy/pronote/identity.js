@@ -93,10 +93,10 @@ async function format_json(pronote, information, profile_pic) {
         class: pronote.studentClass,
         school: pronote.schoolName
       },
-      relationships: profile_pic && profile_pic['fileDocument']['_id'] && {
+      relationships: profile_pic && profile_pic['_id'] && {
         picture: {
           // photo de profil
-          data: { _id: profile_pic['fileDocument']['_id'], _type: 'io.cozy.files' }
+          data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
         }
       }
     }
