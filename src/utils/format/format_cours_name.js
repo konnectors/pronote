@@ -11,6 +11,10 @@ function cw(text, width) {
   return text + ' '.repeat(padding);
 }
 
+function removeSpaces(text) {
+  return text.replace(/\s+/g, '');
+}
+
 function findObjectByPronoteString(pronoteString) {
   // Process the input string: replace dots and underscores with spaces, trim, and convert to lowercase
   let processedString = pronoteString.replace(/[,._]/g, ' ').trim().toLowerCase();
@@ -45,7 +49,7 @@ function findObjectByPronoteString(pronoteString) {
 
   // Return null if no match is found
   return {
-    "label": processedString,
+    "label": removeSpaces(processedString),
     "pretty": processedString.uppercaseFirst(),
     "formats": {}
   };

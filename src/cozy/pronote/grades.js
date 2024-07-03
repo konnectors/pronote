@@ -78,7 +78,7 @@ function create_grades(pronote, fields, options) {
       const evals = [];
 
       for (const evl of grade.grades) {
-        const id = new Date(evl.date).getTime() + "_" + processedCoursName + "_" + (evl.comment || "grd");
+        const id = new Date(evl.date).getTime() + "_" + processedCoursName + "_" + (evl.comment.replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]/g, '') || "grd");
 
         if (evl.subjectFile && evl.subjectFile.url) {
           const filesToDownload = [];
