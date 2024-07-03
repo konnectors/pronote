@@ -128,4 +128,44 @@ async function init(pronote, fields, options) {
   });
 }
 
-module.exports = init;
+async function dispatcher(pronote, fields, options) {
+  if (options["getLessonContent"] == false) {
+    return await init(pronote, fields, options);
+  }
+  else {
+    const dates = create_dates(options);
+
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const data = [];
+    let from = new Date(dates.from);
+    let to = new Date(dates.to);
+
+    while (from < to) {
+      let newTo = new Date(from);
+      newTo.setDate(newTo.getDate() + (options["saveFiles"] == false ? 5 : 3));
+
+      if (newTo > to) {
+        newTo = to;
+      }
+
+      const res = await init(pronote, fields, {
+        ...options,
+        dateFrom: from,
+        dateTo: newTo
+      });
+
+      data.push(res);
+      from = new Date(newTo);
+      from.setDate(from.getDate() + 1);
+
+      await delay(options.delay || (
+        options["saveFiles"] == false ? 4000 : 6000
+      ));
+    }
+
+    return data;
+  }
+}
+
+module.exports = dispatcher;
