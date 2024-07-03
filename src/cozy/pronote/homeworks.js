@@ -26,7 +26,11 @@ function create_homeworks(pronote, fields, options) {
     const homeworks = await get_homeworks(pronote, fields, options);
     const data = [];
 
-    const shouldSaveFiles = options.saveFiles || true;
+    let shouldSaveFiles = options['saveFiles'];
+    if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
+      shouldSaveFiles = true;
+    }
+    console.log('shouldSaveFiles', shouldSaveFiles);
 
     for (const homework of homeworks) {
       const pronoteString = findObjectByPronoteString(homework.subject?.name);
@@ -37,44 +41,46 @@ function create_homeworks(pronote, fields, options) {
       let relationships = [];
       let returned = [];
 
-      if (resource && shouldSaveFiles) {
-        relationships = await save_resources(resource, subPaths['homeworks']['files'], homework.deadline, prettyCoursName, fields);
-      }
+      if (shouldSaveFiles) {
+        if (resource) {
+          relationships = await save_resources(resource, subPaths['homeworks']['files'], homework.deadline, prettyCoursName, fields);
+        }
 
-      if (homework.return && homework.return.uploaded && homework.return.uploaded.url && shouldSaveFiles) {
-        const filesToDownload = [];
+        if (homework.return && homework.return.uploaded && homework.return.uploaded.url) {
+          const filesToDownload = [];
 
-        const date = new Date(homework.deadline);
-        const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
+          const date = new Date(homework.deadline);
+          const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
 
-        const extension = homework.return.uploaded.name.split('.').pop();
-        let fileName = homework.return.uploaded.name.replace(/\.[^/.]+$/, "") + ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate;
+          const extension = homework.return.uploaded.name.split('.').pop();
+          let fileName = homework.return.uploaded.name.replace(/\.[^/.]+$/, "") + ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate;
 
-        filesToDownload.push({
-          filename: `${fileName}.${extension}`,
-          fileurl: homework.return.uploaded.url,
-          shouldReplaceFile: false,
-          subPath: subPaths['homeworks']['returned'].replace('{subject}', prettyCoursName),
-          fileAttributes: {
-            created_at: date,
-            updated_at: date,
-          }
-        });
+          filesToDownload.push({
+            filename: `${fileName}.${extension}`,
+            fileurl: homework.return.uploaded.url,
+            shouldReplaceFile: false,
+            subPath: subPaths['homeworks']['returned'].replace('{subject}', prettyCoursName),
+            fileAttributes: {
+              created_at: date,
+              updated_at: date,
+            }
+          });
 
-        const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
-          sourceAccountIdentifier: fields.login,
-          concurrency: 1,
-          validateFile: () => true
-        })
+          const data = await saveFiles(filesToDownload, fields, {
+            sourceAccount: this.accountId,
+            sourceAccountIdentifier: fields.login,
+            concurrency: 1,
+            validateFile: () => true
+          })
 
-        for (const file of data) {
-          if (file['fileDocument']) {
-            returned.push({
-              resource: {
-                data: { _id: file['fileDocument']['_id'], _type: 'io.cozy.files' }
-              }
-            });
+          for (const file of data) {
+            if (file['fileDocument']) {
+              returned.push({
+                resource: {
+                  data: { _id: file['fileDocument']['_id'], _type: 'io.cozy.files' }
+                }
+              });
+            }
           }
         }
       }

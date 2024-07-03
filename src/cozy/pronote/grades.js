@@ -66,6 +66,12 @@ function create_grades(pronote, fields, options) {
     const grades = await get_grades(pronote, fields, options);
     const data = [];
 
+    let shouldSaveFiles = options['saveFiles'];
+    if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
+      shouldSaveFiles = true;
+    }
+    console.log('shouldSaveFiles', shouldSaveFiles);
+
     for (const grade of grades) {
       const pronoteString = findObjectByPronoteString(grade.subject?.name);
       const processedCoursName = pronoteString.label;
@@ -80,7 +86,7 @@ function create_grades(pronote, fields, options) {
       for (const evl of grade.grades) {
         const id = new Date(evl.date).getTime() + "_" + processedCoursName + "_" + (evl.comment.replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]/g, '') || "grd");
 
-        if (evl.subjectFile && evl.subjectFile.url) {
+        if (evl.subjectFile && evl.subjectFile.url && shouldSaveFiles) {
           const filesToDownload = [];
 
           const date = new Date(evl.date);
@@ -124,7 +130,7 @@ function create_grades(pronote, fields, options) {
           }
         }
 
-        if (evl.correctionFile && evl.correctionFile.url) {
+        if (evl.correctionFile && evl.correctionFile.url && shouldSaveFiles) {
           const filesToDownload = [];
 
           const date = new Date(evl.date);

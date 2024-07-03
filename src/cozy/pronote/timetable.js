@@ -34,6 +34,12 @@ async function create_timetable(pronote, fields, options) {
     const timetable = await get_timetable(pronote, fields, options);
     const data = []
 
+    let shouldSaveFiles = options['saveFiles'];
+    if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
+      shouldSaveFiles = true;
+    }
+    console.log('shouldSaveFiles', shouldSaveFiles);
+
     for (const lesson of timetable) {
       const pronoteString = findObjectByPronoteString(lesson.subject?.name);
       const processedCoursName = pronoteString.label;
@@ -43,7 +49,7 @@ async function create_timetable(pronote, fields, options) {
       const content = resource && resource.contents && resource.contents[0];
       let relationships = [];
 
-      if (resource) {
+      if (resource && shouldSaveFiles) {
         relationships = await save_resources(resource, subPaths['timetable']['resource'], lesson.startDate, prettyCoursName, fields);
       }
 

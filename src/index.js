@@ -10,6 +10,11 @@ const { cozy_save, cozy_test } = require('./cozy');
 // Exportation de la fonction start
 module.exports = new BaseKonnector(start);
 
+// Base date from
+// const dateFrom = new Date('2024-05-12');
+const dateFrom = new Date();
+const dateTo = null;
+
 // Fonction start qui va être exportée
 async function start(fields, cozyParameters) {
   try {
@@ -25,22 +30,24 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde de l'emploi du temps de l'utilisateur (3 prochains jours)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date()
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      saveFiles: false
     });
     await cozy_test('timetable', pronote, fields);
 
     // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
+      dateFrom: dateFrom,
+      dateTo: dateTo,
       saveFiles: false
     });
     await cozy_test('homeworks', pronote, fields);
 
     // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
-    await cozy_save('grades', pronote, fields);
-
-    return true;
+    await cozy_save('grades', pronote, fields, {
+      saveFiles: false
+    });
   }
   catch (err) {
     const error = err.toString();

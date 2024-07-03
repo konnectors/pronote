@@ -7,7 +7,7 @@
   "slug": "pronote",
   "source": "git@github.com:ecnivtwelve/cozy-konnector-pronote.git",
   "editor": "Cozy",
-  "vendor_link": "https://getpapillon.xyz",
+  "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
   "categories": ["education"],
   "fields": {
     "pronote_url": {
