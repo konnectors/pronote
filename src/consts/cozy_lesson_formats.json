@@ -90,6 +90,15 @@
     }
   },
   {
+    "label": "dnlsesanglais",
+    "pretty": "DNL : Sciences économiques et sociales en anglais",
+    "formats": {
+      "default": [
+        "dnl ses anglais"
+      ]
+    }
+  },
+  {
     "label": "educationcivique",
     "pretty": "Éducation civique",
     "formats": {
