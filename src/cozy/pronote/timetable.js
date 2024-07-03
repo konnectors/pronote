@@ -100,8 +100,6 @@ URL=${file.url}`.trim();
 
               const source = await use_stream(fileData, 'application/internet-shortcut');
 
-              console.log(fileData);
-
               const extension = 'url';
               let fileName = file.name;
 
@@ -185,7 +183,6 @@ async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
       let files = await create_timetable(pronote, fields, options);
-      console.log(JSON.stringify(files, null, 2));
 
       const res = await addData(files, doctypes['timetable']['lesson'], {
         sourceAccount: this.accountId,
