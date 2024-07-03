@@ -32,7 +32,7 @@ async function start(fields, cozyParameters) {
     await cozy_save('timetable', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
-      saveFiles: false,
+      saveFiles: true,
       getLessonContent: false
     });
     await cozy_test('timetable', pronote, fields);
@@ -41,13 +41,13 @@ async function start(fields, cozyParameters) {
     await cozy_save('homeworks', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
-      saveFiles: false
+      saveFiles: true
     });
     await cozy_test('homeworks', pronote, fields);
 
     // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
     await cozy_save('grades', pronote, fields, {
-      saveFiles: false
+      saveFiles: true
     });
   }
   catch (err) {
