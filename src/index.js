@@ -27,8 +27,8 @@ async function start(fields, cozyParameters) {
     await cozy_save('timetable', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
-      saveFiles: true,
-      getLessonContent: true
+      saveFiles: false,
+      getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     });
     await cozy_test('timetable', pronote, fields);
 
