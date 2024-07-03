@@ -10,5 +10,10 @@
     "homeworks": "Devoirs/",
     "files": "Documents/{subject}/Devoirs/",
     "returned": "Documents/{subject}/Rendus/"
+  },
+  "grades" : {
+    "grades": "Notes/",
+    "subjects": "Documents/{subject}/Sujets de devoirs/",
+    "correction": "Documents/{subject}/Corrections/"
   }
 }

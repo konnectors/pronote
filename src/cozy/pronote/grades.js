@@ -71,10 +71,105 @@ function create_grades(pronote, fields, options) {
       const processedCoursName = pronoteString.label;
       const prettyCoursName = pronoteString.pretty;
 
+      let subjectFiles = [];
+      let correctionFiles = [];
+
+
       const evals = [];
 
       for (const evl of grade.grades) {
+        const id = new Date(evl.date).getTime() + "_" + processedCoursName + "_" + (evl.comment || "grd");
+
+        if (evl.subjectFile && evl.subjectFile.url) {
+          const filesToDownload = [];
+
+          const date = new Date(evl.date);
+          const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
+
+          const extension = evl.subjectFile.name.split('.').pop();
+          let fileName = evl.subjectFile.name.replace(/\.[^/.]+$/, "") + ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate;
+
+          filesToDownload.push({
+            filename: `${fileName}.${extension}`,
+            fileurl: evl.subjectFile.url,
+            shouldReplaceFile: false,
+            subPath: subPaths['grades']['subjects'].replace('{subject}', prettyCoursName),
+            fileAttributes: {
+              created_at: date,
+              updated_at: date,
+            }
+          });
+
+          const data = await saveFiles(filesToDownload, fields, {
+            sourceAccount: this.accountId,
+            sourceAccountIdentifier: fields.login,
+            concurrency: 1,
+            validateFile: () => true
+          })
+
+          for (const file of data) {
+            if (file['fileDocument']) {
+              subjectFiles.push({
+                resource: {
+                  data: {
+                    _id: file['fileDocument']['_id'],
+                    _type: 'io.cozy.files',
+                    "metadata": {
+                      "gradeId": id
+                    }
+                  }
+                }
+              });
+            }
+          }
+        }
+
+        if (evl.correctionFile && evl.correctionFile.url) {
+          const filesToDownload = [];
+
+          const date = new Date(evl.date);
+          const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
+
+          const extension = evl.correctionFile.name.split('.').pop();
+          let fileName = evl.correctionFile.name.replace(/\.[^/.]+$/, "") + ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate;
+
+          filesToDownload.push({
+            filename: `${fileName}.${extension}`,
+            fileurl: evl.correctionFile.url,
+            shouldReplaceFile: false,
+            subPath: subPaths['grades']['correction'].replace('{subject}', prettyCoursName),
+            fileAttributes: {
+              created_at: date,
+              updated_at: date,
+            }
+          });
+
+          const data = await saveFiles(filesToDownload, fields, {
+            sourceAccount: this.accountId,
+            sourceAccountIdentifier: fields.login,
+            concurrency: 1,
+            validateFile: () => true
+          })
+
+          for (const file of data) {
+            if (file['fileDocument']) {
+              correctionFiles.push({
+                resource: {
+                  data: {
+                    _id: file['fileDocument']['_id'],
+                    _type: 'io.cozy.files',
+                    "metadata": {
+                      "gradeId": id
+                    }
+                  }
+                }
+              });
+            }
+          }
+        }
+
         const njs = {
+          "id": id,
           "label": evl.comment.trim() !== '' ? evl.comment : null,
           "date": new Date(evl.date).toISOString(),
           "value": {
@@ -107,6 +202,14 @@ function create_grades(pronote, fields, options) {
           "minClass": grade.averages.min,
         },
         "series": evals,
+        "relationships": subjectFiles.length > 0 || correctionFiles.length > 0 ? {
+          "files": {
+            "data": subjectFiles
+          },
+          "corrections": {
+            "data": correctionFiles
+          }
+        } : null
       };
 
       data.push(preprocessDoctype(json));
