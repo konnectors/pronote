@@ -26,6 +26,8 @@ function create_homeworks(pronote, fields, options) {
     const homeworks = await get_homeworks(pronote, fields, options);
     const data = [];
 
+    const shouldSaveFiles = options.saveFiles || true;
+
     for (const homework of homeworks) {
       const pronoteString = findObjectByPronoteString(homework.subject?.name);
       const processedCoursName = pronoteString.label;
@@ -35,11 +37,11 @@ function create_homeworks(pronote, fields, options) {
       let relationships = [];
       let returned = [];
 
-      if (resource) {
+      if (resource && shouldSaveFiles) {
         relationships = await save_resources(resource, subPaths['homeworks']['files'], homework.deadline, prettyCoursName, fields);
       }
 
-      if (homework.return && homework.return.uploaded && homework.return.uploaded.url) {
+      if (homework.return && homework.return.uploaded && homework.return.uploaded.url && shouldSaveFiles) {
         const filesToDownload = [];
 
         const date = new Date(homework.deadline);
