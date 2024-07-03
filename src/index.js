@@ -25,7 +25,8 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde de l'emploi du temps de l'utilisateur
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date('2024-06-03'),
+      dateFrom: new Date('2024-01-01'),
+      dateTo: new Date('2024-04-01')
     });
     await cozy_test('timetable', pronote, fields);
 

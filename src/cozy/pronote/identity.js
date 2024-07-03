@@ -121,10 +121,10 @@ async function save_profile_picture(pronote, fields) {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 1,
-    validateFile: false
+    validateFile: () => true
   })
 
-  const meta = files[0];
+  const meta = files[0] && files[0]['fileDocument'] || null;
   return meta || null
 }
 

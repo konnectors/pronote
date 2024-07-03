@@ -3,6 +3,7 @@
     "profile_pic": "Élève/"
   },
   "timetable" : {
-    "timetable": "Emploi du temps/"
+    "timetable": "Emploi du temps/",
+    "resource": "Documents/{subject}/Ressources pédagogiques/"
   }
 }
