@@ -20,35 +20,41 @@ async function start(fields, cozyParameters) {
       password: fields.password
     });
 
-    /*
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields);
-    */
 
-    /*
-    // Sauvegarde de l'emploi du temps de l'utilisateur
+    // Sauvegarde de l'emploi du temps de l'utilisateur (3 prochains jours)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date('2024-01-01'),
-      dateTo: new Date('2024-04-01')
+      dateFrom: new Date()
     });
     await cozy_test('timetable', pronote, fields);
-    */
 
-    /*
-    // Sauvegarde des devoirs de l'utilisateur
+    // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date('2024-04-01'),
-      dateTo: new Date('2024-07-01')
+      dateFrom: new Date(pronote.firstDate),
+      dateTo: new Date(pronote.lastDate)
     });
     await cozy_test('homeworks', pronote, fields);
-    */
 
+    // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
     await cozy_save('grades', pronote, fields);
 
     return true;
   }
-  catch (error) {
+  catch (err) {
+    const error = err.toString();
     console.error(error);
-    throw new Error('LOGIN_FAILED');
+
+    if (error.trim() === "Error: You've been rate-limited.") {
+      throw new Error('VENDOR_DOWN');
+    }
+    else if (error.trim() === "Error: Your username or password is incorrect.") {
+      throw new Error('LOGIN_FAILED');
+    }
+    else if (error.includes('Invalid URL')) {
+      throw new Error('LOGIN_FAILED');
+    }
+
+    throw new Error('UNKNOWN_ERROR');
   }
 }
