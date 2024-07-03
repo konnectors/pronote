@@ -4,5 +4,11 @@
   },
   "homeworks": {
     "homework": "io.cozy.calendar.todos"
+  },
+  "grades": {
+    "grade": "io.cozy.timeseries.grades"
+  },
+  "presence": {
+    "attendance": "io.cozy.calendar.presence"
   }
 }

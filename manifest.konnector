@@ -47,6 +47,9 @@
     "grades": {
       "type": "io.cozy.timeseries.grades"
     },
+    "attendance": {
+      "type": "io.cozy.calendar.presence"
+    },
     "accounts": {
       "type": "io.cozy.accounts"
     },
