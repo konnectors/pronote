@@ -1,6 +1,9 @@
 const {
   saveFiles,
+  cozyClient
 } = require('cozy-konnector-libs')
+
+const { Q } = require('cozy-client');
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name');
 const preprocessDoctype = require('../../utils/format/preprocess_doctype');
@@ -27,6 +30,17 @@ const save_resources = (resource, subPath, startDate, prettyCoursName, fields) =
           const extension = file.name.split('.').pop();
           let fileName = file.name.replace(/\.[^/.]+$/, "");
 
+          const exists = await cozyClient.new.queryAll(
+            Q('io.cozy.files')
+              .where({
+                name: `${fileName} (${prettyDate}).${extension}`
+              })
+          )
+
+          if (exists.length > 0) {
+            continue;
+          }
+
           filesToDownload.push({
             filename: `${fileName} (${prettyDate}).${extension}`,
             fileurl: file.url,
@@ -47,6 +61,17 @@ URL=${file.url}`.trim();
 
           const extension = 'url';
           let fileName = file.name;
+
+          const exists = await cozyClient.new.queryAll(
+            Q('io.cozy.files')
+              .where({
+                name: `${fileName} (${prettyDate}).${extension}`
+              })
+          )
+
+          if (exists.length > 0) {
+            continue;
+          }
 
           filesToDownload.push({
             filename: `${fileName} (${prettyDate}).${extension}`,

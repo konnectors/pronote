@@ -1,5 +1,6 @@
 // Importation des fonctions de cozy-konnector-libs
-const { BaseKonnector, log } = require('cozy-konnector-libs')
+const { BaseKonnector, log, cozyClient } = require('cozy-konnector-libs')
+const { Q } = require('cozy-client');
 
 // Importation de la fonction Pronote
 const { Pronote } = require('./fetch/session');
@@ -20,13 +21,31 @@ async function start(fields, cozyParameters) {
       password: fields.password
     });
 
+    // Récupération des dates de début et de fin de l'année scolaire
+    let dateFrom = new Date(pronote.firstDate);
+    const dateTo = new Date(pronote.lastDate);
+
+    /*
+    const identity_exists = await cozyClient.new.queryAll(
+      Q('io.cozy.accounts')
+        .where({
+          "cozyMetadata.sourceAccountIdentifier": fields.login
+        })
+    )
+
+    if (identity_exists.length > 0) {
+      dateFrom = new Date();
+    }*/
+
+    console.log('dateFrom', dateFrom);
+
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields);
 
     // Sauvegarde de l'emploi du temps de l'utilisateur (toute l'année scolaire)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
+      dateFrom: dateFrom,
+      dateTo: dateTo,
       saveFiles: false,
       getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     });
@@ -34,8 +53,8 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
+      dateFrom: dateFrom,
+      dateTo: dateTo,
       saveFiles: true
     });
     await cozy_test('homeworks', pronote, fields);
@@ -51,6 +70,7 @@ async function start(fields, cozyParameters) {
       saveFiles: true
     });
     await cozy_test('presence', pronote, fields);
+
   }
   catch (err) {
     const error = err.toString();
