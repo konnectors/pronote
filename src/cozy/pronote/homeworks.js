@@ -210,11 +210,6 @@ async function dispatcher(pronote, fields, options) {
   // from should be the latest monday
   from.setDate(from.getDate() - from.getDay() + 1);
 
-  // to should be 7 days after from
-  to = new Date(from);
-  to.setDate(to.getDate() + 7);
-
-
   while (from < to) {
     let newTo = new Date(from);
     newTo.setDate(newTo.getDate() + 7);
