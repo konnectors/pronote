@@ -11,28 +11,8 @@ const preprocessDoctype = require('../../utils/format/preprocess_doctype');
 const stack_log = require('../../utils/development/stack_log');
 const remove_html = require('../../utils/format/remove_html');
 const use_stream = require('../../utils/misc/use_stream');
-
-function create_dates(options) {
-  // Setting the date range
-  const dateFrom = options.dateFrom || new Date();
-  const dateTo = options.dateTo || new Date();
-
-  // if datefrom is set but note dateTo, set dateTo to 3 days after dateFrom
-  if (options.dateFrom && !options.dateTo) {
-    dateTo.setDate(dateFrom.getDate() + 3);
-  }
-
-  // if none is set, set dateFrom to the start of this week and dateTo to the end of this week
-  if (!options.dateFrom && !options.dateTo) {
-    dateFrom.setDate(dateFrom.getDate() - dateFrom.getDay());
-    dateTo.setDate(dateFrom.getDate() + 7);
-  }
-
-  return {
-    from: dateFrom,
-    to: dateTo
-  };
-}
+const { create_dates, getIcalDate } = require('../../utils/misc/create_dates');
+const save_resources = require('../../utils/stack/save_resources');
 
 async function get_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -49,10 +29,6 @@ async function get_timetable(pronote, fields, options) {
   })
 }
 
-function getIcalDate(date) {
-  return date.toISOString().replace(/-/g, '').replace(/:/g, '').replace(/\..+/, '') + 'Z';
-}
-
 async function create_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     const timetable = await get_timetable(pronote, fields, options);
@@ -65,76 +41,10 @@ async function create_timetable(pronote, fields, options) {
 
       const resource = await lesson.getResource();
       const content = resource && resource.contents && resource.contents[0];
-      const filesToDownload = [];
-      const relationships = [];
+      let relationships = [];
 
       if (resource) {
-        for (const resourceContent of resource.contents) {
-          const date = new Date(lesson.startDate);
-          const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
-
-          let path = subPaths['timetable']['resource']
-          path = path.replace('{subject}', prettyCoursName)
-
-          for (const file of resourceContent.files) {
-            if (file.type == 1) {
-              // Downloadable file
-              const extension = file.name.split('.').pop();
-              let fileName = file.name.replace(/\.[^/.]+$/, "");
-
-              filesToDownload.push({
-                filename: `${fileName} (${prettyDate}).${extension}`,
-                fileurl: file.url,
-                shouldReplaceFile: false,
-                subPath: path,
-                fileAttributes: {
-                  created_at: date,
-                  updated_at: date,
-                }
-              });
-            }
-            else if (file.type == 0) {
-              // URL
-              const fileData = `[InternetShortcut]
-URL=${file.url}`.trim();
-
-              const source = await use_stream(fileData, 'application/internet-shortcut');
-
-              const extension = 'url';
-              let fileName = file.name;
-
-              filesToDownload.push({
-                filename: `${fileName} (${prettyDate}).${extension}`,
-                filestream: source,
-                shouldReplaceFile: false,
-                subPath: path,
-                fileAttributes: {
-                  created_at: date,
-                  updated_at: date,
-                }
-              });
-            }
-          }
-        }
-
-        if (filesToDownload.length > 0) {
-          const data = await saveFiles(filesToDownload, fields, {
-            sourceAccount: this.accountId,
-            sourceAccountIdentifier: fields.login,
-            concurrency: 1,
-            validateFile: () => true
-          })
-
-          for (const file of data) {
-            if (file['fileDocument']) {
-              relationships.push({
-                resource: {
-                  data: { _id: file['fileDocument']['_id'], _type: 'io.cozy.files' }
-                }
-              });
-            }
-          }
-        }
+        relationships = await save_resources(resource, subPaths['timetable']['resource'], lesson.startDate, prettyCoursName, fields);
       }
 
       const dates = {

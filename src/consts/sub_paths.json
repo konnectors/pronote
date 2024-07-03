@@ -5,5 +5,10 @@
   "timetable" : {
     "timetable": "Emploi du temps/",
     "resource": "Documents/{subject}/Ressources pédagogiques/"
+  },
+  "homeworks" : {
+    "homeworks": "Devoirs/",
+    "files": "Documents/{subject}/Devoirs/",
+    "returned": "Documents/{subject}/Rendus/"
   }
 }

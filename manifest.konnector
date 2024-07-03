@@ -41,6 +41,9 @@
     "calendar": {
       "type": "io.cozy.calendar.event"
     },
+    "todos": {
+      "type": "io.cozy.calendar.todos"
+    },
     "accounts": {
       "type": "io.cozy.accounts"
     },

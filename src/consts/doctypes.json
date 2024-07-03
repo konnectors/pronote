@@ -1,5 +1,8 @@
 {
   "timetable": {
     "lesson": "io.cozy.calendar.event"
+  },
+  "homeworks": {
+    "homework": "io.cozy.calendar.todos"
   }
 }
