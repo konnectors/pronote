@@ -8,10 +8,37 @@ What's Cozy?
 
 [Cozy] is a personal data platform that brings all your web services in the same private space. With it, your webapps and your devices can share data easily, providing you with a new experience. You can install Cozy on your own hardware where no one's tracking you.
 
+What's implemented ?
+--------------------
+- **Login to Pronote**
+  + [x] Basic (username / password / url) authentification
+  + [ ] CAS/ENT authentification
+  + [ ] QR-Code authentification
+- **Main features**
+  + [x] Fetching student data
+  + [x] Fetching student timetable
+  + [x] Fetching student homework
+  + [x] Fetching student grades
+  + [x] Fetching student attendance
+- **Secondary features**
+  + [x] Downloading files to Cozy Drive
+
+Main doctypes
+-------------
+
+| Data  | Doctype                   | Commentaire                                                                                                                                  |
+| ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Student identity | `io.cozy.identities`        |                                                                                                                                              |
+| Timetable     | `io.cozy.calendar.event`    |                                                                                                                                              |
+| Lesson content   | `io.cozy.calendar.event`    | (inhérent à l’emploi du temps)                                                                                                               |
+| Homework             | `io.cozy.calendar.todos`    |                                                                                                                                              |
+| Grades               | `io.cozy.timeseries.grades` |                                                                                                                                              |
+| Attendance        | `io.cozy.calendar.presence` | Tout événement (retard, absence) partage le même doctype                                                                                     |
+
 What is this konnector about ?
 ------------------------------
 
-This konnector retrieves your student data and files from Pronote.
+This konnector retrieves your student data and files from Pronote using the [Pawnote](https://github.com/LiterateInk/Pawnote/) open-source library.
 
 ### Open a Pull-Request
 
@@ -27,7 +54,11 @@ Create a `konnector-dev-config.json` file at the root with your test credentials
 ```javascript
 {
   "COZY_URL": "http://cozy.tools:8080",
-  "fields": {"login":"zuck.m@rk.fb", "password":"123456"}
+  "fields": {
+    "login":"demonstration",
+    "password":"pronotevs",
+    "url":"https://demo.index-education.net/pronote/eleve.html"
+  }
 }
 ```
 Then :
