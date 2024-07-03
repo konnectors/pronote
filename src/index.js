@@ -34,16 +34,19 @@ async function start(fields, cozyParameters) {
     await cozy_test('timetable', pronote, fields);
     */
 
+    /*
     // Sauvegarde des devoirs de l'utilisateur
     await cozy_save('homeworks', pronote, fields, {
       dateFrom: new Date('2024-04-01'),
       dateTo: new Date('2024-07-01')
     });
     await cozy_test('homeworks', pronote, fields);
+    */
 
     return true;
   }
   catch (error) {
-    log('error', error);
+    console.error(error);
+    throw new Error('LOGIN_FAILED');
   }
 }
