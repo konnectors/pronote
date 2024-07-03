@@ -3,6 +3,7 @@ const stack_log = require('../utils/development/stack_log');
 const identity = require("./pronote/identity");
 const timetable = require("./pronote/timetable");
 const homeworks = require("./pronote/homeworks");
+const grades = require("./pronote/grades");
 
 const test_timetable = require("./tests/test_timetable");
 const test_homeworks = require("./tests/test_homeworks");
@@ -17,6 +18,8 @@ async function cozy_save(type, pronote, fields, options = {}) {
       return timetable(pronote, fields, options);
     case 'homeworks':
       return homeworks(pronote, fields, options);
+    case 'grades':
+      return grades(pronote, fields, options);
     default:
       return false;
   }

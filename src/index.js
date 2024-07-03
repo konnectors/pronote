@@ -43,6 +43,8 @@ async function start(fields, cozyParameters) {
     await cozy_test('homeworks', pronote, fields);
     */
 
+    await cozy_save('grades', pronote, fields);
+
     return true;
   }
   catch (error) {
