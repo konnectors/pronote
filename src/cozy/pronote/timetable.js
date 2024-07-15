@@ -7,8 +7,10 @@ const {
 
 const { Q } = require('cozy-client')
 
-const { DOCTYPE_TIMETABLE_LESSON } = require('../../constants')
-const subPaths = require('../../consts/sub_paths.json')
+const {
+  DOCTYPE_TIMETABLE_LESSON,
+  PATH_TIMETABLE_RESOURCE
+} = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -67,7 +69,7 @@ async function create_timetable(pronote, fields, options) {
           if (resource && shouldSaveFiles) {
             relationships = await save_resources(
               resource,
-              subPaths['timetable']['resource'],
+              PATH_TIMETABLE_RESOURCE,
               lesson.startDate,
               prettyCoursName,
               fields

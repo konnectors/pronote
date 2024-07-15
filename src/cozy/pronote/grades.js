@@ -7,8 +7,11 @@ const {
 
 const { Q } = require('cozy-client')
 
-const { DOCTYPE_GRADE } = require('../../constants')
-const subPaths = require('../../consts/sub_paths.json')
+const {
+  DOCTYPE_GRADE,
+  PATH_GRADE_SUBJECT,
+  PATH_GRADE_CORRECTION
+} = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -120,10 +123,7 @@ function create_grades(pronote, fields, options) {
             filename: `${fileName}.${extension}`,
             fileurl: evl.subjectFile.url,
             shouldReplaceFile: false,
-            subPath: subPaths['grades']['subjects'].replace(
-              '{subject}',
-              prettyCoursName
-            ),
+            subPath: PATH_GRADE_SUBJECT.replace('{subject}', prettyCoursName),
             fileAttributes: {
               created_at: date,
               updated_at: date
@@ -173,7 +173,7 @@ function create_grades(pronote, fields, options) {
             filename: `${fileName}.${extension}`,
             fileurl: evl.correctionFile.url,
             shouldReplaceFile: false,
-            subPath: subPaths['grades']['correction'].replace(
+            subPath: PATH_GRADE_CORRECTION.replace(
               '{subject}',
               prettyCoursName
             ),

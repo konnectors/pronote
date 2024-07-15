@@ -7,8 +7,11 @@ const {
 
 const { Q } = require('cozy-client')
 
-const { DOCTYPE_HOMEWORK } = require('../../constants')
-const subPaths = require('../../consts/sub_paths.json')
+const {
+  DOCTYPE_HOMEWORK,
+  PATH_HOMEWORK_RETURNED,
+  PATH_HOMEWORK_FILE
+} = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -49,7 +52,7 @@ function create_homeworks(pronote, fields, options) {
         if (resource) {
           relationships = await save_resources(
             resource,
-            subPaths['homeworks']['files'],
+            PATH_HOMEWORK_FILE,
             homework.deadline,
             prettyCoursName,
             fields
@@ -89,7 +92,7 @@ function create_homeworks(pronote, fields, options) {
             filename: `${fileName}.${extension}`,
             fileurl: homework.return.uploaded.url,
             shouldReplaceFile: false,
-            subPath: subPaths['homeworks']['returned'].replace(
+            subPath: PATH_HOMEWORK_RETURNED.replace(
               '{subject}',
               prettyCoursName
             ),
