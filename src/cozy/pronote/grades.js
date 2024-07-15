@@ -7,11 +7,11 @@ const {
 
 const { Q } = require('cozy-client');
 
-const doctypes = require('../../consts/doctypes.json');
+const { DOCTYPE_GRADE } = require('../../constants');
 const subPaths = require('../../consts/sub_paths.json');
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
-const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const preprocessDoctype = require('../../utils/format/preprocess_doctype');
 
 function get_grades(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -271,7 +271,7 @@ async function init(pronote, fields, options) {
       */
 
       const existing = await cozyClient.new.queryAll(
-        Q(doctypes['grades']['grade']))
+        Q(DOCTYPE_GRADE)
 
       // remove duplicates in files
       const filtered = files.filter((file) => {
@@ -284,7 +284,7 @@ async function init(pronote, fields, options) {
 
       const res = await updateOrCreate(
         filtered,
-        doctypes['grades']['grade'],
+        DOCTYPE_GRADE,
         ['startDate', 'subject'],
         {
           sourceAccount: this.accountId,

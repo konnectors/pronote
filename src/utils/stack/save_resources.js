@@ -1,16 +1,13 @@
-const {
-  saveFiles,
-  cozyClient
-} = require('cozy-konnector-libs')
+const { saveFiles, cozyClient } = require('cozy-konnector-libs')
 
-const { Q } = require('cozy-client');
+const { Q } = require('cozy-client')
 
-const findObjectByPronoteString = require('../../utils/format/format_cours_name');
-const preprocessDoctype = require('../../utils/format/preprocess_doctype');
-const stack_log = require('../../utils/development/stack_log');
-const remove_html = require('../../utils/format/remove_html');
-const use_stream = require('../../utils/misc/use_stream');
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates');
+const findObjectByPronoteString = require('../../utils/format/format_cours_name')
+const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const stack_log = require('../../utils/development/stack_log')
+const remove_html = require('../../utils/format/remove_html')
+const use_stream = require('../../utils/misc/use_stream')
+const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 
 const save_resources = (
   resource,
@@ -41,14 +38,13 @@ const save_resources = (
           let fileName = file.name.replace(/\.[^/.]+$/, '')
 
           const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files')
-              .where({
-                name: `${fileName} (${prettyDate}).${extension}`
-              })
+            Q('io.cozy.files').where({
+              name: `${fileName} (${prettyDate}).${extension}`
+            })
           )
 
           if (exists.length > 0) {
-            continue;
+            continue
           }
 
           filesToDownload.push({
@@ -75,14 +71,13 @@ URL=${file.url}`.trim()
           let fileName = file.name
 
           const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files')
-              .where({
-                name: `${fileName} (${prettyDate}).${extension}`
-              })
+            Q('io.cozy.files').where({
+              name: `${fileName} (${prettyDate}).${extension}`
+            })
           )
 
           if (exists.length > 0) {
-            continue;
+            continue
           }
 
           filesToDownload.push({

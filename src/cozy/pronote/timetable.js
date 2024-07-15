@@ -5,10 +5,10 @@ const {
   updateOrCreate
 } = require('cozy-konnector-libs')
 
-const { Q } = require('cozy-client');
+const { Q } = require('cozy-client')
 
-const doctypes = require('../../consts/doctypes.json');
-const subPaths = require('../../consts/sub_paths.json');
+const { DOCTYPE_TIMETABLE_LESSON } = require('../../constants')
+const subPaths = require('../../consts/sub_paths.json')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -126,63 +126,61 @@ async function create_timetable(pronote, fields, options) {
 async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
-      const files = await create_timetable(pronote, fields, options);
+      const files = await create_timetable(pronote, fields, options)
 
       /*
       [Strategy] : don't update past lessons, only update future lessons
       */
 
       const existing = await cozyClient.new.queryAll(
-        Q(doctypes['timetable']['lesson'])
-          .where({
-            "start": {
-              "$gte": new Date(options.dateFrom).toISOString(),
-              "$lt": new Date(options.dateTo).toISOString()
-            },
-            "cozyMetadata.sourceAccountIdentifier": fields.login
-          })
+        Q(DOCTYPE_TIMETABLE_LESSON).where({
+          start: {
+            $gte: new Date(options.dateFrom).toISOString(),
+            $lt: new Date(options.dateTo).toISOString()
+          },
+          'cozyMetadata.sourceAccountIdentifier': fields.login
+        })
       )
 
       // remove duplicates in files
-      const filtered = files.filter((file) => {
-        const found = existing.find((item) => {
+      const filtered = files.filter(file => {
+        const found = existing.find(item => {
           // if item.cozyMetadata.updatedAt is less than today
-          const updated = new Date(item.cozyMetadata.updatedAt);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const updatedRecently = updated.getTime() > today.getTime();
+          const updated = new Date(item.cozyMetadata.updatedAt)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          const updatedRecently = updated.getTime() > today.getTime()
 
           // if item is more recent than today
           if (new Date(item.start) > new Date()) {
             if (!updatedRecently) {
-              return false;
+              return false
             }
           }
 
-          return item.label === file.label && item.start === file.start;
-        });
+          return item.label === file.label && item.start === file.start
+        })
 
-        return !found;
-      });
+        return !found
+      })
 
-      console.log(filtered.length, 'new events to save out of', files.length);
+      console.log(filtered.length, 'new events to save out of', files.length)
 
       const res = await updateOrCreate(
         filtered,
-        doctypes['timetable']['lesson'],
+        DOCTYPE_TIMETABLE_LESSON,
         ['start', 'label'],
         {
           sourceAccount: this.accountId,
-          sourceAccountIdentifier: fields.login,
+          sourceAccountIdentifier: fields.login
         }
-      );
+      )
 
-      resolve(res);
-    }
-    catch (error) {
-      reject(error);
+      resolve(res)
+    } catch (error) {
+      reject(error)
     }
   })
 }
 
-module.exports = init;
+module.exports = init
