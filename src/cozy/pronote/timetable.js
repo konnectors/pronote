@@ -1,7 +1,14 @@
-const { addData, saveFiles } = require('cozy-konnector-libs')
+const {
+  addData,
+  saveFiles,
+  cozyClient,
+  updateOrCreate
+} = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
-const subPaths = require('../../consts/sub_paths.json')
+const { Q } = require('cozy-client');
+
+const doctypes = require('../../consts/doctypes.json');
+const subPaths = require('../../consts/sub_paths.json');
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -72,8 +79,8 @@ async function create_timetable(pronote, fields, options) {
       }
 
       const dates = {
-        start: getIcalDate(new Date(lesson.startDate)),
-        end: getIcalDate(new Date(lesson.endDate))
+        start: new Date(lesson.startDate).toISOString(),
+        end: new Date(lesson.endDate).toISOString()
       }
 
       const status = lesson.canceled
@@ -119,57 +126,63 @@ async function create_timetable(pronote, fields, options) {
 async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
-      let files = await create_timetable(pronote, fields, options)
+      const files = await create_timetable(pronote, fields, options);
 
-      const res = await addData(files, doctypes['timetable']['lesson'], {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      })
+      /*
+      [Strategy] : don't update past lessons, only update future lessons
+      */
 
-      resolve(res)
-    } catch (error) {
-      reject(error)
+      const existing = await cozyClient.new.queryAll(
+        Q(doctypes['timetable']['lesson'])
+          .where({
+            "start": {
+              "$gte": new Date(options.dateFrom).toISOString(),
+              "$lt": new Date(options.dateTo).toISOString()
+            },
+            "cozyMetadata.sourceAccountIdentifier": fields.login
+          })
+      )
+
+      // remove duplicates in files
+      const filtered = files.filter((file) => {
+        const found = existing.find((item) => {
+          // if item.cozyMetadata.updatedAt is less than today
+          const updated = new Date(item.cozyMetadata.updatedAt);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const updatedRecently = updated.getTime() > today.getTime();
+
+          // if item is more recent than today
+          if (new Date(item.start) > new Date()) {
+            if (!updatedRecently) {
+              return false;
+            }
+          }
+
+          return item.label === file.label && item.start === file.start;
+        });
+
+        return !found;
+      });
+
+      console.log(filtered.length, 'new events to save out of', files.length);
+
+      const res = await updateOrCreate(
+        filtered,
+        doctypes['timetable']['lesson'],
+        ['start', 'label'],
+        {
+          sourceAccount: this.accountId,
+          sourceAccountIdentifier: fields.login,
+        }
+      );
+
+      resolve(res);
+    }
+    catch (error) {
+      reject(error);
     }
   })
 }
 
-async function dispatcher(pronote, fields, options) {
-  if (options['getLessonContent'] == false) {
-    return await init(pronote, fields, options)
-  } else {
-    const dates = create_dates(options)
-
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-    const data = []
-    let from = new Date(dates.from)
-    let to = new Date(dates.to)
-
-    while (from < to) {
-      let newTo = new Date(from)
-      newTo.setDate(newTo.getDate() + (options['saveFiles'] == false ? 5 : 3))
-
-      if (newTo > to) {
-        newTo = to
-      }
-
-      const res = await init(pronote, fields, {
-        ...options,
-        dateFrom: from,
-        dateTo: newTo
-      })
-
-      data.push(res)
-      from = new Date(newTo)
-      from.setDate(from.getDate() + 1)
-
-      await delay(
-        options.delay || (options['saveFiles'] == false ? 4000 : 6000)
-      )
-    }
-
-    return data
-  }
-}
-
-module.exports = dispatcher
+module.exports = init;

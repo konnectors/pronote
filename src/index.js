@@ -1,5 +1,6 @@
 // Importation des fonctions de cozy-konnector-libs
-const { BaseKonnector, log } = require('cozy-konnector-libs')
+const { BaseKonnector, log, cozyClient } = require('cozy-konnector-libs')
+const { Q } = require('cozy-client');
 
 // Importation de la fonction Pronote
 const { Pronote } = require('./fetch/session')
@@ -23,25 +24,43 @@ async function start(fields, cozyParameters) {
       password: fields.password
     })
 
+    // Récupération des dates de début et de fin de l'année scolaire
+    let dateFrom = new Date(pronote.firstDate);
+    const dateTo = new Date(pronote.lastDate);
+
+    /*
+    const identity_exists = await cozyClient.new.queryAll(
+      Q('io.cozy.accounts')
+        .where({
+          "cozyMetadata.sourceAccountIdentifier": fields.login
+        })
+    )
+
+    if (identity_exists.length > 0) {
+      dateFrom = new Date();
+    }*/
+
+    console.log('dateFrom', dateFrom);
+
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields)
 
     // Sauvegarde de l'emploi du temps de l'utilisateur (toute l'année scolaire)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
-      saveFiles: SHOULD_SAVE && false,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      saveFiles: false,
       getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     })
     await cozy_test('timetable', pronote, fields)
 
     // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
-      saveFiles: SHOULD_SAVE && false
-    })
-    await cozy_test('homeworks', pronote, fields)
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      saveFiles: true
+    });
+    await cozy_test('homeworks', pronote, fields);
 
     // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
     await cozy_save('grades', pronote, fields, {
@@ -51,12 +70,14 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des évenements de l'utilisateur (toute l'année scolaire)
     await cozy_save('presence', pronote, fields, {
-      saveFiles: SHOULD_SAVE && false
-    })
-    await cozy_test('presence', pronote, fields)
-  } catch (err) {
-    const error = err.toString()
-    console.error(error)
+      saveFiles: true
+    });
+    await cozy_test('presence', pronote, fields);
+
+  }
+  catch (err) {
+    const error = err.toString();
+    console.error(error);
 
     if (error.trim() === "Error: You've been rate-limited.") {
       throw new Error('VENDOR_DOWN')

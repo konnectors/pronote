@@ -1,6 +1,13 @@
-const { addData, saveFiles } = require('cozy-konnector-libs')
+const {
+  addData,
+  saveFiles,
+  cozyClient,
+  updateOrCreate
+} = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
+const { Q } = require('cozy-client');
+
+const doctypes = require('../../consts/doctypes.json');
 
 function get_presence(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -79,17 +86,34 @@ function create_presence(pronote, fields, options) {
 async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
-      let files = await create_presence(pronote, fields, options)
-      console.log(files)
+      let files = await create_presence(pronote, fields, options);
 
-      const res = await addData(files, doctypes['presence']['attendance'], {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      })
+      /*
+      [Strategy] : only update events that are NOT justified yet
+      */
 
-      resolve(res)
-    } catch (error) {
-      reject(error)
+      const existing = await cozyClient.new.queryAll(
+        Q(doctypes['presence']['attendance']))
+
+      // remove all justified absences
+      const filtered = files.filter((file) => {
+        return file.xJustified === false;
+      });
+
+      const res = await updateOrCreate(
+        filtered,
+        doctypes['presence']['attendance'],
+        ['label', 'start'],
+        {
+          sourceAccount: this.accountId,
+          sourceAccountIdentifier: fields.login,
+        }
+      );
+
+      resolve(res);
+    }
+    catch (error) {
+      reject(error);
     }
   })
 }

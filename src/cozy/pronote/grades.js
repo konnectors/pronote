@@ -1,7 +1,14 @@
-const { addData, saveFiles } = require('cozy-konnector-libs')
+const {
+  addData,
+  saveFiles,
+  cozyClient,
+  updateOrCreate
+} = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
-const subPaths = require('../../consts/sub_paths.json')
+const { Q } = require('cozy-client');
+
+const doctypes = require('../../consts/doctypes.json');
+const subPaths = require('../../consts/sub_paths.json');
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
@@ -258,15 +265,37 @@ async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
       let files = await create_grades(pronote, fields, options)
+      
+      /*
+      [Strategy] : don't update grades, they stay the same
+      */
 
-      const res = await addData(files, doctypes['grades']['grade'], {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      })
+      const existing = await cozyClient.new.queryAll(
+        Q(doctypes['grades']['grade']))
 
-      resolve(res)
-    } catch (error) {
-      reject(error)
+      // remove duplicates in files
+      const filtered = files.filter((file) => {
+        const found = existing.find((item) => {
+          return item.series.length === file.series.length && item.startDate === file.startDate && item.subject === file.subject;
+        });
+
+        return !found;
+      });
+
+      const res = await updateOrCreate(
+        filtered,
+        doctypes['grades']['grade'],
+        ['startDate', 'subject'],
+        {
+          sourceAccount: this.accountId,
+          sourceAccountIdentifier: fields.login,
+        }
+      );
+
+      resolve(res);
+    }
+    catch (error) {
+      reject(error);
     }
   })
 }
