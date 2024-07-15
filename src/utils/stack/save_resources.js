@@ -38,9 +38,11 @@ const save_resources = (
           let fileName = file.name.replace(/\.[^/.]+$/, '')
 
           const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files').where({
-              name: `${fileName} (${prettyDate}).${extension}`
-            })
+            Q('io.cozy.files')
+              .indexFields(['name'])
+              .where({
+                name: `${fileName} (${prettyDate}).${extension}`
+              })
           )
 
           if (exists.length > 0) {
@@ -71,9 +73,11 @@ URL=${file.url}`.trim()
           let fileName = file.name
 
           const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files').where({
-              name: `${fileName} (${prettyDate}).${extension}`
-            })
+            Q('io.cozy.files')
+              .indexFields(['name'])
+              .where({
+                name: `${fileName} (${prettyDate}).${extension}`
+              })
           )
 
           if (exists.length > 0) {

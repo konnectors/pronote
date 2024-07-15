@@ -79,9 +79,11 @@ function create_homeworks(pronote, fields, options) {
               ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate
 
           const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files').where({
-              name: `${fileName}.${extension}`
-            })
+            Q('io.cozy.files')
+              .indexFields(['name'])
+              .where({
+                name: `${fileName}.${extension}`
+              })
           )
 
           if (exists.length > 0) {
@@ -217,13 +219,15 @@ async function dispatcher(pronote, fields, options) {
   const dates = create_dates(options)
 
   const existing = await cozyClient.new.queryAll(
-    Q(DOCTYPE_HOMEWORK).where({
-      dueDate: {
-        $gte: new Date(options.dateFrom).toISOString(),
-        $lt: new Date(options.dateTo).toISOString()
-      },
-      'cozyMetadata.sourceAccountIdentifier': fields.login
-    })
+    Q(DOCTYPE_HOMEWORK)
+      .indexFields(['cozyMetadata.sourceAccountIdentifier', 'dueDate'])
+      .where({
+        dueDate: {
+          $gte: new Date(options.dateFrom).toISOString(),
+          $lt: new Date(options.dateTo).toISOString()
+        },
+        'cozyMetadata.sourceAccountIdentifier': fields.login
+      })
   )
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms))

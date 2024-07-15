@@ -135,13 +135,15 @@ async function init(pronote, fields, options) {
       */
 
       const existing = await cozyClient.new.queryAll(
-        Q(DOCTYPE_TIMETABLE_LESSON).where({
-          start: {
-            $gte: new Date(options.dateFrom).toISOString(),
-            $lt: new Date(options.dateTo).toISOString()
-          },
-          'cozyMetadata.sourceAccountIdentifier': fields.login
-        })
+        Q(DOCTYPE_TIMETABLE_LESSON)
+          .indexFields(['cozyMetadata.sourceAccountIdentifier', 'start'])
+          .where({
+            start: {
+              $gte: new Date(options.dateFrom).toISOString(),
+              $lt: new Date(options.dateTo).toISOString()
+            },
+            'cozyMetadata.sourceAccountIdentifier': fields.login
+          })
       )
 
       // remove duplicates in files
