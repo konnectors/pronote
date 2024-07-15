@@ -10,64 +10,72 @@ const { Q } = require('cozy-client');
 const doctypes = require('../../consts/doctypes.json');
 const subPaths = require('../../consts/sub_paths.json');
 
-const findObjectByPronoteString = require('../../utils/format/format_cours_name');
-const preprocessDoctype = require('../../utils/format/preprocess_doctype');
-const remove_html = require('../../utils/format/remove_html');
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates');
-const save_resources = require('../../utils/stack/save_resources');
+const findObjectByPronoteString = require('../../utils/format/format_cours_name')
+const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const remove_html = require('../../utils/format/remove_html')
+const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
+const save_resources = require('../../utils/stack/save_resources')
 
 async function get_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
-    const dates = create_dates(options);
-    const overview = await pronote.getTimetableOverview(dates.from, dates.to);
+    const dates = create_dates(options)
+    const overview = await pronote.getTimetableOverviewForInterval(
+      dates.from,
+      dates.to
+    )
 
     const timetable = overview.parse({
       withSuperposedCanceledClasses: false,
       withCanceledClasses: true,
       withPlannedClasses: true
-    });
+    })
 
-    resolve(timetable);
+    resolve(timetable)
   })
 }
 
 async function create_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
-    const timetable = await get_timetable(pronote, fields, options);
+    const timetable = await get_timetable(pronote, fields, options)
     const data = []
 
-    let shouldSaveFiles = options['saveFiles'];
+    let shouldSaveFiles = options['saveFiles']
     if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
-      shouldSaveFiles = true;
+      shouldSaveFiles = true
     }
-    console.log('shouldSaveFiles', shouldSaveFiles);
+    console.log('shouldSaveFiles', shouldSaveFiles)
 
-    let shouldGetContent = options['getLessonContent'];
+    let shouldGetContent = options['getLessonContent']
     if (shouldGetContent === undefined || shouldGetContent === null) {
-      shouldGetContent = true;
+      shouldGetContent = true
     }
-    console.log('shouldGetContent', shouldGetContent);
+    console.log('shouldGetContent', shouldGetContent)
 
     for (const lesson of timetable) {
-      const pronoteString = findObjectByPronoteString(lesson.subject?.name);
-      const processedCoursName = pronoteString.label;
-      const prettyCoursName = pronoteString.pretty;
+      const pronoteString = findObjectByPronoteString(lesson.subject?.name)
+      const processedCoursName = pronoteString.label
+      const prettyCoursName = pronoteString.pretty
 
-      let relationships = [];
-      let content = null;
+      let relationships = []
+      let content = null
 
       try {
         if (typeof lesson.getResource === 'function' && shouldGetContent) {
-          const resource = await lesson.getResource();
-          content = resource && resource.contents && resource.contents[0];
+          const resource = await lesson.getResource()
+          content = resource && resource.contents && resource.contents[0]
 
           if (resource && shouldSaveFiles) {
-            relationships = await save_resources(resource, subPaths['timetable']['resource'], lesson.startDate, prettyCoursName, fields);
+            relationships = await save_resources(
+              resource,
+              subPaths['timetable']['resource'],
+              lesson.startDate,
+              prettyCoursName,
+              fields
+            )
           }
         }
-      }
-      catch (error) {
-        console.log('ressource getting : ', error);
+      } catch (error) {
+        console.log('ressource getting : ', error)
       }
 
       const dates = {
@@ -75,41 +83,44 @@ async function create_timetable(pronote, fields, options) {
         end: new Date(lesson.endDate).toISOString()
       }
 
-      const status =
-        lesson.canceled ?
-          'CANCELLED'
-          : lesson.exempted ?
-            'EXEMPTED'
-            : lesson.test ?
-              'TEST'
-              : 'CONFIRMED';
+      const status = lesson.canceled
+        ? 'CANCELLED'
+        : lesson.exempted
+        ? 'EXEMPTED'
+        : lesson.test
+        ? 'TEST'
+        : 'CONFIRMED'
 
       let json = {
-        "start": dates.start,
-        "end": dates.end,
-        "label": prettyCoursName,
-        "subject": processedCoursName,
-        "sourceSubject": lesson.subject?.name || 'Cours',
-        "location": lesson.classrooms.join(', '),
-        "organizer": lesson.teacherNames.join(', ') + lesson.personalNames.join(', '),
-        "attendee": lesson.groupNames,
-        "status": status,
-        "description": lesson.memo,
-        "xComment": lesson.status,
-        "xContentLabel": content && content?.title,
-        "xContentDescription": content && remove_html(content?.description),
-        "relationships": relationships.length > 0 ? {
-          "content": {
-            "data": relationships
-          }
-        } : null
+        start: dates.start,
+        end: dates.end,
+        label: prettyCoursName,
+        subject: processedCoursName,
+        sourceSubject: lesson.subject?.name || 'Cours',
+        location: lesson.classrooms.join(', '),
+        organizer:
+          lesson.teacherNames.join(', ') + lesson.personalNames.join(', '),
+        attendee: lesson.groupNames,
+        status: status,
+        description: lesson.memo,
+        xComment: lesson.status,
+        xContentLabel: content && content?.title,
+        xContentDescription: content && remove_html(content?.description),
+        relationships:
+          relationships.length > 0
+            ? {
+                content: {
+                  data: relationships
+                }
+              }
+            : null
       }
 
-      data.push(preprocessDoctype(json));
+      data.push(preprocessDoctype(json))
     }
 
     resolve(data)
-  });
+  })
 }
 
 async function init(pronote, fields, options) {
@@ -171,7 +182,7 @@ async function init(pronote, fields, options) {
     catch (error) {
       reject(error);
     }
-  });
+  })
 }
 
 module.exports = init;

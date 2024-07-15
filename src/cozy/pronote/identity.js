@@ -1,14 +1,10 @@
-const {
-  saveFiles,
-  log,
-  saveIdentity
-} = require('cozy-konnector-libs')
+const { saveFiles, log, saveIdentity } = require('cozy-konnector-libs')
 
-const subPaths = require('../../consts/sub_paths.json');
+const subPaths = require('../../consts/sub_paths.json')
 
 const extract_pronote_name = require('../../utils/format/extract_pronote_name')
-const stack_log = require('../../utils/development/stack_log');
-const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier');
+const stack_log = require('../../utils/development/stack_log')
+const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
 async function create_identity(pronote, fields) {
   return new Promise(async (resolve, reject) => {
@@ -28,10 +24,10 @@ async function create_identity(pronote, fields) {
 
 async function format_json(pronote, information, profile_pic) {
   return new Promise(async (resolve, reject) => {
-    const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0];
-    const scAdress = etabInfo['Coordonnees'];
+    const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
+    const scAdress = etabInfo['Coordonnees']
 
-    const address = [];
+    const address = []
 
     if (information.city && information.city.trim() !== '') {
       address.push({
@@ -42,8 +38,8 @@ async function format_json(pronote, information, profile_pic) {
         street: information.address[0],
         country: information.country,
         code: information.postalCode,
-        formattedAddress: information.address.join(' '),
-      });
+        formattedAddress: information.address.join(' ')
+      })
     }
 
     if (scAdress && scAdress['LibelleVille']) {
@@ -55,11 +51,18 @@ async function format_json(pronote, information, profile_pic) {
         street: scAdress['Adresse1'],
         country: scAdress['Pays'],
         code: scAdress['CodePostal'],
-        formattedAddress: scAdress['Adresse1'] + ', ' + scAdress['CodePostal'] + ' ' + scAdress['LibelleVille'] + ', ' + scAdress['Pays']
+        formattedAddress:
+          scAdress['Adresse1'] +
+          ', ' +
+          scAdress['CodePostal'] +
+          ' ' +
+          scAdress['LibelleVille'] +
+          ', ' +
+          scAdress['Pays']
       })
     }
 
-    const identifier = gen_pronoteIdentifier(pronote);
+    const identifier = gen_pronoteIdentifier(pronote)
 
     const identity = {
       // _id: genUUID(),
@@ -71,7 +74,7 @@ async function format_json(pronote, information, profile_pic) {
         email: information.email && [
           {
             address: information.email,
-            type: "Profressional",
+            type: 'Profressional',
             label: 'work',
             primary: true
           }
@@ -79,7 +82,7 @@ async function format_json(pronote, information, profile_pic) {
         phone: information.phone && [
           {
             number: information.phone,
-            type: "Personnal",
+            type: 'Personnal',
             label: 'home',
             primary: true
           }
@@ -93,12 +96,13 @@ async function format_json(pronote, information, profile_pic) {
         class: pronote.studentClass,
         school: pronote.schoolName
       },
-      relationships: profile_pic && profile_pic['_id'] && {
-        picture: {
-          // photo de profil
-          data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
+      relationships: profile_pic &&
+        profile_pic['_id'] && {
+          picture: {
+            // photo de profil
+            data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
+          }
         }
-      }
     }
 
     resolve(identity)
@@ -106,7 +110,9 @@ async function format_json(pronote, information, profile_pic) {
 }
 
 async function save_profile_picture(pronote, fields) {
-  stack_log('🖼️ Saving profile picture at ' + subPaths['identity']['profile_pic'])
+  stack_log(
+    '🖼️ Saving profile picture at ' + subPaths['identity']['profile_pic']
+  )
 
   const documents = [
     {
@@ -117,7 +123,7 @@ async function save_profile_picture(pronote, fields) {
     }
   ]
 
-  const files = await saveFiles(documents, fields, {
+  /* const files = await saveFiles(documents, fields, {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 1,
@@ -125,16 +131,16 @@ async function save_profile_picture(pronote, fields) {
   })
 
   const meta = files[0] && files[0]['fileDocument'] || null;
-  return meta || null
+  return meta || null*/
+  return null
 }
 
 async function init(pronote, fields) {
   try {
     let identity = await create_identity(pronote, fields)
-    stack_log('🗣️ Saving identity for ' + identity.identifier);
+    stack_log('🗣️ Saving identity for ' + identity.identifier)
     return saveIdentity(identity, fields.login)
-  }
-  catch (error) {
+  } catch (error) {
     log('error', error)
     return false
   }
