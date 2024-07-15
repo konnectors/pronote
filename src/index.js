@@ -10,6 +10,9 @@ const { cozy_save, cozy_test } = require('./cozy')
 // Exportation de la fonction start
 module.exports = new BaseKonnector(start)
 
+// Variable globale pour savoir si on doit sauvegarder les fichiers
+SHOULD_SAVE = false
+
 // Fonction start qui va être exportée
 async function start(fields, cozyParameters) {
   try {
@@ -27,7 +30,7 @@ async function start(fields, cozyParameters) {
     await cozy_save('timetable', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
-      saveFiles: false,
+      saveFiles: SHOULD_SAVE && false,
       getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     })
     await cozy_test('timetable', pronote, fields)
@@ -36,19 +39,19 @@ async function start(fields, cozyParameters) {
     await cozy_save('homeworks', pronote, fields, {
       dateFrom: new Date(pronote.firstDate),
       dateTo: new Date(pronote.lastDate),
-      saveFiles: false
+      saveFiles: SHOULD_SAVE && false
     })
     await cozy_test('homeworks', pronote, fields)
 
     // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
     await cozy_save('grades', pronote, fields, {
-      saveFiles: false
+      saveFiles: SHOULD_SAVE && false
     })
     await cozy_test('grades', pronote, fields)
 
     // Sauvegarde des évenements de l'utilisateur (toute l'année scolaire)
     await cozy_save('presence', pronote, fields, {
-      saveFiles: false
+      saveFiles: SHOULD_SAVE && false
     })
     await cozy_test('presence', pronote, fields)
   } catch (err) {
