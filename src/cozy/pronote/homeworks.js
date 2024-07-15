@@ -206,6 +206,9 @@ async function init(pronote, fields, options, existing) {
 
       resolve(res);
     }
+    catch (error) {
+      reject(error)
+    }
   })
 }
 
