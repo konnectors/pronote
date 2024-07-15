@@ -36,6 +36,8 @@
     "travisDeployKey": "./bin/generate_travis_deploy_key"
   },
   "dependencies": {
+    "cozy-client": "^48.8.0",
+    "cozy-flags": "^4.0.0",
     "cozy-konnector-libs": "5.11.0",
     "pawnote": "^0.22.1"
   },
