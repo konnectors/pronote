@@ -123,15 +123,15 @@ async function save_profile_picture(pronote, fields) {
     }
   ]
 
-  /* const files = await saveFiles(documents, fields, {
+  const files = await saveFiles(documents, fields, {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 1,
     validateFile: () => true
   })
 
-  const meta = files[0] && files[0]['fileDocument'] || null;
-  return meta || null*/
+  const meta = (files[0] && files[0]['fileDocument']) || null
+  return meta || null
   return null
 }
 
