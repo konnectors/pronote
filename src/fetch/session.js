@@ -2,21 +2,17 @@
 const {
   authenticatePronoteCredentials,
   PronoteApiAccountId
-} = require('pawnote');
+} = require('pawnote')
 
 // Importation de la fonction de log
 const { log } = require('cozy-konnector-libs')
 
 // Fonction qui génère un UUID
-const uuid = require('../utils/misc/uuid');
-const stack_log = require('../utils/development/stack_log');
+const uuid = require('../utils/misc/uuid')
+const stack_log = require('../utils/development/stack_log')
 
 // Renvoie une session Pronote
-async function Pronote({
-  url,
-  login,
-  password
-}) {
+async function Pronote({ url, login, password }) {
   return new Promise(async (resolve, reject) => {
     try {
       const pronote = await authenticatePronoteCredentials(url, {
@@ -24,15 +20,21 @@ async function Pronote({
         username: login,
         password: password,
         deviceUUID: uuid()
-      });
+      })
 
-      stack_log('🦋 Pronote session created [' + pronote.username + ' : ' + pronote.studentName + ']');
+      stack_log(
+        '🦋 Pronote session created [' +
+          pronote.username +
+          ' : ' +
+          pronote.studentName +
+          ']'
+      )
 
-      resolve(pronote);
+      resolve(pronote)
     } catch (error) {
-      reject(error);
+      reject(error)
     }
-  });
+  })
 }
 
 module.exports = {

@@ -1,22 +1,30 @@
-const {
-  saveFiles,
-} = require('cozy-konnector-libs')
+const { saveFiles } = require('cozy-konnector-libs')
 
-const findObjectByPronoteString = require('../../utils/format/format_cours_name');
-const preprocessDoctype = require('../../utils/format/preprocess_doctype');
-const stack_log = require('../../utils/development/stack_log');
-const remove_html = require('../../utils/format/remove_html');
-const use_stream = require('../../utils/misc/use_stream');
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates');
+const findObjectByPronoteString = require('../../utils/format/format_cours_name')
+const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const stack_log = require('../../utils/development/stack_log')
+const remove_html = require('../../utils/format/remove_html')
+const use_stream = require('../../utils/misc/use_stream')
+const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 
-const save_resources = (resource, subPath, startDate, prettyCoursName, fields) => {
+const save_resources = (
+  resource,
+  subPath,
+  startDate,
+  prettyCoursName,
+  fields
+) => {
   return new Promise(async (resolve, reject) => {
-    const filesToDownload = [];
-    const relationships = [];
+    const filesToDownload = []
+    const relationships = []
 
     for (const resourceContent of resource.contents) {
-      const date = new Date(startDate);
-      const prettyDate = date.toLocaleDateString('fr-FR', { month: 'short', day: '2-digit', weekday: 'short' });
+      const date = new Date(startDate)
+      const prettyDate = date.toLocaleDateString('fr-FR', {
+        month: 'short',
+        day: '2-digit',
+        weekday: 'short'
+      })
 
       let path = subPath
       path = path.replace('{subject}', prettyCoursName)
@@ -24,8 +32,8 @@ const save_resources = (resource, subPath, startDate, prettyCoursName, fields) =
       for (const file of resourceContent.files) {
         if (file.type == 1) {
           // Downloadable file
-          const extension = file.name.split('.').pop();
-          let fileName = file.name.replace(/\.[^/.]+$/, "");
+          const extension = file.name.split('.').pop()
+          let fileName = file.name.replace(/\.[^/.]+$/, '')
 
           filesToDownload.push({
             filename: `${fileName} (${prettyDate}).${extension}`,
@@ -34,19 +42,21 @@ const save_resources = (resource, subPath, startDate, prettyCoursName, fields) =
             subPath: path,
             fileAttributes: {
               created_at: date,
-              updated_at: date,
+              updated_at: date
             }
-          });
-        }
-        else if (file.type == 0) {
+          })
+        } else if (file.type == 0) {
           // URL
           const fileData = `[InternetShortcut]
-URL=${file.url}`.trim();
+URL=${file.url}`.trim()
 
-          const source = await use_stream(fileData, 'application/internet-shortcut');
+          const source = await use_stream(
+            fileData,
+            'application/internet-shortcut'
+          )
 
-          const extension = 'url';
-          let fileName = file.name;
+          const extension = 'url'
+          let fileName = file.name
 
           filesToDownload.push({
             filename: `${fileName} (${prettyDate}).${extension}`,
@@ -55,9 +65,9 @@ URL=${file.url}`.trim();
             subPath: path,
             fileAttributes: {
               created_at: date,
-              updated_at: date,
+              updated_at: date
             }
-          });
+          })
         }
       }
     }
@@ -76,16 +86,15 @@ URL=${file.url}`.trim();
             resource: {
               data: { _id: file['fileDocument']['_id'], _type: 'io.cozy.files' }
             }
-          });
+          })
         }
       }
 
-      resolve(relationships);
+      resolve(relationships)
+    } else {
+      resolve([])
     }
-    else {
-      resolve([]);
-    }
-  });
+  })
 }
 
-module.exports = save_resources;
+module.exports = save_resources
