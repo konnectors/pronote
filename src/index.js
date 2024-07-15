@@ -49,7 +49,7 @@ async function start(fields, cozyParameters) {
     await cozy_save('timetable', pronote, fields, {
       dateFrom: dateFrom,
       dateTo: dateTo,
-      saveFiles: false,
+      saveFiles: SHOULD_SAVE && false,
       getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     })
     await cozy_test('timetable', pronote, fields)
@@ -58,7 +58,7 @@ async function start(fields, cozyParameters) {
     await cozy_save('homeworks', pronote, fields, {
       dateFrom: dateFrom,
       dateTo: dateTo,
-      saveFiles: true
+      saveFiles: SHOULD_SAVE && true
     });
     await cozy_test('homeworks', pronote, fields);
 
@@ -70,7 +70,7 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des évenements de l'utilisateur (toute l'année scolaire)
     await cozy_save('presence', pronote, fields, {
-      saveFiles: true
+      saveFiles: SHOULD_SAVE && true
     });
     await cozy_test('presence', pronote, fields);
 
