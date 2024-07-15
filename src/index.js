@@ -40,8 +40,6 @@ async function start(fields, cozyParameters) {
       dateFrom = new Date();
     }*/
 
-    console.log('dateFrom', dateFrom)
-
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields)
 
