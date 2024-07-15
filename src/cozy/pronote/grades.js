@@ -5,13 +5,13 @@ const {
   updateOrCreate
 } = require('cozy-konnector-libs')
 
-const { Q } = require('cozy-client');
+const { Q } = require('cozy-client')
 
-const { DOCTYPE_GRADE } = require('../../constants');
-const subPaths = require('../../consts/sub_paths.json');
+const { DOCTYPE_GRADE } = require('../../constants')
+const subPaths = require('../../consts/sub_paths.json')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
-const preprocessDoctype = require('../../utils/format/preprocess_doctype');
+const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 
 function get_grades(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -265,22 +265,25 @@ async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
       let files = await create_grades(pronote, fields, options)
-      
+
       /*
       [Strategy] : don't update grades, they stay the same
       */
 
-      const existing = await cozyClient.new.queryAll(
-        Q(DOCTYPE_GRADE)
+      const existing = await cozyClient.new.queryAll(Q(DOCTYPE_GRADE))
 
       // remove duplicates in files
-      const filtered = files.filter((file) => {
-        const found = existing.find((item) => {
-          return item.series.length === file.series.length && item.startDate === file.startDate && item.subject === file.subject;
-        });
+      const filtered = files.filter(file => {
+        const found = existing.find(item => {
+          return (
+            item.series.length === file.series.length &&
+            item.startDate === file.startDate &&
+            item.subject === file.subject
+          )
+        })
 
-        return !found;
-      });
+        return !found
+      })
 
       const res = await updateOrCreate(
         filtered,
@@ -288,14 +291,13 @@ async function init(pronote, fields, options) {
         ['startDate', 'subject'],
         {
           sourceAccount: this.accountId,
-          sourceAccountIdentifier: fields.login,
+          sourceAccountIdentifier: fields.login
         }
-      );
+      )
 
-      resolve(res);
-    }
-    catch (error) {
-      reject(error);
+      resolve(res)
+    } catch (error) {
+      reject(error)
     }
   })
 }
