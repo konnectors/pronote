@@ -7,6 +7,7 @@ const { Pronote } = require('./fetch/session')
 
 // Importation de la fonction cozy_save
 const { cozy_save, cozy_test } = require('./cozy')
+const { queryIdentity } = require('./queries')
 
 // Exportation de la fonction start
 module.exports = new BaseKonnector(start)
@@ -28,17 +29,11 @@ async function start(fields, cozyParameters) {
     let dateFrom = new Date(pronote.firstDate)
     const dateTo = new Date(pronote.lastDate)
 
-    /*
-    const identity_exists = await cozyClient.new.queryAll(
-      Q('io.cozy.accounts')
-        .where({
-          "cozyMetadata.sourceAccountIdentifier": fields.login
-        })
-    )
+    const identity_exists = await queryIdentity(fields)
 
     if (identity_exists.length > 0) {
       dateFrom = new Date();
-    }*/
+    }
 
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields)

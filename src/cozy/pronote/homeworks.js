@@ -18,6 +18,7 @@ const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
 const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 const save_resources = require('../../utils/stack/save_resources')
+const { queryFilesByName, queryHomeworksByDate } = require('../../queries')
 
 function get_homeworks(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -78,13 +79,7 @@ function create_homeworks(pronote, fields, options) {
             homework.return.uploaded.name.replace(/\.[^/.]+$/, '') +
               ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate
 
-          const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files')
-              .indexFields(['name'])
-              .where({
-                name: `${fileName}.${extension}`
-              })
-          )
+          const exists = await queryFilesByName(`${fileName}.${extension}`);
 
           if (exists.length > 0) {
             // don't download the file if it already exists
@@ -218,17 +213,7 @@ async function init(pronote, fields, options, existing) {
 async function dispatcher(pronote, fields, options) {
   const dates = create_dates(options)
 
-  const existing = await cozyClient.new.queryAll(
-    Q(DOCTYPE_HOMEWORK)
-      .indexFields(['cozyMetadata.sourceAccountIdentifier', 'dueDate'])
-      .where({
-        dueDate: {
-          $gte: new Date(options.dateFrom).toISOString(),
-          $lt: new Date(options.dateTo).toISOString()
-        },
-        'cozyMetadata.sourceAccountIdentifier': fields.login
-      })
-  )
+  const existing = await queryHomeworksByDate(fields, options.dateFrom, options.dateTo)
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 

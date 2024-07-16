@@ -17,6 +17,7 @@ const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
 const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 const save_resources = require('../../utils/stack/save_resources')
+const { queryLessonsByDate } = require('../../queries')
 
 async function get_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -134,17 +135,7 @@ async function init(pronote, fields, options) {
       [Strategy] : don't update past lessons, only update future lessons
       */
 
-      const existing = await cozyClient.new.queryAll(
-        Q(DOCTYPE_TIMETABLE_LESSON)
-          .indexFields(['cozyMetadata.sourceAccountIdentifier', 'start'])
-          .where({
-            start: {
-              $gte: new Date(options.dateFrom).toISOString(),
-              $lt: new Date(options.dateTo).toISOString()
-            },
-            'cozyMetadata.sourceAccountIdentifier': fields.login
-          })
-      )
+      const existing = await queryLessonsByDate(fields, options.dateFrom, options.dateTo)
 
       // remove duplicates in files
       const filtered = files.filter(file => {

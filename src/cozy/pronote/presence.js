@@ -8,6 +8,7 @@ const {
 const { Q } = require('cozy-client')
 
 const { DOCTYPE_ATTENDANCE } = require('../../constants')
+const { queryAllAttendances } = require('../../queries')
 
 function get_presence(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -92,7 +93,7 @@ async function init(pronote, fields, options) {
       [Strategy] : only update events that are NOT justified yet
       */
 
-      const existing = await cozyClient.new.queryAll(Q(DOCTYPE_ATTENDANCE))
+      const existing = await queryAllAttendances()
 
       // remove all justified absences
       const filtered = files.filter(file => {

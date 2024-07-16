@@ -15,6 +15,7 @@ const {
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const { queryAllGrades } = require('../../queries')
 
 function get_grades(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -270,7 +271,7 @@ async function init(pronote, fields, options) {
       [Strategy] : don't update grades, they stay the same
       */
 
-      const existing = await cozyClient.new.queryAll(Q(DOCTYPE_GRADE))
+      const existing = await queryAllGrades()
 
       // remove duplicates in files
       const filtered = files.filter(file => {

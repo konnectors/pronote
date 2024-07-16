@@ -8,6 +8,7 @@ const stack_log = require('../../utils/development/stack_log')
 const remove_html = require('../../utils/format/remove_html')
 const use_stream = require('../../utils/misc/use_stream')
 const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
+const { queryFilesByName } = require('../../queries')
 
 const save_resources = (
   resource,
@@ -37,13 +38,7 @@ const save_resources = (
           const extension = file.name.split('.').pop()
           let fileName = file.name.replace(/\.[^/.]+$/, '')
 
-          const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files')
-              .indexFields(['name'])
-              .where({
-                name: `${fileName} (${prettyDate}).${extension}`
-              })
-          )
+          const exists = await queryFilesByName(`${fileName} (${prettyDate}).${extension}`)
 
           if (exists.length > 0) {
             continue
@@ -72,13 +67,7 @@ URL=${file.url}`.trim()
           const extension = 'url'
           let fileName = file.name
 
-          const exists = await cozyClient.new.queryAll(
-            Q('io.cozy.files')
-              .indexFields(['name'])
-              .where({
-                name: `${fileName} (${prettyDate}).${extension}`
-              })
-          )
+          const exists = queryFilesByName(`${fileName} (${prettyDate}).${extension}`)
 
           if (exists.length > 0) {
             continue
