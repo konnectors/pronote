@@ -41,6 +41,10 @@ export const queryLessonsByDate = async (fields, from, to) => {
         },
         'cozyMetadata.sourceAccountIdentifier': fields.login
       })
+      .sortBy([
+        { 'cozyMetadata.sourceAccountIdentifier': 'asc' },
+        { start: 'asc' }
+      ])
   )
 }
 
