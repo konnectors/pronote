@@ -33,13 +33,7 @@
       "type": "io.cozy.files"
     },
     "calendar": {
-      "type": "io.cozy.calendar.event"
-    },
-    "todos": {
-      "type": "io.cozy.calendar.todos"
-    },
-    "presence": {
-      "type": "io.cozy.calendar.presence"
+      "type": "io.cozy.calendar.*"
     },
     "grades": {
       "type": "io.cozy.timeseries.grades"
