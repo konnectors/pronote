@@ -1,73 +1,46 @@
 // Importation des fonctions de cozy-konnector-libs
-const { BaseKonnector, log } = require('cozy-konnector-libs')
+const {
+  BaseKonnector,
+  log,
+  signin,
+  requestFactory
+} = require('cozy-konnector-libs')
+const Browser = require('zombie')
 
-// Importation de la fonction Pronote
-const { Pronote } = require('./fetch/session')
-
-// Importation de la fonction cozy_save
-const { cozy_save, cozy_test } = require('./cozy')
-
-// Exportation de la fonction start
 module.exports = new BaseKonnector(start)
 
-// Variable globale pour savoir si on doit sauvegarder les fichiers
-SHOULD_SAVE = false
+const rq = requestFactory({
+  jar: true, // handle the cookies like a browser
+  json: false, // do not try to parse the result as a json document
+  cheerio: true // automatically parse the result with [cheerio](https://github.com/cheeriojs/cheerio)
+})
 
 // Fonction start qui va être exportée
 async function start(fields, cozyParameters) {
-  try {
-    // Initialisation de la session Pronote
-    const pronote = await Pronote({
-      url: fields.pronote_url,
-      login: fields.login,
-      password: fields.password
+  // step 1.
+  log('info', 'Authenticating ...')
+  authenticate(fields.login, fields.password)
+  log('info', 'Successfully logged in')
+}
+
+async function authenticate(pronote_url, username, password) {
+  const educ = `https://educonnect.education.gouv.fr/idp/profile/SAML2/Redirect/SSO?execution=e1s1`
+  const ttc = `https://www.toutatice.fr/portail/auth/pagemarker/3/portal/default/bureau-eleve-lyc-2020?init-state=true&redirect=true`
+
+  const browser = new Browser({
+    runScripts: false
+  })
+  await browser.visit(educ)
+
+  await browser.visit(ttc, async () => {
+    await browser.choose('input[value="eleve-1"]')
+    await browser.pressButton('#eleve button', async () => {
+      await browser.fill('j_username', 'v.linise')
+      await browser.fill('j_password', 'NaomiVince20032007!')
+      browser.runScripts = true
+      await browser.pressButton('#bouton_valider', async () => {
+        console.log(browser.html())
+      })
     })
-
-    // Sauvegarde de l'identité de l'utilisateur
-    await cozy_save('identity', pronote, fields)
-
-    // Sauvegarde de l'emploi du temps de l'utilisateur (toute l'année scolaire)
-    await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
-      saveFiles: SHOULD_SAVE && false,
-      getLessonContent: false // envoie une requête par jour (pas très bonne idée)
-    })
-    await cozy_test('timetable', pronote, fields)
-
-    // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
-    await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
-      saveFiles: SHOULD_SAVE && false
-    })
-    await cozy_test('homeworks', pronote, fields)
-
-    // Sauvegarde des notes de l'utilisateur (toute l'année scolaire)
-    await cozy_save('grades', pronote, fields, {
-      saveFiles: SHOULD_SAVE && false
-    })
-    await cozy_test('grades', pronote, fields)
-
-    // Sauvegarde des évenements de l'utilisateur (toute l'année scolaire)
-    await cozy_save('presence', pronote, fields, {
-      saveFiles: SHOULD_SAVE && false
-    })
-    await cozy_test('presence', pronote, fields)
-  } catch (err) {
-    const error = err.toString()
-    console.error(error)
-
-    if (error.trim() === "Error: You've been rate-limited.") {
-      throw new Error('VENDOR_DOWN')
-    } else if (
-      error.trim() === 'Error: Your username or password is incorrect.'
-    ) {
-      throw new Error('LOGIN_FAILED')
-    } else if (error.includes('Invalid URL')) {
-      throw new Error('LOGIN_FAILED')
-    }
-
-    throw new Error('UNKNOWN_ERROR')
-  }
+  })
 }
