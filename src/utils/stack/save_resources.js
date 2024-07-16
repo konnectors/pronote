@@ -38,7 +38,9 @@ const save_resources = (
           const extension = file.name.split('.').pop()
           let fileName = file.name.replace(/\.[^/.]+$/, '')
 
-          const exists = await queryFilesByName(`${fileName} (${prettyDate}).${extension}`)
+          const exists = await queryFilesByName(
+            `${fileName} (${prettyDate}).${extension}`
+          )
 
           if (exists.length > 0) {
             continue
@@ -67,7 +69,9 @@ URL=${file.url}`.trim()
           const extension = 'url'
           let fileName = file.name
 
-          const exists = queryFilesByName(`${fileName} (${prettyDate}).${extension}`)
+          const exists = queryFilesByName(
+            `${fileName} (${prettyDate}).${extension}`
+          )
 
           if (exists.length > 0) {
             continue

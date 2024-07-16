@@ -2,7 +2,8 @@ const {
   addData,
   saveFiles,
   cozyClient,
-  updateOrCreate
+  updateOrCreate,
+  log
 } = require('cozy-konnector-libs')
 
 const { Q } = require('cozy-client')
@@ -79,7 +80,7 @@ function create_homeworks(pronote, fields, options) {
             homework.return.uploaded.name.replace(/\.[^/.]+$/, '') +
               ` (${prettyDate})` || 'Rendu devoir du ' + prettyDate
 
-          const exists = await queryFilesByName(`${fileName}.${extension}`);
+          const exists = await queryFilesByName(`${fileName}.${extension}`)
 
           if (exists.length > 0) {
             // don't download the file if it already exists
@@ -191,7 +192,10 @@ async function init(pronote, fields, options, existing) {
         }
       }
 
-      console.log(filtered.length, 'new homeworks to save out of', files.length)
+      log(
+        'info',
+        `${filtered.length} new homeworks to save out of ${files.length}`
+      )
 
       const res = await updateOrCreate(
         filtered,
@@ -213,7 +217,11 @@ async function init(pronote, fields, options, existing) {
 async function dispatcher(pronote, fields, options) {
   const dates = create_dates(options)
 
-  const existing = await queryHomeworksByDate(fields, options.dateFrom, options.dateTo)
+  const existing = await queryHomeworksByDate(
+    fields,
+    options.dateFrom,
+    options.dateTo
+  )
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 

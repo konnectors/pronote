@@ -2,7 +2,8 @@ const {
   addData,
   saveFiles,
   cozyClient,
-  updateOrCreate
+  updateOrCreate,
+  log
 } = require('cozy-konnector-libs')
 
 const { Q } = require('cozy-client')
@@ -135,7 +136,11 @@ async function init(pronote, fields, options) {
       [Strategy] : don't update past lessons, only update future lessons
       */
 
-      const existing = await queryLessonsByDate(fields, options.dateFrom, options.dateTo)
+      const existing = await queryLessonsByDate(
+        fields,
+        options.dateFrom,
+        options.dateTo
+      )
 
       // remove duplicates in files
       const filtered = files.filter(file => {
@@ -159,7 +164,10 @@ async function init(pronote, fields, options) {
         return !found
       })
 
-      console.log(filtered.length, 'new events to save out of', files.length)
+      log(
+        'info',
+        `${filtered.length} new events to save out of ${files.length}`
+      )
 
       const res = await updateOrCreate(
         filtered,

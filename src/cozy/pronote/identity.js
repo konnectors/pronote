@@ -128,7 +128,7 @@ async function save_profile_picture(pronote, fields) {
     validateFile: () => true
   })
 
-  const meta = files[0] && files[0]['fileDocument'] || null;
+  const meta = (files[0] && files[0]['fileDocument']) || null
   return meta || null
 }
 

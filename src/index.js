@@ -32,7 +32,7 @@ async function start(fields, cozyParameters) {
     const identity_exists = await queryIdentity(fields)
 
     if (identity_exists.length > 0) {
-      dateFrom = new Date();
+      dateFrom = new Date()
     }
 
     // Sauvegarde de l'identité de l'utilisateur
