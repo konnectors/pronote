@@ -80,7 +80,6 @@ async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
       let files = await create_presence(pronote, fields, options)
-      console.log(files)
 
       const res = await addData(files, doctypes['presence']['attendance'], {
         sourceAccount: this.accountId,

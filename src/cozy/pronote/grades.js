@@ -1,4 +1,4 @@
-const { addData, saveFiles } = require('cozy-konnector-libs')
+const { addData, saveFiles, log } = require('cozy-konnector-libs')
 
 const doctypes = require('../../consts/doctypes.json')
 const subPaths = require('../../consts/sub_paths.json')
@@ -70,7 +70,11 @@ function create_grades(pronote, fields, options) {
     if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
       shouldSaveFiles = true
     }
-    console.log('shouldSaveFiles', shouldSaveFiles)
+
+    log(
+      'info',
+      `[Grades] : 💾 Saving ${shouldSaveFiles ? 'enabled' : 'disabled'}`
+    )
 
     for (const grade of grades) {
       const pronoteString = findObjectByPronoteString(grade.subject?.name)

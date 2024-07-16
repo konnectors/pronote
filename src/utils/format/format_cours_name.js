@@ -43,14 +43,10 @@ function findObjectByPronoteString(pronoteString = '') {
   for (let item of cozy_lesson_formats) {
     for (let format of item.formats.default) {
       if (format.toLowerCase() === processedString) {
-        // console.log(`✅ Match found | ${cw(pronoteString, 20)} | ${cw(processedString, 20)} | ${cw(item.label, 20)}`);
-
         return item
       }
     }
   }
-
-  // console.log(`❌ Match found | ${cw(pronoteString, 20)} | ${cw(processedString, 20)} | ${cw(processedString, 20)}`);
 
   // Return null if no match is found
   return {
