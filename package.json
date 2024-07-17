@@ -36,8 +36,13 @@
     "travisDeployKey": "./bin/generate_travis_deploy_key"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "cozy-konnector-libs": "5.11.0",
+    "https-proxy-agent": "^7.0.5",
+    "jsdom": "^24.1.0",
     "pawnote": "^0.22.1",
+    "pronote-api-maintained": "^3.1.0",
+    "querystring": "^0.2.1",
     "zombie": "^6.1.4"
   },
   "devDependencies": {
