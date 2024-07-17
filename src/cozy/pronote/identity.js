@@ -3,7 +3,6 @@ const { saveFiles, log, saveIdentity } = require('cozy-konnector-libs')
 const { PATH_IDENTITY_PROFILE_PIC } = require('../../constants')
 
 const extract_pronote_name = require('../../utils/format/extract_pronote_name')
-const stack_log = require('../../utils/development/stack_log')
 const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
 async function create_identity(pronote, fields) {
@@ -110,7 +109,7 @@ async function format_json(pronote, information, profile_pic) {
 }
 
 async function save_profile_picture(pronote, fields) {
-  stack_log('🖼️ Saving profile picture at ' + PATH_IDENTITY_PROFILE_PIC)
+  log('info', `🖼️ Saving profile picture at ' + ${PATH_IDENTITY_PROFILE_PIC}`)
 
   const documents = [
     {
@@ -135,7 +134,7 @@ async function save_profile_picture(pronote, fields) {
 async function init(pronote, fields) {
   try {
     let identity = await create_identity(pronote, fields)
-    stack_log('🗣️ Saving identity for ' + identity.identifier)
+    log('info', '🗣️ Saving identity for ' + identity.identifier)
     return saveIdentity(identity, fields.login)
   } catch (error) {
     log('error', error)

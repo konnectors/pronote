@@ -1,6 +1,4 @@
 const { cozyClient } = require('cozy-konnector-libs')
-
-const stack_log = require('../../utils/development/stack_log')
 const { DOCTYPE_ATTENDANCE } = require('../../constants')
 
 async function find_elements() {
@@ -14,11 +12,8 @@ async function init(pronote, fields, options) {
   return new Promise(resolve => async () => {
     try {
       await find_elements(pronote, fields, options)
-
-      stack_log('✅ All tests passed for test_presence')
       resolve(true)
     } catch (error) {
-      stack_log('🚨 Error in test_presence: ' + error)
       resolve(false)
     }
   })

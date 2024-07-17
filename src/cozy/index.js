@@ -1,5 +1,3 @@
-const stack_log = require('../utils/development/stack_log')
-
 const TESTS_ENABLED = false
 
 const identity = require('./pronote/identity')
@@ -12,10 +10,11 @@ const test_timetable = require('./tests/test_timetable')
 const test_homeworks = require('./tests/test_homeworks')
 const test_grades = require('./tests/test_grades')
 const test_presence = require('./tests/test_presence')
+const { log } = require('cozy-konnector-libs')
 
 async function cozy_save(type, pronote, fields, options = {}) {
   try {
-    stack_log('🔁 Saving ' + type)
+    log('info', '🔁 Saving ' + type)
 
     switch (type) {
       case 'identity':
@@ -42,7 +41,7 @@ async function cozy_test(type, pronote, fields, options = {}) {
       return true
     }
 
-    stack_log('🤔 Testing ' + type)
+    log('info', '🤔 Testing ' + type)
 
     switch (type) {
       case 'timetable':
