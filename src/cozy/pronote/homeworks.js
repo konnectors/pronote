@@ -39,7 +39,11 @@ function create_homeworks(pronote, fields, options) {
     if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
       shouldSaveFiles = true
     }
-    console.log('shouldSaveFiles', shouldSaveFiles)
+
+    log(
+      'info',
+      `[Homeworks] : 💾 Saving ${shouldSaveFiles ? 'enabled' : 'disabled'}`
+    )
 
     for (const homework of homeworks) {
       const pronoteString = findObjectByPronoteString(homework.subject?.name)

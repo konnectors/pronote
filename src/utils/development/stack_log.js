@@ -1,7 +1,7 @@
-const stack_log = log => {
-  console.log('----------------------------------')
-  console.log('  [  ' + log + '  ]')
-  console.log('----------------------------------')
+const { log } = require('cozy-konnector-libs')
+
+const stack_log = text => {
+  log(text)
 }
 
 module.exports = stack_log

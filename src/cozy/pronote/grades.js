@@ -2,7 +2,8 @@ const {
   addData,
   saveFiles,
   cozyClient,
-  updateOrCreate
+  updateOrCreate,
+  log
 } = require('cozy-konnector-libs')
 
 const { Q } = require('cozy-client')
@@ -81,7 +82,11 @@ function create_grades(pronote, fields, options) {
     if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
       shouldSaveFiles = true
     }
-    console.log('shouldSaveFiles', shouldSaveFiles)
+
+    log(
+      'info',
+      `[Grades] : 💾 Saving ${shouldSaveFiles ? 'enabled' : 'disabled'}`
+    )
 
     for (const grade of grades) {
       const pronoteString = findObjectByPronoteString(grade.subject?.name)

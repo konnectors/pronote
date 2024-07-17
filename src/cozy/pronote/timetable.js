@@ -47,13 +47,21 @@ async function create_timetable(pronote, fields, options) {
     if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
       shouldSaveFiles = true
     }
-    console.log('shouldSaveFiles', shouldSaveFiles)
+
+    log(
+      'info',
+      `[Timetable] : 💾 Saving ${shouldSaveFiles ? 'enabled' : 'disabled'}`
+    )
 
     let shouldGetContent = options['getLessonContent']
     if (shouldGetContent === undefined || shouldGetContent === null) {
       shouldGetContent = true
     }
-    console.log('shouldGetContent', shouldGetContent)
+
+    log(
+      'info',
+      `[Timetable] : 📕 Content ${shouldGetContent ? 'saved' : 'ignored'}`
+    )
 
     for (const lesson of timetable) {
       const pronoteString = findObjectByPronoteString(lesson.subject?.name)
@@ -79,7 +87,7 @@ async function create_timetable(pronote, fields, options) {
           }
         }
       } catch (error) {
-        console.log('ressource getting : ', error)
+        log('error', `[Timetable] : 📕 Content error ${error}`)
       }
 
       const dates = {
