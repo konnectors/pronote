@@ -4,13 +4,6 @@ String.prototype.uppercaseFirst = function () {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
-function cw(text, width) {
-  let padding = width - text.length
-  padding = padding > 0 ? padding : 0
-  text = text.length > width ? text.slice(0, width - 3) + '...' : text
-  return text + ' '.repeat(padding)
-}
-
 function removeSpaces(text) {
   return text.replace(/\s+/g, '')
 }

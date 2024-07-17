@@ -1,5 +1,6 @@
-const remove_html = html => {
+const remove_html = entryHtml => {
   // Remove HTML tags
+  let html = entryHtml
   html = html.replace(/<[^>]*>?/gm, '')
 
   // Escape all HTML entities

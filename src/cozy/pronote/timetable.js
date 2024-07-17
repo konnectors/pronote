@@ -1,12 +1,4 @@
-const {
-  addData,
-  saveFiles,
-  cozyClient,
-  updateOrCreate,
-  log
-} = require('cozy-konnector-libs')
-
-const { Q } = require('cozy-client')
+const { updateOrCreate, log } = require('cozy-konnector-libs')
 
 const {
   DOCTYPE_TIMETABLE_LESSON,
@@ -16,12 +8,12 @@ const {
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
+const { create_dates } = require('../../utils/misc/create_dates')
 const save_resources = require('../../utils/stack/save_resources')
 const { queryLessonsByDate } = require('../../queries')
 
 async function get_timetable(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     const dates = create_dates(options)
     const overview = await pronote.getTimetableOverviewForInterval(
       dates.from,
@@ -39,7 +31,7 @@ async function get_timetable(pronote, fields, options) {
 }
 
 async function create_timetable(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     const timetable = await get_timetable(pronote, fields, options)
     const data = []
 
@@ -136,7 +128,7 @@ async function create_timetable(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => async () => {
     try {
       const files = await create_timetable(pronote, fields, options)
 

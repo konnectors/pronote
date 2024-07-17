@@ -1,12 +1,4 @@
-const {
-  addData,
-  saveFiles,
-  cozyClient,
-  updateOrCreate,
-  log
-} = require('cozy-konnector-libs')
-
-const { Q } = require('cozy-client')
+const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
 
 const {
   DOCTYPE_GRADE,
@@ -18,8 +10,8 @@ const findObjectByPronoteString = require('../../utils/format/format_cours_name'
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const { queryAllGrades } = require('../../queries')
 
-function get_grades(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+function get_grades(pronote) {
+  return new Promise(resolve => async () => {
     const allGrades = []
 
     const periods = pronote.periods
@@ -74,7 +66,7 @@ function get_grades(pronote, fields, options) {
 }
 
 function create_grades(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     const grades = await get_grades(pronote, fields, options)
     const data = []
 
@@ -268,7 +260,7 @@ function create_grades(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => async () => {
     try {
       let files = await create_grades(pronote, fields, options)
 

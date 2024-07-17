@@ -1,6 +1,6 @@
 const stack_log = require('../utils/development/stack_log')
 
-const TESTS_ENABLED = false;
+const TESTS_ENABLED = false
 
 const identity = require('./pronote/identity')
 const timetable = require('./pronote/timetable')
@@ -32,15 +32,14 @@ async function cozy_save(type, pronote, fields, options = {}) {
         return false
     }
   } catch (err) {
-    console.error(err)
-    return false
+    throw new Error(err)
   }
 }
 
 async function cozy_test(type, pronote, fields, options = {}) {
   try {
     if (!TESTS_ENABLED) {
-      return true;
+      return true
     }
 
     stack_log('🤔 Testing ' + type)
@@ -58,8 +57,7 @@ async function cozy_test(type, pronote, fields, options = {}) {
         return false
     }
   } catch (err) {
-    console.error(err)
-    return false
+    throw new Error(err)
   }
 }
 

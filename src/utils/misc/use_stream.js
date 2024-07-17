@@ -1,7 +1,7 @@
 const stream = require('stream')
 
 async function use_stream(text, force_mime) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     const bufferStream = new stream.PassThrough()
 
     if (force_mime) {

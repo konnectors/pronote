@@ -1,13 +1,5 @@
-const { saveFiles, cozyClient } = require('cozy-konnector-libs')
-
-const { Q } = require('cozy-client')
-
-const findObjectByPronoteString = require('../../utils/format/format_cours_name')
-const preprocessDoctype = require('../../utils/format/preprocess_doctype')
-const stack_log = require('../../utils/development/stack_log')
-const remove_html = require('../../utils/format/remove_html')
+const { saveFiles } = require('cozy-konnector-libs')
 const use_stream = require('../../utils/misc/use_stream')
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 const { queryFilesByName } = require('../../queries')
 
 const save_resources = (
@@ -17,7 +9,7 @@ const save_resources = (
   prettyCoursName,
   fields
 ) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     const filesToDownload = []
     const relationships = []
 

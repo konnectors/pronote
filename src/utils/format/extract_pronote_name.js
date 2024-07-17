@@ -1,5 +1,5 @@
 function extract_pronote_name(fullName) {
-  const regex = /^([A-Z \-]+) ([A-Z][a-z\-]+.*)$/
+  const regex = /^([A-Z -]+) ([A-Z][a-z-]+.*)$/
   const match = fullName.match(regex)
 
   if (match) {

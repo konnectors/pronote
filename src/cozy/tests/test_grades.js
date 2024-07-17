@@ -1,9 +1,9 @@
-const { cozyClient, manifest } = require('cozy-konnector-libs')
+const { cozyClient } = require('cozy-konnector-libs')
 
 const stack_log = require('../../utils/development/stack_log')
 const { DOCTYPE_GRADE } = require('../../constants')
 
-async function find_elements(pronote, fields, options) {
+async function find_elements() {
   const existingElm = await cozyClient.data.findAll(DOCTYPE_GRADE)
   if (existingElm.length === 0) {
     throw 'No homework found'
@@ -11,7 +11,7 @@ async function find_elements(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     try {
       await find_elements(pronote, fields, options)
 

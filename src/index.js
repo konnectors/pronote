@@ -1,6 +1,5 @@
 // Importation des fonctions de cozy-konnector-libs
-const { BaseKonnector, log, cozyClient } = require('cozy-konnector-libs')
-const { Q } = require('cozy-client')
+const { BaseKonnector } = require('cozy-konnector-libs')
 
 // Importation de la fonction Pronote
 const { Pronote } = require('./fetch/session')
@@ -13,10 +12,10 @@ const { queryIdentity } = require('./queries')
 module.exports = new BaseKonnector(start)
 
 // Variable globale pour savoir si on doit sauvegarder les fichiers
-SHOULD_SAVE = false
+const SHOULD_SAVE = false
 
 // Fonction start qui va être exportée
-async function start(fields, cozyParameters) {
+async function start(fields) {
   try {
     // Initialisation de la session Pronote
     const pronote = await Pronote({
@@ -68,7 +67,6 @@ async function start(fields, cozyParameters) {
     await cozy_test('presence', pronote, fields)
   } catch (err) {
     const error = err.toString()
-    console.error(error)
 
     if (error.trim() === "Error: You've been rate-limited.") {
       throw new Error('VENDOR_DOWN')

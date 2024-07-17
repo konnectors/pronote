@@ -4,16 +4,13 @@ const {
   PronoteApiAccountId
 } = require('pawnote')
 
-// Importation de la fonction de log
-const { log } = require('cozy-konnector-libs')
-
 // Fonction qui génère un UUID
 const uuid = require('../utils/misc/uuid')
 const stack_log = require('../utils/development/stack_log')
 
 // Renvoie une session Pronote
 async function Pronote({ url, login, password }) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => async () => {
     try {
       const pronote = await authenticatePronoteCredentials(url, {
         accountTypeID: PronoteApiAccountId.Student,

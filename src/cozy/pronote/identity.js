@@ -7,7 +7,7 @@ const stack_log = require('../../utils/development/stack_log')
 const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
 async function create_identity(pronote, fields) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     // Getting personal information
     const information = await pronote.getPersonalInformation()
 
@@ -23,7 +23,7 @@ async function create_identity(pronote, fields) {
 }
 
 async function format_json(pronote, information, profile_pic) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(resolve => async () => {
     const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
     const scAdress = etabInfo['Coordonnees']
 
