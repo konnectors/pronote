@@ -1,10 +1,22 @@
-const { addData, saveFiles, log } = require('cozy-konnector-libs')
+const {
+  addData,
+  saveFiles,
+  cozyClient,
+  updateOrCreate,
+  log
+} = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
-const subPaths = require('../../consts/sub_paths.json')
+const { Q } = require('cozy-client')
+
+const {
+  DOCTYPE_GRADE,
+  PATH_GRADE_SUBJECT,
+  PATH_GRADE_CORRECTION
+} = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
+const { queryAllGrades } = require('../../queries')
 
 function get_grades(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -117,10 +129,7 @@ function create_grades(pronote, fields, options) {
             filename: `${fileName}.${extension}`,
             fileurl: evl.subjectFile.url,
             shouldReplaceFile: false,
-            subPath: subPaths['grades']['subjects'].replace(
-              '{subject}',
-              prettyCoursName
-            ),
+            subPath: PATH_GRADE_SUBJECT.replace('{subject}', prettyCoursName),
             fileAttributes: {
               created_at: date,
               updated_at: date
@@ -170,7 +179,7 @@ function create_grades(pronote, fields, options) {
             filename: `${fileName}.${extension}`,
             fileurl: evl.correctionFile.url,
             shouldReplaceFile: false,
-            subPath: subPaths['grades']['correction'].replace(
+            subPath: PATH_GRADE_CORRECTION.replace(
               '{subject}',
               prettyCoursName
             ),
@@ -263,10 +272,34 @@ async function init(pronote, fields, options) {
     try {
       let files = await create_grades(pronote, fields, options)
 
-      const res = await addData(files, doctypes['grades']['grade'], {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
+      /*
+      [Strategy] : don't update grades, they stay the same
+      */
+
+      const existing = await queryAllGrades()
+
+      // remove duplicates in files
+      const filtered = files.filter(file => {
+        const found = existing.find(item => {
+          return (
+            item.series.length === file.series.length &&
+            item.startDate === file.startDate &&
+            item.subject === file.subject
+          )
+        })
+
+        return !found
       })
+
+      const res = await updateOrCreate(
+        filtered,
+        DOCTYPE_GRADE,
+        ['startDate', 'subject'],
+        {
+          sourceAccount: this.accountId,
+          sourceAccountIdentifier: fields.login
+        }
+      )
 
       resolve(res)
     } catch (error) {

@@ -1,6 +1,6 @@
 const { saveFiles, log, saveIdentity } = require('cozy-konnector-libs')
 
-const subPaths = require('../../consts/sub_paths.json')
+const { PATH_IDENTITY_PROFILE_PIC } = require('../../constants')
 
 const extract_pronote_name = require('../../utils/format/extract_pronote_name')
 const stack_log = require('../../utils/development/stack_log')
@@ -110,29 +110,26 @@ async function format_json(pronote, information, profile_pic) {
 }
 
 async function save_profile_picture(pronote, fields) {
-  stack_log(
-    '🖼️ Saving profile picture at ' + subPaths['identity']['profile_pic']
-  )
+  stack_log('🖼️ Saving profile picture at ' + PATH_IDENTITY_PROFILE_PIC)
 
   const documents = [
     {
       filename: 'Photo de classe.jpg',
       fileurl: pronote.studentProfilePictureURL,
       shouldReplaceFile: false,
-      subPath: subPaths['identity']['profile_pic']
+      subPath: PATH_IDENTITY_PROFILE_PIC
     }
   ]
 
-  /* const files = await saveFiles(documents, fields, {
+  const files = await saveFiles(documents, fields, {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 1,
     validateFile: () => true
   })
 
-  const meta = files[0] && files[0]['fileDocument'] || null;
-  return meta || null*/
-  return null
+  const meta = (files[0] && files[0]['fileDocument']) || null
+  return meta || null
 }
 
 async function init(pronote, fields) {
