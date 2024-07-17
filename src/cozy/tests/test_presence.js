@@ -9,7 +9,8 @@ async function find_elements() {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     try {
       await find_elements(pronote, fields, options)
       resolve(true)

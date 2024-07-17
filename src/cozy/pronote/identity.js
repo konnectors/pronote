@@ -6,7 +6,8 @@ const extract_pronote_name = require('../../utils/format/extract_pronote_name')
 const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
 async function create_identity(pronote, fields) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     // Getting personal information
     const information = await pronote.getPersonalInformation()
 
@@ -22,7 +23,8 @@ async function create_identity(pronote, fields) {
 }
 
 async function format_json(pronote, information, profile_pic) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
     const scAdress = etabInfo['Coordonnees']
 

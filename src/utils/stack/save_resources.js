@@ -9,7 +9,8 @@ const save_resources = (
   prettyCoursName,
   fields
 ) => {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const filesToDownload = []
     const relationships = []
 

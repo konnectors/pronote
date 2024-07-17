@@ -3,7 +3,8 @@ const { updateOrCreate } = require('cozy-konnector-libs')
 const { DOCTYPE_ATTENDANCE } = require('../../constants')
 
 function get_presence(pronote) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const allPresence = []
 
     const periods = pronote.periods
@@ -28,7 +29,8 @@ function get_presence(pronote) {
 }
 
 function create_presence(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const presence = await get_presence(pronote, fields, options)
     const data = []
 
@@ -77,7 +79,8 @@ function create_presence(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise((resolve, reject) => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
     try {
       let files = await create_presence(pronote, fields, options)
 

@@ -1,14 +1,14 @@
-import {
+const {
   DOCTYPE_ATTENDANCE,
   DOCTYPE_GRADE,
   DOCTYPE_HOMEWORK,
   DOCTYPE_TIMETABLE_LESSON
-} from './constants'
+} = require('./constants')
 
 const { cozyClient } = require('cozy-konnector-libs')
 const { Q } = require('cozy-client')
 
-export const queryFilesByName = async name => {
+const queryFilesByName = async name => {
   return cozyClient.new.queryAll(
     Q('io.cozy.files').indexFields(['name']).where({
       name: name
@@ -16,7 +16,7 @@ export const queryFilesByName = async name => {
   )
 }
 
-export const queryHomeworksByDate = async (fields, from, to) => {
+const queryHomeworksByDate = async (fields, from, to) => {
   return cozyClient.new.queryAll(
     Q(DOCTYPE_HOMEWORK)
       .indexFields(['cozyMetadata.sourceAccountIdentifier', 'dueDate'])
@@ -30,7 +30,7 @@ export const queryHomeworksByDate = async (fields, from, to) => {
   )
 }
 
-export const queryLessonsByDate = async (fields, from, to) => {
+const queryLessonsByDate = async (fields, from, to) => {
   return cozyClient.new.queryAll(
     Q(DOCTYPE_TIMETABLE_LESSON)
       .indexFields(['cozyMetadata.sourceAccountIdentifier', 'start'])
@@ -48,15 +48,15 @@ export const queryLessonsByDate = async (fields, from, to) => {
   )
 }
 
-export const queryAllGrades = () => {
+const queryAllGrades = () => {
   return cozyClient.new.queryAll(Q(DOCTYPE_GRADE))
 }
 
-export const queryAllAttendances = () => {
+const queryAllAttendances = () => {
   return cozyClient.new.queryAll(Q(DOCTYPE_ATTENDANCE))
 }
 
-export const queryIdentity = async fields => {
+const queryIdentity = async fields => {
   return cozyClient.new.queryAll(
     Q('io.cozy.accounts')
       .indexFields(['cozyMetadata.sourceAccountIdentifier'])
@@ -64,4 +64,13 @@ export const queryIdentity = async fields => {
         'cozyMetadata.sourceAccountIdentifier': fields.login
       })
   )
+}
+
+module.exports = {
+  queryFilesByName,
+  queryHomeworksByDate,
+  queryLessonsByDate,
+  queryAllGrades,
+  queryAllAttendances,
+  queryIdentity
 }

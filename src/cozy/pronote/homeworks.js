@@ -14,7 +14,8 @@ const save_resources = require('../../utils/stack/save_resources')
 const { queryFilesByName, queryHomeworksByDate } = require('../../queries')
 
 function get_homeworks(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const dates = create_dates(options)
     const overview = await pronote.getHomeworkForInterval(dates.from, dates.to)
 
@@ -23,7 +24,8 @@ function get_homeworks(pronote, fields, options) {
 }
 
 function create_homeworks(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const homeworks = await get_homeworks(pronote, fields, options)
     const data = []
 
@@ -146,7 +148,8 @@ function create_homeworks(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options, existing) {
-  return new Promise((resolve, reject) => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
     try {
       let files = await create_homeworks(pronote, fields, options)
 

@@ -13,7 +13,8 @@ const save_resources = require('../../utils/stack/save_resources')
 const { queryLessonsByDate } = require('../../queries')
 
 async function get_timetable(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const dates = create_dates(options)
     const overview = await pronote.getTimetableOverviewForInterval(
       dates.from,
@@ -31,7 +32,8 @@ async function get_timetable(pronote, fields, options) {
 }
 
 async function create_timetable(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const timetable = await get_timetable(pronote, fields, options)
     const data = []
 
@@ -128,7 +130,8 @@ async function create_timetable(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise((resolve, reject) => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
     try {
       const files = await create_timetable(pronote, fields, options)
 

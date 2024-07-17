@@ -11,7 +11,8 @@ const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const { queryAllGrades } = require('../../queries')
 
 function get_grades(pronote) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const allGrades = []
 
     const periods = pronote.periods
@@ -66,7 +67,8 @@ function get_grades(pronote) {
 }
 
 function create_grades(pronote, fields, options) {
-  return new Promise(resolve => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
     const grades = await get_grades(pronote, fields, options)
     const data = []
 
@@ -260,7 +262,8 @@ function create_grades(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  return new Promise((resolve, reject) => async () => {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async (resolve, reject) => {
     try {
       let files = await create_grades(pronote, fields, options)
 
