@@ -12,8 +12,11 @@ async function start(fields) {
   const qr = await pronote.request(session, 'JetonAppliMobile', {
     donnees: {
       code: '1234'
+    },
+    _Signature_: {
+      onglet: 7
     }
   })
 
-  log('QR code:', qr)
+  console.log('QR code:', qr)
 }
