@@ -1,13 +1,24 @@
-const { addData, saveFiles } = require('cozy-konnector-libs')
+const {
+  addData,
+  saveFiles,
+  cozyClient,
+  updateOrCreate,
+  log
+} = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
-const subPaths = require('../../consts/sub_paths.json')
+const { Q } = require('cozy-client')
+
+const {
+  DOCTYPE_TIMETABLE_LESSON,
+  PATH_TIMETABLE_RESOURCE
+} = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
 const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
 const save_resources = require('../../utils/stack/save_resources')
+const { queryLessonsByDate } = require('../../queries')
 
 async function get_timetable(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
@@ -60,7 +71,7 @@ async function create_timetable(pronote, fields, options) {
           if (resource && shouldSaveFiles) {
             relationships = await save_resources(
               resource,
-              subPaths['timetable']['resource'],
+              PATH_TIMETABLE_RESOURCE,
               lesson.startDate,
               prettyCoursName,
               fields
@@ -72,8 +83,8 @@ async function create_timetable(pronote, fields, options) {
       }
 
       const dates = {
-        start: getIcalDate(new Date(lesson.startDate)),
-        end: getIcalDate(new Date(lesson.endDate))
+        start: new Date(lesson.startDate).toISOString(),
+        end: new Date(lesson.endDate).toISOString()
       }
 
       const status = lesson.canceled
@@ -119,12 +130,54 @@ async function create_timetable(pronote, fields, options) {
 async function init(pronote, fields, options) {
   return new Promise(async (resolve, reject) => {
     try {
-      let files = await create_timetable(pronote, fields, options)
+      const files = await create_timetable(pronote, fields, options)
 
-      const res = await addData(files, doctypes['timetable']['lesson'], {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
+      /*
+      [Strategy] : don't update past lessons, only update future lessons
+      */
+
+      const existing = await queryLessonsByDate(
+        fields,
+        options.dateFrom,
+        options.dateTo
+      )
+
+      // remove duplicates in files
+      const filtered = files.filter(file => {
+        const found = existing.find(item => {
+          // if item.cozyMetadata.updatedAt is less than today
+          const updated = new Date(item.cozyMetadata.updatedAt)
+          const today = new Date()
+          today.setHours(0, 0, 0, 0)
+          const updatedRecently = updated.getTime() > today.getTime()
+
+          // if item is more recent than today
+          if (new Date(item.start) > new Date()) {
+            if (!updatedRecently) {
+              return false
+            }
+          }
+
+          return item.label === file.label && item.start === file.start
+        })
+
+        return !found
       })
+
+      log(
+        'info',
+        `${filtered.length} new events to save out of ${files.length}`
+      )
+
+      const res = await updateOrCreate(
+        filtered,
+        DOCTYPE_TIMETABLE_LESSON,
+        ['start', 'label'],
+        {
+          sourceAccount: this.accountId,
+          sourceAccountIdentifier: fields.login
+        }
+      )
 
       resolve(res)
     } catch (error) {
@@ -133,43 +186,4 @@ async function init(pronote, fields, options) {
   })
 }
 
-async function dispatcher(pronote, fields, options) {
-  if (options['getLessonContent'] == false) {
-    return await init(pronote, fields, options)
-  } else {
-    const dates = create_dates(options)
-
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-    const data = []
-    let from = new Date(dates.from)
-    let to = new Date(dates.to)
-
-    while (from < to) {
-      let newTo = new Date(from)
-      newTo.setDate(newTo.getDate() + (options['saveFiles'] == false ? 5 : 3))
-
-      if (newTo > to) {
-        newTo = to
-      }
-
-      const res = await init(pronote, fields, {
-        ...options,
-        dateFrom: from,
-        dateTo: newTo
-      })
-
-      data.push(res)
-      from = new Date(newTo)
-      from.setDate(from.getDate() + 1)
-
-      await delay(
-        options.delay || (options['saveFiles'] == false ? 4000 : 6000)
-      )
-    }
-
-    return data
-  }
-}
-
-module.exports = dispatcher
+module.exports = init

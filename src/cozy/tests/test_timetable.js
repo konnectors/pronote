@@ -1,11 +1,11 @@
 const { cozyClient, manifest } = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
 const stack_log = require('../../utils/development/stack_log')
+const { DOCTYPE_TIMETABLE_LESSON } = require('../../constants')
 
 async function find_elements(pronote, fields, options) {
   const existingLessons = await cozyClient.data.findAll(
-    doctypes['timetable']['lesson']
+    DOCTYPE_TIMETABLE_LESSON
   )
   if (existingLessons.length === 0) {
     throw 'No lessons found'

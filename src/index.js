@@ -1,11 +1,13 @@
 // Importation des fonctions de cozy-konnector-libs
-const { BaseKonnector, log } = require('cozy-konnector-libs')
+const { BaseKonnector, log, cozyClient } = require('cozy-konnector-libs')
+const { Q } = require('cozy-client')
 
 // Importation de la fonction Pronote
 const { Pronote } = require('./fetch/session')
 
 // Importation de la fonction cozy_save
 const { cozy_save, cozy_test } = require('./cozy')
+const { queryIdentity } = require('./queries')
 
 // Exportation de la fonction start
 module.exports = new BaseKonnector(start)
@@ -23,13 +25,23 @@ async function start(fields, cozyParameters) {
       password: fields.password
     })
 
+    // Récupération des dates de début et de fin de l'année scolaire
+    let dateFrom = new Date(pronote.firstDate)
+    const dateTo = new Date(pronote.lastDate)
+
+    const identity_exists = await queryIdentity(fields)
+
+    if (identity_exists.length > 0) {
+      dateFrom = new Date()
+    }
+
     // Sauvegarde de l'identité de l'utilisateur
     await cozy_save('identity', pronote, fields)
 
     // Sauvegarde de l'emploi du temps de l'utilisateur (toute l'année scolaire)
     await cozy_save('timetable', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
+      dateFrom: dateFrom,
+      dateTo: dateTo,
       saveFiles: SHOULD_SAVE && false,
       getLessonContent: false // envoie une requête par jour (pas très bonne idée)
     })
@@ -37,9 +49,9 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des devoirs de l'utilisateur (toute l'année scolaire)
     await cozy_save('homeworks', pronote, fields, {
-      dateFrom: new Date(pronote.firstDate),
-      dateTo: new Date(pronote.lastDate),
-      saveFiles: SHOULD_SAVE && false
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      saveFiles: SHOULD_SAVE && true
     })
     await cozy_test('homeworks', pronote, fields)
 
@@ -51,7 +63,7 @@ async function start(fields, cozyParameters) {
 
     // Sauvegarde des évenements de l'utilisateur (toute l'année scolaire)
     await cozy_save('presence', pronote, fields, {
-      saveFiles: SHOULD_SAVE && false
+      saveFiles: SHOULD_SAVE && true
     })
     await cozy_test('presence', pronote, fields)
   } catch (err) {

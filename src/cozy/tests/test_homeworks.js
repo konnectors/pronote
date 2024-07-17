@@ -1,12 +1,10 @@
 const { cozyClient, manifest } = require('cozy-konnector-libs')
 
-const doctypes = require('../../consts/doctypes.json')
 const stack_log = require('../../utils/development/stack_log')
+const { DOCTYPE_HOMEWORK } = require('../../constants')
 
 async function find_elements(pronote, fields, options) {
-  const existingHws = await cozyClient.data.findAll(
-    doctypes['homeworks']['homework']
-  )
+  const existingHws = await cozyClient.data.findAll(DOCTYPE_HOMEWORK)
   if (existingHws.length === 0) {
     throw 'No homework found'
   }
