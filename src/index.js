@@ -48,12 +48,21 @@ async function start(fields) {
     const error = err.toString()
 
     if (error.trim() === "Error: You've been rate-limited.") {
+      // Pronote a bloqué temporairement l'adresse IP
+      // (généralement 5 min par 60 requêtes par minute ou 5 tentatives infructueuses)
       throw new Error('VENDOR_DOWN')
     } else if (
       error.trim() === 'Error: Your username or password is incorrect.'
     ) {
+      // Pronote ne reconnaît pas les identifiants
       throw new Error('LOGIN_FAILED')
     } else if (error.includes('Invalid URL')) {
+      // L'URL Pronote n'est pas valide
+      throw new Error('LOGIN_FAILED')
+    } else if (
+      JSON.stringify(err).toString().includes('Wrong user credentials')
+    ) {
+      // Toutatice / Educonnect ne reconnaît pas les identifiants
       throw new Error('LOGIN_FAILED')
     }
 
