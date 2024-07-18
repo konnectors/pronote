@@ -1,29 +1,33 @@
 // Librairie Pawnote
 const {
   authenticatePronoteCredentials,
-  PronoteApiAccountId,
-  authenticatePronoteQRCode
+  PronoteApiAccountId
 } = require('pawnote')
-
-const pronoteAPI = require('pronote-api-maintained')
-
-// Fonction qui génère un UUID
 const uuid = require('../utils/misc/uuid')
 const { log } = require('cozy-konnector-libs')
+const { Toutatice, isInstanceToutatice } = require('./toutatice')
 
-// Renvoie une session Pronote
+// creates a Pawnote session using the provided credentials
 async function Pronote({ url, login, password }) {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     try {
-      if (url.includes('pronote.toutatice.fr')) {
+      // Asks instance information to Pawnote to check if it's a Toutatice instance
+      const isToutatice = await isInstanceToutatice(url)
+
+      if (isToutatice) {
+        // use Toutatice function to authenticate using retrived tokens
         resolve(Toutatice({ url, login, password }))
       }
 
+      // creates a Pawnote session using the provided credentials
       const pronote = await authenticatePronoteCredentials(url, {
+        // account type (student by default)
         accountTypeID: PronoteApiAccountId.Student,
+        // provided credentials
         username: login,
         password: password,
+        // generate a random UUID for the device
         deviceUUID: uuid()
       })
 
@@ -37,42 +41,6 @@ async function Pronote({ url, login, password }) {
       reject(error)
     }
   })
-}
-
-async function Toutatice({ url, login, password }) {
-  const session = await pronoteAPI.login(url, login, password, 'toutatice')
-
-  const QRData = await pronoteAPI.request(session, 'JetonAppliMobile', {
-    donnees: {
-      code: '1234'
-    },
-    _Signature_: {
-      onglet: 7
-    }
-  })
-
-  const QRInfo = {
-    pinCode: QRData.RapportSaisie.code,
-    dataFromQRCode: {
-      jeton: QRData.donnees.jeton,
-      login: QRData.donnees.login,
-      url: url + 'mobile.eleve.html'
-    },
-    deviceUUID: uuid()
-  }
-
-  try {
-    const pronote = await authenticatePronoteQRCode(QRInfo)
-
-    log(
-      'info',
-      `Pronote session created [${pronote.username} : ${pronote.studentName}]`
-    )
-
-    return pronote
-  } catch (error) {
-    throw new Error('LOGIN_FAILED')
-  }
 }
 
 module.exports = {

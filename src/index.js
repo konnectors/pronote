@@ -12,7 +12,7 @@ module.exports = new BaseKonnector(start)
 
 // Variable globale pour savoir si on doit sauvegarder les fichiers
 const SHOULD_SAVE = false
-const SHOULD_GET_LESSON_CONTENT = false
+const SHOULD_GET_LESSON_CONTENT = false // ONLY for small requests, sends a request per course to get the content of the lesson
 const SAVES = ['timetable', 'homeworks', 'grades', 'presence']
 
 // Fonction start qui va être exportée
@@ -29,11 +29,11 @@ async function start(fields) {
 
     log('info', 'Pronote session initialized successfully : ' + pronote)
 
-    // Récupération des dates de début et de fin de l'année scolaire
+    // Gets school year dates
     let dateFrom = new Date(pronote.firstDate)
     const dateTo = new Date(pronote.lastDate)
 
-    // Sauvegarde de l'identité de l'utilisateur
+    // Saves user identity
     await cozy_save('identity', pronote, fields)
 
     SAVES.forEach(async save => {
@@ -41,28 +41,34 @@ async function start(fields) {
         dateFrom: dateFrom,
         dateTo: dateTo,
         saveFiles: SHOULD_SAVE && true,
-        getLessonContent: SHOULD_GET_LESSON_CONTENT // envoie une requête par jour (pas très bonne idée)
+        getLessonContent: SHOULD_GET_LESSON_CONTENT
       })
     })
   } catch (err) {
     const error = err.toString()
+    log('error', error)
 
     if (error.trim() === "Error: You've been rate-limited.") {
-      // Pronote a bloqué temporairement l'adresse IP
-      // (généralement 5 min par 60 requêtes par minute ou 5 tentatives infructueuses)
+      // Pronote temporarily blocked the IP address
+      // (usually 5 min/60 requests or 5 min/5 failed login attempts)
       throw new Error('VENDOR_DOWN')
     } else if (
       error.trim() === 'Error: Your username or password is incorrect.'
     ) {
-      // Pronote ne reconnaît pas les identifiants
+      // Pronote failed to login
       throw new Error('LOGIN_FAILED')
     } else if (error.includes('Invalid URL')) {
-      // L'URL Pronote n'est pas valide
+      // Pronote URL is invalid
       throw new Error('LOGIN_FAILED')
     } else if (
       JSON.stringify(err).toString().includes('Wrong user credentials')
     ) {
-      // Toutatice / Educonnect ne reconnaît pas les identifiants
+      // Toutatice / Educonnect failed to login
+      throw new Error('LOGIN_FAILED')
+    } else if (
+      JSON.stringify(err).toString().includes('Unable to resolve the challenge')
+    ) {
+      // Toutatice / Educonnect failed to login
       throw new Error('LOGIN_FAILED')
     }
 
