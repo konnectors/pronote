@@ -1,8 +1,4 @@
-const {
-  authenticatePronoteQRCode,
-  getPronoteInstanceInformation,
-  defaultPawnoteFetcher
-} = require('pawnote')
+const { authenticatePronoteQRCode } = require('pawnote')
 const uuid = require('../utils/misc/uuid')
 const { log } = require('cozy-konnector-libs')
 const pronoteAPI = require('pronote-api-maintained')
@@ -32,7 +28,7 @@ async function Toutatice({ url, login, password }) {
       // these tokens doesn't allow to log in but just allows us to generate final login tokens
       jeton: QRData.donnees.jeton,
       login: QRData.donnees.login,
-      // adding mobile app URL to log in to mobile API
+      // adding mobile app URL to log in to mobile API (Pawnote logs in using mobile API because it allows to regenerate final login tokens as much as we want)
       url: url + 'mobile.eleve.html'
     },
     // generates a random UUID for the device
@@ -54,12 +50,7 @@ async function Toutatice({ url, login, password }) {
   }
 }
 
-async function isInstanceToutatice(url) {
-  // Get data from infoMobileApp.json (contains info about the instance including ENT redirection)
-  const info = await getPronoteInstanceInformation(defaultPawnoteFetcher, {
-    pronoteURL: url
-  })
-
+async function isInstanceToutatice(info) {
   // Check if the instance is Toutatice (by checking the redirection URL)
   if (info.entURL.includes('toutatice.fr')) {
     return true
