@@ -13,34 +13,42 @@ const { queryAllGrades } = require('../../queries')
 async function get_grades(pronote) {
   const allGrades = []
 
+  // Get all periods (trimesters, semesters, etc.)
   const periods = pronote.periods
   for (const period of periods) {
+    // Get all grades for each period
     const gradesOverview = await pronote.getGradesOverview(period)
 
+    // For each grade, get the subject and add it to the list
     for (const grade of gradesOverview.grades) {
+      // Get the subject of the grade
       const subject = grade.subject
 
+      // Find the subject in the list of all subjects
       const subjectIndex = allGrades.findIndex(
         item => item.subject.name === subject.name && item.period === period
       )
+
+      // If the subject is not yet in the list, add it
       if (subjectIndex === -1) {
         allGrades.push({
           subject: subject,
           period: period,
           averages: {},
-          grades: []
+          grades: [grade]
         })
       }
 
-      const subjectIndex2 = allGrades.findIndex(
-        item => item.subject.name === subject.name && item.period === period
-      )
-      allGrades[subjectIndex2].grades.push(grade)
+      // Add the grade to the subject
+      allGrades[subjectIndex].grades.push(grade)
     }
 
+    // For each average, get the subject and add it to the list
     for (const average of gradesOverview.averages) {
+      // Get the subject of the average
       const subject = average.subject
 
+      // Find the subject in the list of all subjects
       const subjectIndex = allGrades.findIndex(
         item => item.subject.name === subject.name && item.period === period
       )
@@ -48,25 +56,25 @@ async function get_grades(pronote) {
         allGrades.push({
           subject: subject,
           period: period,
-          averages: {},
+          averages: average,
           grades: []
         })
       }
 
-      const subjectIndex2 = allGrades.findIndex(
-        item => item.subject.name === subject.name && item.period === period
-      )
-      allGrades[subjectIndex2].averages = average
+      allGrades[subjectIndex].averages = average
     }
   }
 
+  // Return the list of all grades
   return allGrades
 }
 
 async function create_grades(pronote, fields, options) {
+  // Get all grades
   const grades = await get_grades(pronote, fields, options)
   const data = []
 
+  // Get options
   let shouldSaveFiles = options['saveFiles']
   if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
     shouldSaveFiles = true
@@ -77,6 +85,7 @@ async function create_grades(pronote, fields, options) {
     `[Grades] : 💾 Saving ${shouldSaveFiles ? 'enabled' : 'disabled'}`
   )
 
+  // For each grade, create a doctype
   for (const grade of grades) {
     const pronoteString = findObjectByPronoteString(grade.subject?.name)
     const processedCoursName = pronoteString.label
@@ -85,8 +94,10 @@ async function create_grades(pronote, fields, options) {
     let subjectFiles = []
     let correctionFiles = []
 
+    // Files
     const evals = []
 
+    // For each file, save it and add it to the list of files
     for (const evl of grade.grades) {
       const id =
         new Date(evl.date).getTime() +
@@ -220,6 +231,7 @@ async function create_grades(pronote, fields, options) {
       evals.push(njs)
     }
 
+    // Create the doctype
     const json = {
       subject: processedCoursName,
       sourceSubject: grade.subject?.name || 'Cours',
