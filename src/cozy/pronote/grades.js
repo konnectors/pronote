@@ -37,10 +37,9 @@ async function get_grades(pronote) {
           averages: {},
           grades: [grade]
         })
+      } else {
+        allGrades[subjectIndex].grades.push(grade)
       }
-
-      // Add the grade to the subject
-      allGrades[subjectIndex].grades.push(grade)
     }
 
     // For each average, get the subject and add it to the list
@@ -56,12 +55,12 @@ async function get_grades(pronote) {
         allGrades.push({
           subject: subject,
           period: period,
-          averages: average,
+          averages: {},
           grades: []
         })
+      } else {
+        allGrades[subjectIndex].averages = average
       }
-
-      allGrades[subjectIndex].averages = average
     }
   }
 

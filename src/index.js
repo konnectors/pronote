@@ -31,6 +31,7 @@ async function start(fields) {
 
     // Gets school year dates
     let dateFrom = new Date(pronote.firstDate)
+    let dateToday = new Date()
     const dateTo = new Date(pronote.lastDate)
 
     // Saves user identity
@@ -38,7 +39,7 @@ async function start(fields) {
 
     SAVES.forEach(async save => {
       await cozy_save(save, pronote, fields, {
-        dateFrom: dateFrom,
+        dateFrom: SAVES === 'homeworks' ? dateToday : dateFrom,
         dateTo: dateTo,
         saveFiles: SHOULD_SAVE && true,
         getLessonContent: SHOULD_GET_LESSON_CONTENT
@@ -69,6 +70,8 @@ async function start(fields) {
       JSON.stringify(err).toString().includes('Unable to resolve the challenge')
     ) {
       // Toutatice / Educonnect failed to login
+      throw new Error('LOGIN_FAILED')
+    } else if (error.includes('LOGIN_FAILED')) {
       throw new Error('LOGIN_FAILED')
     }
 
