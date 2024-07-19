@@ -6,108 +6,102 @@ const extract_pronote_name = require('../../utils/format/extract_pronote_name')
 const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
 async function create_identity(pronote, fields) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async resolve => {
-    // Getting personal information
-    const information = await pronote.getPersonalInformation()
+  // Getting personal information
+  const information = await pronote.getPersonalInformation()
 
-    // Getting profile picture
-    const profile_pic = await save_profile_picture(pronote, fields)
+  // Getting profile picture
+  const profile_pic = await save_profile_picture(pronote, fields)
 
-    // Formatting the JSON
-    const json = await format_json(pronote, information, profile_pic)
+  // Formatting the JSON
+  const json = await format_json(pronote, information, profile_pic)
 
-    // Returning the identity
-    resolve(json)
-  })
+  // Returning the identity
+  return json
 }
 
 async function format_json(pronote, information, profile_pic) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async resolve => {
-    const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
-    const scAdress = etabInfo['Coordonnees']
+  const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
+  const scAdress = etabInfo['Coordonnees']
 
-    const address = []
+  const address = []
 
-    if (information.city && information.city.trim() !== '') {
-      address.push({
-        type: 'Personnal',
-        label: 'home',
-        city: information.city,
-        region: information.province,
-        street: information.address[0],
-        country: information.country,
-        code: information.postalCode,
-        formattedAddress: information.address.join(' ')
-      })
-    }
+  if (information.city && information.city.trim() !== '') {
+    address.push({
+      type: 'Personnal',
+      label: 'home',
+      city: information.city,
+      region: information.province,
+      street: information.address[0],
+      country: information.country,
+      code: information.postalCode,
+      formattedAddress: information.address.join(' ')
+    })
+  }
 
-    if (scAdress && scAdress['LibelleVille']) {
-      address.push({
-        type: 'School',
-        label: 'work',
-        city: scAdress['LibelleVille'],
-        region: scAdress['Province'],
-        street: scAdress['Adresse1'],
-        country: scAdress['Pays'],
-        code: scAdress['CodePostal'],
-        formattedAddress:
-          scAdress['Adresse1'] +
-          ', ' +
-          scAdress['CodePostal'] +
-          ' ' +
-          scAdress['LibelleVille'] +
-          ', ' +
-          scAdress['Pays']
-      })
-    }
+  if (scAdress && scAdress['LibelleVille']) {
+    address.push({
+      type: 'School',
+      label: 'work',
+      city: scAdress['LibelleVille'],
+      region: scAdress['Province'],
+      street: scAdress['Adresse1'],
+      country: scAdress['Pays'],
+      code: scAdress['CodePostal'],
+      formattedAddress:
+        scAdress['Adresse1'] +
+        ', ' +
+        scAdress['CodePostal'] +
+        ' ' +
+        scAdress['LibelleVille'] +
+        ', ' +
+        scAdress['Pays']
+    })
+  }
 
-    const identifier = gen_pronoteIdentifier(pronote)
+  const identifier = gen_pronoteIdentifier(pronote)
 
-    const identity = {
-      // _id: genUUID(),
-      source: 'connector',
-      identifier: identifier,
-      contact: {
-        fullname: pronote.studentName && pronote.studentName,
-        name: pronote.studentName && extract_pronote_name(pronote.studentName),
-        email: information.email && [
-          {
-            address: information.email,
-            type: 'Profressional',
-            label: 'work',
-            primary: true
-          }
-        ],
-        phone: information.phone && [
-          {
-            number: information.phone,
-            type: 'Personnal',
-            label: 'home',
-            primary: true
-          }
-        ],
-        address: address,
-        company: pronote.schoolName,
-        jobTitle: 'Élève de ' + pronote.studentClass
-      },
-      student: {
-        ine: information.INE,
-        class: pronote.studentClass,
-        school: pronote.schoolName
-      },
-      relationships: profile_pic &&
-        profile_pic['_id'] && {
-          picture: {
-            // photo de profil
-            data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
-          }
+  const identity = {
+    // _id: genUUID(),
+    source: 'connector',
+    identifier: identifier,
+    contact: {
+      fullname: pronote.studentName && pronote.studentName,
+      name: pronote.studentName && extract_pronote_name(pronote.studentName),
+      email: information.email && [
+        {
+          address: information.email,
+          type: 'Profressional',
+          label: 'work',
+          primary: true
         }
-    }
+      ],
+      phone: information.phone && [
+        {
+          number: information.phone,
+          type: 'Personnal',
+          label: 'home',
+          primary: true
+        }
+      ],
+      address: address,
+      company: pronote.schoolName,
+      jobTitle: 'Élève de ' + pronote.studentClass
+    },
+    student: {
+      ine: information.INE,
+      class: pronote.studentClass,
+      school: pronote.schoolName
+    },
+    relationships: profile_pic &&
+      profile_pic['_id'] && {
+        picture: {
+          // photo de profil
+          data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
+        }
+      }
+  }
 
-    resolve(identity)
-  })
+  return identity
 }
 
 async function save_profile_picture(pronote, fields) {
