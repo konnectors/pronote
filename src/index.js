@@ -72,7 +72,8 @@ async function start(fields) {
       // Toutatice / Educonnect failed to login
       throw new Error('LOGIN_FAILED')
     } else if (error.includes('LOGIN_FAILED')) {
-      throw new Error('LOGIN_FAILED')
+      // If LOGIN_FAILED is thrown lower, the IP address is suspended OR Pronote / Toutatice / Educonnect is down
+      throw new Error('VENDOR_DOWN')
     }
 
     throw new Error('UNKNOWN_ERROR')
