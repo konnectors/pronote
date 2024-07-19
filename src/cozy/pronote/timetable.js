@@ -12,14 +12,18 @@ const { create_dates } = require('../../utils/misc/create_dates')
 const save_resources = require('../../utils/stack/save_resources')
 const { queryLessonsByDate } = require('../../queries')
 
+// Obtains timetable from Pronote
 async function get_timetable(pronote, fields, options) {
+  // Generate dates if needed (to get the full week or year)
   const dates = create_dates(options)
 
+  // Send request to get timetable
   const overview = await pronote.getTimetableOverviewForInterval(
     dates.from,
     dates.to
   )
 
+  // Parse timetable response with settings
   return overview.parse({
     withSuperposedCanceledClasses: false,
     withCanceledClasses: true,
@@ -27,10 +31,14 @@ async function get_timetable(pronote, fields, options) {
   })
 }
 
+// Process timetable and create doctypes
 async function create_timetable(pronote, fields, options) {
+  // Get timetable from Pronote
   const timetable = await get_timetable(pronote, fields, options)
+  // Empty array to store doctypes
   const data = []
 
+  // Get options
   let shouldSaveFiles = options['saveFiles']
   if (shouldSaveFiles === undefined || shouldSaveFiles === null) {
     shouldSaveFiles = true
@@ -52,15 +60,19 @@ async function create_timetable(pronote, fields, options) {
   )
 
   for (const lesson of timetable) {
+    // Get the formatted Cozy name
     const pronoteString = findObjectByPronoteString(lesson.subject?.name)
     const processedCoursName = pronoteString.label
     const prettyCoursName = pronoteString.pretty
 
+    // Fills relationships with resources
     let relationships = []
+    // Content of the lesson if available
     let content = null
 
     try {
       if (typeof lesson.getResource === 'function' && shouldGetContent) {
+        // API call to get the content of the lesson
         const resource = await lesson.getResource()
         content = resource && resource.contents && resource.contents[0]
 
@@ -78,11 +90,13 @@ async function create_timetable(pronote, fields, options) {
       log('error', `[Timetable] : 📕 Content error ${error}`)
     }
 
+    // Transform the dates to ISO strings
     const dates = {
       start: new Date(lesson.startDate).toISOString(),
       end: new Date(lesson.endDate).toISOString()
     }
 
+    // Status of the lesson (iCal spec)
     const status = lesson.canceled
       ? 'CANCELLED'
       : lesson.exempted
@@ -91,6 +105,7 @@ async function create_timetable(pronote, fields, options) {
       ? 'TEST'
       : 'CONFIRMED'
 
+    // Create the document
     let json = {
       start: dates.start,
       end: dates.end,
@@ -116,9 +131,11 @@ async function create_timetable(pronote, fields, options) {
           : null
     }
 
+    // Remove empty or useless fields
     data.push(preprocessDoctype(json))
   }
 
+  // Return the doctypes
   return data
 }
 
