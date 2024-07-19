@@ -128,33 +128,45 @@ async function init(pronote, fields, options) {
 
     /*
       [Strategy] : don't update past lessons, only update future lessons
-      */
+                   + don't update lessons that have been updated today
+           Why ? : past lessons never update, only future ones can be edited / cancelled
+    */
 
+    // query all lessons from dateFrom to dateTo
     const existing = await queryLessonsByDate(
       fields,
       options.dateFrom,
       options.dateTo
     )
 
-    // remove duplicates in files
+    // filtered contains only events to update
     const filtered = files.filter(file => {
+      // found returns true if the event is already in the database and doesn't need to be updated
       const found = existing.find(item => {
-        // if item.cozyMetadata.updatedAt is less than today
+        // get the last update date
         const updated = new Date(item.cozyMetadata.updatedAt)
+
+        // get today's date
         const today = new Date()
         today.setHours(0, 0, 0, 0)
+
+        // has the item been updated today ?
         const updatedRecently = updated.getTime() > today.getTime()
 
-        // if item is more recent than today
+        // if the lesson is in the future, it can be updated
         if (new Date(item.start) > new Date()) {
+          // only update if the lesson has not been updated
           if (!updatedRecently) {
+            // needs an update since it's in the future and hasn't been updated today
             return false
           }
         }
 
+        // else, match the label and start date to know if the event is already in the database
         return item.label === file.label && item.start === file.start
       })
 
+      // only return files that are not found or that needs an update (returned false)
       return !found
     })
 
