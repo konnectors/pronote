@@ -17,7 +17,7 @@ async function Toutatice({ url, login, password }) {
   const QRData = await pronoteAPI.request(session, 'JetonAppliMobile', {
     donnees: {
       // We're using a random 4-digit code as a PIN code, it's used to sign the QR code data (handled by Pawnote)
-      code: Math.floor(1000 + Math.random() * 9000)
+      code: Math.floor(1000 + Math.random() * 9000).toString()
     },
     _Signature_: {
       onglet: 7
