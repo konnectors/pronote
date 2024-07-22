@@ -52,7 +52,7 @@ async function Toutatice({ url, login, password }) {
 
 async function isInstanceToutatice(info) {
   // Check if the instance is Toutatice (by checking the redirection URL)
-  if (info.entURL.includes('toutatice.fr')) {
+  if (info.entURL && info.entURL.includes('toutatice.fr')) {
     return true
   } else {
     return false
