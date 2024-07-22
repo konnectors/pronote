@@ -26,7 +26,10 @@ async function Pronote({ url, login, password }) {
     // Asks instance information to Pawnote to check if it's a Toutatice instance
     const isToutatice = await isInstanceToutatice(info)
 
-    if (isToutatice) {
+    // Check if the URL uses the login=true parameter (bypasses ENT redirection)
+    const usesLoginTrue = url.includes('login=true')
+
+    if (isToutatice && !usesLoginTrue) {
       // use Toutatice function to authenticate using retrived tokens
       return Toutatice({ url: pronoteURL, login, password })
     }
