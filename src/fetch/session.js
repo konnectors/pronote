@@ -12,9 +12,12 @@ const { Toutatice, isInstanceToutatice } = require('./toutatice')
 // creates a Pawnote session using the provided credentials
 async function Pronote({ url, login, password }) {
   try {
+    // Remove everything after /pronote/ in the URL
+    const newURL = url.split('/pronote')[0] + '/pronote/'
+
     // Get data from infoMobileApp.json (contains info about the instance including ENT redirection)
     const info = await getPronoteInstanceInformation(defaultPawnoteFetcher, {
-      pronoteURL: url
+      pronoteURL: newURL
     })
 
     // Get the URL of the instance (with a trailing slash to add the mobile.eleve.html endpoint)
