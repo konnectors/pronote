@@ -10,6 +10,7 @@ module.exports = {
   PATH_HOMEWORK_FILE: 'Documents/{subject}/Devoirs/',
   PATH_HOMEWORK_RETURNED: 'Documents/{subject}/Rendus/',
   PATH_GRADE: 'Notes/',
+  PATH_GRADE_REPORT: 'Notes/Bulletins/',
   PATH_GRADE_SUBJECT: 'Documents/{subject}/Sujets de devoirs/',
   PATH_GRADE_CORRECTION: 'Documents/{subject}/Corrections/'
 }

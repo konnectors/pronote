@@ -3,7 +3,8 @@ const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
 const {
   DOCTYPE_GRADE,
   PATH_GRADE_SUBJECT,
-  PATH_GRADE_CORRECTION
+  PATH_GRADE_CORRECTION,
+  PATH_GRADE_REPORT
 } = require('../../constants')
 
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
@@ -15,6 +16,8 @@ async function get_grades(pronote) {
 
   // Get all periods (trimesters, semesters, etc.)
   const periods = pronote.periods
+
+  // For each period, get all grades
   for (const period of periods) {
     // Get all grades for each period
     const gradesOverview = await pronote.getGradesOverview(period)
@@ -66,6 +69,56 @@ async function get_grades(pronote) {
 
   // Return the list of all grades
   return allGrades
+}
+
+async function getReports(pronote) {
+  const allReports = []
+
+  // Get all reports
+  const reportPeriods = pronote.readPeriodsForGradesReport()
+  for (const period of reportPeriods) {
+    try {
+      const reportURL = await pronote.generateGradesReportPDF(period)
+      allReports.push({
+        period: period.name,
+        url: reportURL
+      })
+    } catch (error) {
+      log('warn', 'Could not fetch report for period:', period.name)
+    }
+  }
+
+  return allReports
+}
+
+async function saveReports(pronote, fields) {
+  const reports = await getReports(pronote)
+  const filesToDownload = []
+
+  for (const report of reports) {
+    const extension = 'pdf'
+    let fileName = `Bulletin du ${report.period}`
+
+    filesToDownload.push({
+      filename: `${fileName}.${extension}`,
+      fileurl: report.url,
+      shouldReplaceFile: false,
+      subPath: PATH_GRADE_REPORT,
+      fileAttributes: {
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    })
+  }
+
+  const data = await saveFiles(filesToDownload, fields, {
+    sourceAccount: this.accountId,
+    sourceAccountIdentifier: fields.login,
+    concurrency: 1,
+    validateFile: () => true
+  })
+
+  return data
 }
 
 async function create_grades(pronote, fields, options) {
@@ -295,6 +348,8 @@ async function init(pronote, fields, options) {
         sourceAccountIdentifier: fields.login
       }
     )
+
+    await saveReports(pronote, fields, options)
 
     return res
   } catch (error) {
