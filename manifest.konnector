@@ -11,16 +11,13 @@
   "categories": ["education"],
   "fields": {
     "pronote_url": {
-      "type": "text",
-      "label": "pronote_login_url"
+      "type": "text"
     },
     "login": {
-      "type": "text",
-      "label": "pronote_login_login"
+      "type": "text"
     },
     "password": {
-      "type": "password",
-      "label": "pronote_login_password"
+      "type": "password"
     }
   },
   "folders": [{"defaultDir": "$administrative/$konnector/$account"}],
@@ -52,12 +49,13 @@
   "langs": ["fr"],
   "locales": {
     "fr": {
+      "fields": {
+        "pronote_url": {
+          "label": "URL PRONOTE de l'établissement"
+        }
+      },
       "short_description": "Ce connecteur récupère vos données d'élève sur le service Pronote",
       "long_description": "Ce connecteur récupère vos données d'élève sur le service Pronote. Il peut récupérer votre emploi du temps, vos notes, vos moyennes, vos devoirs à faire, votre profil d'élève et vos informations de vie scolaire. Il peut également sauvegarder vos documents, devoirs rendus, fichiers de leçon, corrections, et plus encore.",
-      "pronote_login_account_type": "Type de compte",
-      "pronote_login_url": "URL de l'instance PRONOTE",
-      "pronote_login_login": "Identifiant",
-      "pronote_login_password": "Mot de passe",
       "permissions": {
         "files": {
           "description": "Utilisé pour sauvegarder les documents tels que les devoirs rendus, les fichiers de leçon, etc."
@@ -77,6 +75,5 @@
       }
     }
   },
-  "banksTransactionRegExp": "\\bbooks\\b",
   "manifest_version": "2"
 }
