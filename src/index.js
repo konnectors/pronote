@@ -11,7 +11,7 @@ const { cozy_save } = require('./cozy')
 module.exports = new BaseKonnector(start)
 
 // Variable globale pour savoir si on doit sauvegarder les fichiers
-const SHOULD_SAVE = false
+const SHOULD_SAVE = true
 const SHOULD_GET_LESSON_CONTENT = false // ONLY for small requests, sends a request per course to get the content of the lesson
 const SAVES = ['timetable', 'homeworks', 'grades', 'presence']
 
