@@ -47,6 +47,7 @@
     "url": "https://cozy.io"
   },
   "langs": ["fr"],
+  "frequency": "daily",
   "locales": {
     "fr": {
       "fields": {
@@ -55,7 +56,7 @@
         }
       },
       "short_description": "Ce connecteur récupère vos données d'élève sur le service Pronote",
-      "long_description": "Ce connecteur récupère vos données d'élève sur le service Pronote. Il peut récupérer votre emploi du temps, vos notes, vos moyennes, vos devoirs à faire, votre profil d'élève et vos informations de vie scolaire. Il peut également sauvegarder vos documents, devoirs rendus, fichiers de leçon, corrections, et plus encore.",
+      "long_description": "Ce connecteur récupère vos données d'élève sur le service Pronote. A l'aide d'identifiants d'élève de votre établissement ou de votre région, accédez a l'ensemble de vos données scolaires. \n\n<br>**Ce connecteur regroupe ces données pour vous en un clin d'oeil :**\n\n- Votre emploi du temps\n- Vos devoirs & travaux rendus\n- Vos notes et corrections\n- Vos notifications de retard ou d'absence\n- Vos bulletins scolaires",
       "permissions": {
         "files": {
           "description": "Utilisé pour sauvegarder les documents tels que les devoirs rendus, les fichiers de leçon, etc."
