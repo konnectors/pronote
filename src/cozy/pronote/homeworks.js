@@ -9,12 +9,12 @@ const {
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
-const { create_dates, getIcalDate } = require('../../utils/misc/create_dates')
+const { createDates, getIcalDate } = require('../../utils/misc/createDates')
 const save_resources = require('../../utils/stack/save_resources')
 const { queryFilesByName, queryHomeworksByDate } = require('../../queries')
 
 async function get_homeworks(pronote, fields, options) {
-  const dates = create_dates(options)
+  const dates = createDates(options)
   const overview = await pronote.getHomeworkForInterval(dates.from, dates.to)
 
   return {
@@ -22,7 +22,7 @@ async function get_homeworks(pronote, fields, options) {
   }
 }
 
-async function create_homeworks(pronote, fields, options) {
+async function createHomeworks(pronote, fields, options) {
   const interval = await get_homeworks(pronote, fields, options)
   const homeworks = interval.homeworks
 
@@ -143,7 +143,7 @@ async function create_homeworks(pronote, fields, options) {
 
 async function init(pronote, fields, options) {
   try {
-    let files = await create_homeworks(pronote, fields, options)
+    let files = await createHomeworks(pronote, fields, options)
 
     /*
       [Strategy] : don't update past homeworks, only update future homeworks

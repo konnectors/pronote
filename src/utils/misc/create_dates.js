@@ -1,4 +1,4 @@
-function create_dates(options) {
+function createDates(options) {
   // Setting the date range
   const dateFrom = options.dateFrom || new Date()
   const dateTo = options.dateTo || new Date()
@@ -28,6 +28,6 @@ function getIcalDate(date) {
 }
 
 module.exports = {
-  create_dates,
+  createDates,
   getIcalDate
 }

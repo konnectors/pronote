@@ -121,7 +121,7 @@ async function saveReports(pronote, fields) {
   return data
 }
 
-async function create_grades(pronote, fields, options) {
+async function createGrades(pronote, fields, options) {
   // Get all grades
   const grades = await get_grades(pronote, fields, options)
   const data = []
@@ -318,7 +318,7 @@ async function create_grades(pronote, fields, options) {
 
 async function init(pronote, fields, options) {
   try {
-    let files = await create_grades(pronote, fields, options)
+    let files = await createGrades(pronote, fields, options)
 
     /*
     [Strategy] : don't update grades, they stay the same

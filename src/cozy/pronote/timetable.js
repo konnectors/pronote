@@ -8,14 +8,14 @@ const {
 const findObjectByPronoteString = require('../../utils/format/format_cours_name')
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const remove_html = require('../../utils/format/remove_html')
-const { create_dates } = require('../../utils/misc/create_dates')
+const { createDates } = require('../../utils/misc/createDates')
 const save_resources = require('../../utils/stack/save_resources')
 const { queryLessonsByDate } = require('../../queries')
 
 // Obtains timetable from Pronote
 async function get_timetable(pronote, fields, options) {
   // Generate dates if needed (to get the full week or year)
-  const dates = create_dates(options)
+  const dates = createDates(options)
 
   // Send request to get timetable
   const overview = await pronote.getTimetableOverviewForInterval(
@@ -32,7 +32,7 @@ async function get_timetable(pronote, fields, options) {
 }
 
 // Process timetable and create doctypes
-async function create_timetable(pronote, fields, options) {
+async function createTimetable(pronote, fields, options) {
   // Get timetable from Pronote
   const timetable = await get_timetable(pronote, fields, options)
   // Empty array to store doctypes
@@ -141,7 +141,7 @@ async function create_timetable(pronote, fields, options) {
 
 async function init(pronote, fields, options) {
   try {
-    const files = await create_timetable(pronote, fields, options)
+    const files = await createTimetable(pronote, fields, options)
 
     /*
       [Strategy] : don't update past lessons, only update future lessons

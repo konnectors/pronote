@@ -1,4 +1,4 @@
-const cozy_lesson_formats = require('../../consts/cozy_lesson_formats.json')
+const cozyLessonFormats = require('../../consts/cozy_lesson_formats.json')
 
 String.prototype.uppercaseFirst = function () {
   return this.charAt(0).toUpperCase() + this.slice(1)
@@ -33,7 +33,7 @@ function findObjectByPronoteString(pronoteString = '') {
   processedString = processedString.replace(/\s+/g, ' ')
 
   // Search for the object in the data
-  for (let item of cozy_lesson_formats) {
+  for (let item of cozyLessonFormats) {
     for (let format of item.formats.default) {
       if (format.toLowerCase() === processedString) {
         return item

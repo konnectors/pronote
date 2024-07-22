@@ -25,7 +25,7 @@ async function get_presence(pronote) {
   return allPresence
 }
 
-async function create_presence(pronote, fields, options) {
+async function createPresence(pronote, fields, options) {
   const presence = await get_presence(pronote, fields, options)
   const data = []
 
@@ -74,7 +74,7 @@ async function create_presence(pronote, fields, options) {
 
 async function init(pronote, fields, options) {
   try {
-    let files = await create_presence(pronote, fields, options)
+    let files = await createPresence(pronote, fields, options)
 
     /*
     [Strategy] : only update events that are NOT justified yet
