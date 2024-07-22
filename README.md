@@ -15,14 +15,16 @@ What's implemented ?
 --------------------
 - **Login to Pronote**
   + [x] Basic (username / password / url) authentification
-  + [ ] CAS/ENT authentification
-  + [ ] QR-Code authentification
+  + CAS/ENT authentification
+    + [x] Toutatice (via Educonnect)
+    + Generic ENTs (implemented but not enabled)
 - **Main features**
   + [x] Fetching student data
   + [x] Fetching student timetable
   + [x] Fetching student homework
   + [x] Fetching student grades
   + [x] Fetching student attendance
+  + [x] Fetching student reports
 - **Secondary features**
   + [x] Downloading files to Cozy Drive
 
@@ -33,10 +35,10 @@ Main doctypes
 | ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Student identity | `io.cozy.identities`        |                                                                                                                                              |
 | Timetable     | `io.cozy.calendar.event`    |                                                                                                                                              |
-| Lesson content   | `io.cozy.calendar.event`    | (inhérent à l’emploi du temps)                                                                                                               |
+| Lesson content   | `io.cozy.calendar.event`    | (same as timetable)                                                                                                               |
 | Homework             | `io.cozy.calendar.todos`    |                                                                                                                                              |
 | Grades               | `io.cozy.timeseries.grades` |                                                                                                                                              |
-| Attendance        | `io.cozy.calendar.presence` | Tout événement (retard, absence) partage le même doctype                                                                                     |
+| Attendance        | `io.cozy.calendar.presence` | All events (delays, etc) share the same doctype                                                                                     |
 
 What is this konnector about ?
 ------------------------------
@@ -60,7 +62,7 @@ Create a `konnector-dev-config.json` file at the root with your test credentials
   "fields": {
     "login":"demonstration",
     "password":"pronotevs",
-    "url":"https://demo.index-education.net/pronote/eleve.html"
+    "pronote_url":"https://demo.index-education.net/pronote/eleve.html"
   }
 }
 ```
