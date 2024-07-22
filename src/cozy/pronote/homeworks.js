@@ -17,11 +17,15 @@ async function get_homeworks(pronote, fields, options) {
   const dates = create_dates(options)
   const overview = await pronote.getHomeworkForInterval(dates.from, dates.to)
 
-  return overview
+  return {
+    homeworks: overview
+  }
 }
 
 async function create_homeworks(pronote, fields, options) {
-  const homeworks = await get_homeworks(pronote, fields, options)
+  const interval = await get_homeworks(pronote, fields, options)
+  const homeworks = interval.homeworks
+
   const data = []
 
   let shouldSaveFiles = options['saveFiles']
@@ -39,14 +43,13 @@ async function create_homeworks(pronote, fields, options) {
     const processedCoursName = pronoteString.label
     const prettyCoursName = pronoteString.pretty
 
-    const resource = await homework.getResource()
     let relationships = []
     let returned = []
 
     if (shouldSaveFiles) {
-      if (resource) {
+      if (homework.attachments && homework.attachments.length > 0) {
         relationships = await save_resources(
-          resource,
+          homework.attachments,
           PATH_HOMEWORK_FILE,
           homework.deadline,
           prettyCoursName,
@@ -138,13 +141,20 @@ async function create_homeworks(pronote, fields, options) {
   return data
 }
 
-async function init(pronote, fields, options, existing) {
+async function init(pronote, fields, options) {
   try {
     let files = await create_homeworks(pronote, fields, options)
 
     /*
       [Strategy] : don't update past homeworks, only update future homeworks
-      */
+    */
+
+    // get existing homeworks
+    const existing = await queryHomeworksByDate(
+      fields,
+      options.dateFrom,
+      options.dateTo
+    )
 
     // remove duplicates in files
     const filtered = files.filter(file => {
@@ -201,51 +211,4 @@ async function init(pronote, fields, options, existing) {
   }
 }
 
-async function dispatcher(pronote, fields, options) {
-  const dates = create_dates(options)
-
-  const existing = await queryHomeworksByDate(
-    fields,
-    options.dateFrom,
-    options.dateTo
-  )
-
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
-  const data = []
-  let from = new Date(dates.from)
-  let to = new Date(dates.to)
-
-  // from should be the latest monday
-  from.setDate(from.getDate() - from.getDay() + 1)
-
-  while (from < to) {
-    let newTo = new Date(from)
-    newTo.setDate(newTo.getDate() + 7)
-
-    if (newTo > to) {
-      newTo = to
-    }
-
-    const res = await init(
-      pronote,
-      fields,
-      {
-        ...options,
-        dateFrom: from,
-        dateTo: newTo
-      },
-      existing
-    )
-
-    data.push(res)
-    from = new Date(newTo)
-    from.setDate(from.getDate() + 1)
-
-    await delay(options.delay || 1000)
-  }
-
-  return data
-}
-
-module.exports = dispatcher
+module.exports = init

@@ -3,7 +3,7 @@ const use_stream = require('../../utils/misc/use_stream')
 const { queryFilesByName } = require('../../queries')
 
 const save_resources = async (
-  resource,
+  resources,
   subPath,
   startDate,
   prettyCoursName,
@@ -12,73 +12,68 @@ const save_resources = async (
   const filesToDownload = []
   const relationships = []
 
-  for (const resourceContent of resource.contents) {
-    const date = new Date(startDate)
-    const prettyDate = date.toLocaleDateString('fr-FR', {
-      month: 'short',
-      day: '2-digit',
-      weekday: 'short'
-    })
+  const date = new Date(startDate)
+  const prettyDate = date.toLocaleDateString('fr-FR', {
+    month: 'short',
+    day: '2-digit',
+    weekday: 'short'
+  })
 
-    let path = subPath
-    path = path.replace('{subject}', prettyCoursName)
+  let path = subPath
+  path = path.replace('{subject}', prettyCoursName)
 
-    for (const file of resourceContent.files) {
-      if (file.type == 1) {
-        // Downloadable file
-        const extension = file.name.split('.').pop()
-        let fileName = file.name.replace(/\.[^/.]+$/, '')
+  for (const file of resources) {
+    if (file.type == 1) {
+      // Downloadable file
+      const extension = file.name.split('.').pop()
+      let fileName = file.name.replace(/\.[^/.]+$/, '')
 
-        const exists = await queryFilesByName(
-          `${fileName} (${prettyDate}).${extension}`
-        )
+      const exists = await queryFilesByName(
+        `${fileName} (${prettyDate}).${extension}`
+      )
 
-        if (exists.length > 0) {
-          continue
+      if (exists.length > 0) {
+        continue
+      }
+
+      filesToDownload.push({
+        filename: `${fileName} (${prettyDate}).${extension}`,
+        fileurl: file.url,
+        shouldReplaceFile: false,
+        subPath: path,
+        fileAttributes: {
+          created_at: date,
+          updated_at: date
         }
-
-        filesToDownload.push({
-          filename: `${fileName} (${prettyDate}).${extension}`,
-          fileurl: file.url,
-          shouldReplaceFile: false,
-          subPath: path,
-          fileAttributes: {
-            created_at: date,
-            updated_at: date
-          }
-        })
-      } else if (file.type == 0) {
-        // URL
-        const fileData = `[InternetShortcut]
+      })
+    } else if (file.type == 0) {
+      // URL
+      const fileData = `[InternetShortcut]
 URL=${file.url}`.trim()
 
-        const source = await use_stream(
-          fileData,
-          'application/internet-shortcut'
-        )
+      const source = await use_stream(fileData, 'application/internet-shortcut')
 
-        const extension = 'url'
-        let fileName = file.name
+      const extension = 'url'
+      let fileName = file.name
 
-        const exists = queryFilesByName(
-          `${fileName} (${prettyDate}).${extension}`
-        )
+      const exists = queryFilesByName(
+        `${fileName} (${prettyDate}).${extension}`
+      )
 
-        if (exists.length > 0) {
-          continue
-        }
-
-        filesToDownload.push({
-          filename: `${fileName} (${prettyDate}).${extension}`,
-          filestream: source,
-          shouldReplaceFile: false,
-          subPath: path,
-          fileAttributes: {
-            created_at: date,
-            updated_at: date
-          }
-        })
+      if (exists.length > 0) {
+        continue
       }
+
+      filesToDownload.push({
+        filename: `${fileName} (${prettyDate}).${extension}`,
+        filestream: source,
+        shouldReplaceFile: false,
+        subPath: path,
+        fileAttributes: {
+          created_at: date,
+          updated_at: date
+        }
+      })
     }
   }
 
