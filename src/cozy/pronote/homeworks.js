@@ -96,7 +96,7 @@ async function createHomeworks(pronote, fields, options) {
         const data = await saveFiles(filesToDownload, fields, {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
-          concurrency: 1,
+          concurrency: 3,
           validateFile: () => true
         })
 

@@ -119,7 +119,7 @@ async function save_profile_picture(pronote, fields) {
   const files = await saveFiles(documents, fields, {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
-    concurrency: 1,
+    concurrency: 3,
     validateFile: () => true
   })
 
