@@ -30,7 +30,7 @@ async function start(fields) {
       url: fields.pronote_url,
       login: fields.login,
       password: fields.password
-      })
+    })
     await this.notifySuccessfulLogin()
 
     log('info', 'Pronote session initialized successfully : ' + pronote)
