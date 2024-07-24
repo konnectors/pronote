@@ -76,5 +76,9 @@
       }
     }
   },
+  "features": [
+    "LOGIN_OK",
+    "SENTRY_V2"
+  ],
   "manifest_version": "2"
 }

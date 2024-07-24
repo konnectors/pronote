@@ -1,3 +1,7 @@
+process.env.SENTRY_DSN =
+  process.env.SENTRY_DSN ||
+  'https://417de448d3ca82b66be0698f6ad71d2b@errors.cozycloud.cc/77'
+
 // Importation des fonctions de cozy-konnector-libs
 const { BaseKonnector, log } = require('cozy-konnector-libs')
 
@@ -21,11 +25,13 @@ async function start(fields) {
     log('info', 'Starting Pronote connector')
 
     // Initialisation de la session Pronote
+    await this.deactivateAutoSuccessfulLogin()
     const pronote = await Pronote({
       url: fields.pronote_url,
       login: fields.login,
       password: fields.password
-    })
+      })
+    await this.notifySuccessfulLogin()
 
     log('info', 'Pronote session initialized successfully : ' + pronote)
 
