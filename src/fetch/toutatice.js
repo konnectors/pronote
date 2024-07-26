@@ -1,24 +1,24 @@
-const { authenticatePronoteQRCode } = require('pawnote')
-const uuid = require('../utils/misc/uuid')
-const { log } = require('cozy-konnector-libs')
-const pronoteAPI = require('pronote-api-maintained')
+const { authenticatePronoteQRCode } = require("pawnote");
+const uuid = require("../utils/misc/uuid");
+const { log } = require("cozy-konnector-libs");
+const pronoteAPI = require("pronote-api-maintained");
 
 async function Toutatice({ url, login, password }) {
   // uses pronote-api (deprecated) to login to the instance
   // pronote-api contains function to log into ENT using their SSO credentials, exposing an ENT-specific Pronote session, but the API is too old to be used as an entrypoint for data
-  const session = await pronoteAPI.login(url, login, password, 'toutatice')
+  const session = await pronoteAPI.login(url, login, password, "toutatice");
 
   // Sends to PRONOTE the API request to geenerate a mobile app token
   // The mobile app token allows to create a mobile app authentification code that can regenerate a new session
-  const QRData = await pronoteAPI.request(session, 'JetonAppliMobile', {
+  const QRData = await pronoteAPI.request(session, "JetonAppliMobile", {
     donnees: {
       // We're using a random 4-digit code as a PIN code, it's used to sign the QR code data (handled by Pawnote)
-      code: Math.floor(1000 + Math.random() * 9000).toString()
+      code: Math.floor(1000 + Math.random() * 9000).toString(),
     },
     _Signature_: {
-      onglet: 7
-    }
-  })
+      onglet: 7,
+    },
+  });
 
   // retreives the QR code data and the PIN code (sent back in response)
   const QRInfo = {
@@ -29,37 +29,37 @@ async function Toutatice({ url, login, password }) {
       jeton: QRData.donnees.jeton,
       login: QRData.donnees.login,
       // adding mobile app URL to log in to mobile API (Pawnote logs in using mobile API because it allows to regenerate final login tokens as much as we want)
-      url: url + 'mobile.eleve.html'
+      url: url + "mobile.eleve.html",
     },
     // generates a random UUID for the device
-    deviceUUID: uuid()
-  }
+    deviceUUID: uuid(),
+  };
 
   try {
     // Pawnote handles decryption of the QR code data and generates the final login tokens
-    const pronote = await authenticatePronoteQRCode(QRInfo)
+    const pronote = await authenticatePronoteQRCode(QRInfo);
 
     log(
-      'info',
+      "info",
       `Pronote session created [${pronote.username} : ${pronote.studentName}]`
-    )
+    );
 
-    return pronote
+    return pronote;
   } catch (error) {
-    throw new Error('LOGIN_FAILED')
+    throw new Error("TOUTATICE_ERR");
   }
 }
 
 async function isInstanceToutatice(info) {
   // Check if the instance is Toutatice (by checking the redirection URL)
-  if (info.entURL && info.entURL.includes('toutatice.fr')) {
-    return true
+  if (info.entURL && info.entURL.includes("toutatice.fr")) {
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
 module.exports = {
   Toutatice,
-  isInstanceToutatice
-}
+  isInstanceToutatice,
+};
