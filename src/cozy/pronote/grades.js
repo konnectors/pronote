@@ -114,7 +114,7 @@ async function saveReports(pronote, fields) {
   const data = await saveFiles(filesToDownload, fields, {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
-    concurrency: 1,
+    concurrency: 3,
     validateFile: () => true
   })
 
@@ -191,7 +191,7 @@ async function createGrades(pronote, fields, options) {
         const data = await saveFiles(filesToDownload, fields, {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
-          concurrency: 1,
+          concurrency: 3,
           validateFile: () => true
         })
 
@@ -241,7 +241,7 @@ async function createGrades(pronote, fields, options) {
         const data = await saveFiles(filesToDownload, fields, {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
-          concurrency: 1,
+          concurrency: 3,
           validateFile: () => true
         })
 
