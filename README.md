@@ -34,8 +34,8 @@ Main doctypes
 | Data  | Doctype                   | Commentaire                                                                                                                                  |
 | ------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Student identity | `io.cozy.identities`        |                                                                                                                                              |
-| Timetable     | `io.cozy.calendar.event`    |                                                                                                                                              |
-| Lesson content   | `io.cozy.calendar.event`    | (same as timetable)                                                                                                               |
+| Timetable     | `io.cozy.calendar.events`    |                                                                                                                                              |
+| Lesson content   | `io.cozy.calendar.events`    | (same as timetable)                                                                                                               |
 | Homework             | `io.cozy.calendar.todos`    |                                                                                                                                              |
 | Grades               | `io.cozy.timeseries.grades` |                                                                                                                                              |
 | Attendance        | `io.cozy.calendar.presence` | All events (delays, etc) share the same doctype                                                                                     |
