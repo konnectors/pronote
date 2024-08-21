@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.5.0",
   "name": "Pronote",
   "type": "konnector",
   "language": "node",
