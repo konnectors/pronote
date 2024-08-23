@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
+  "version": "2.7.0",
   "name": "Pronote",
   "type": "konnector",
   "language": "node",
@@ -61,6 +61,9 @@
   "locales": {
     "fr": {
       "fields": {
+        "login": {
+          "label": "Identifiant de l'élève"
+        },
         "pronote_url": {
           "label": "URL PRONOTE de l'établissement"
         }
