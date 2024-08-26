@@ -97,6 +97,7 @@ async function createHomeworks(pronote, fields, options) {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
+          qualificationLabel: 'other_work_document', // Homework subject
           validateFile: () => true
         })
 
