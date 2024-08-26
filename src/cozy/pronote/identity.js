@@ -120,6 +120,7 @@ async function save_profile_picture(pronote, fields) {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
+    qualificationLabel: 'identity_photo', // Photo de classe
     validateFile: () => true
   })
 

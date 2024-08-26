@@ -115,6 +115,7 @@ async function saveReports(pronote, fields) {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
+    qualificationLabel: 'gradebook', // Grade report
     validateFile: () => true
   })
 
@@ -192,6 +193,7 @@ async function createGrades(pronote, fields, options) {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
+          qualificationLabel: 'other_work_document', // Given subject
           validateFile: () => true
         })
 
@@ -242,6 +244,7 @@ async function createGrades(pronote, fields, options) {
           sourceAccount: this.accountId,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
+          qualificationLabel: 'other_work_document', // Corrected subject
           validateFile: () => true
         })
 
