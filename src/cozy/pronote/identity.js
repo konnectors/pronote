@@ -95,7 +95,7 @@ async function format_json(pronote, information, profile_pic) {
     relationships: profile_pic &&
       profile_pic['_id'] && {
         picture: {
-          // photo de profil
+          // Profile picture
           data: { _id: profile_pic['_id'], _type: 'io.cozy.files' }
         }
       }
@@ -120,7 +120,7 @@ async function save_profile_picture(pronote, fields) {
     sourceAccount: this.accountId,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
-    qualificationLabel: 'identity_photo', // Photo de classe
+    qualificationLabel: 'identity_photo', // Class photo
     validateFile: () => true
   })
 
