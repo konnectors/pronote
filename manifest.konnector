@@ -68,8 +68,8 @@
           "label": "URL PRONOTE de l'établissement"
         }
       },
-      "short_description": "Ce connecteur récupère vos données d'élève sur le service Pronote",
-      "long_description": "Ce connecteur récupère vos données d'élève sur le service Pronote. A l'aide d'identifiants d'élève de votre établissement ou de votre région, accédez a l'ensemble de vos données scolaires. \n\n<br>**Ce connecteur regroupe ces données pour vous en un clin d'oeil :**\n\n- Votre emploi du temps\n- Vos devoirs & travaux rendus\n- Vos notes et corrections\n- Vos notifications de retard ou d'absence\n- Vos bulletins scolaires",
+      "short_description": "Ce connecteur récupère vos données d'élève depuis le service Pronote",
+      "long_description": "Ce connecteur récupère vos données depuis le service Pronote et les stocke dans votre Cozy. A l'aide des identifiants d'élève de votre établissement ou de votre région, accédez a l'ensemble de vos données scolaires, et conservez-les après chaque année scolaire. \n\n<br>**Ce connecteur regroupe ces données pour vous automatiquement :**\n\n- Votre emploi du temps\n- Vos devoirs & travaux rendus\n- Vos notes et corrections\n- Vos notifications de retard ou d'absence\n- Vos bulletins scolaires\n- Vos photos de profil\n\n<br>Vous pouvez visualiser ces données dans votre Cozy, notamment au travers d'applications comme Drive, Papillon ou MesPapiers.",
       "permissions": {
         "files": {
           "description": "Utilisé pour sauvegarder les documents tels que les devoirs rendus, les fichiers de leçon, etc."
