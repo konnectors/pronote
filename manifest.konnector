@@ -1,0 +1,97 @@
+{
+  "version": "2.8.0",
+  "name": "Pronote",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.svg",
+  "slug": "pronote",
+  "source": "git@github.com:konnectors/pronote.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
+  "categories": [
+    "education"
+  ],
+  "fields": {
+    "pronote_url": {
+      "type": "text"
+    },
+    "login": {
+      "type": "text"
+    },
+    "password": {
+      "type": "password"
+    }
+  },
+  "folders": [
+    {
+      "defaultDir": "$administrative/$konnector/$account"
+    }
+  ],
+  "data_types": [
+    "calendar",
+    "event",
+    "document"
+  ],
+  "screenshots": [],
+  "permissions": {
+    "files": {
+      "type": "io.cozy.files"
+    },
+    "calendar": {
+      "type": "io.cozy.calendar.*"
+    },
+    "grades": {
+      "type": "io.cozy.timeseries.grades"
+    },
+    "accounts": {
+      "type": "io.cozy.accounts"
+    },
+    "identities": {
+      "type": "io.cozy.identities"
+    }
+  },
+  "developer": {
+    "name": "Cozy",
+    "url": "https://cozy.io"
+  },
+  "langs": [
+    "fr"
+  ],
+  "frequency": "daily",
+  "locales": {
+    "fr": {
+      "fields": {
+        "login": {
+          "label": "Identifiant de l'élève"
+        },
+        "pronote_url": {
+          "label": "URL PRONOTE de l'établissement"
+        }
+      },
+      "short_description": "Ce connecteur récupère vos données d'élève depuis le service Pronote",
+      "long_description": "Ce connecteur récupère vos données depuis le service Pronote et les stocke dans votre Cozy. A l'aide des identifiants d'élève de votre établissement ou de votre région, accédez a l'ensemble de vos données scolaires, et conservez-les après chaque année scolaire. \n\n<br>**Ce connecteur regroupe ces données pour vous automatiquement :**\n\n- Votre emploi du temps\n- Vos devoirs & travaux rendus\n- Vos notes et corrections\n- Vos notifications de retard ou d'absence\n- Vos bulletins scolaires\n- Vos photos de profil\n\n<br>Vous pouvez visualiser ces données dans votre Cozy, notamment au travers d'applications comme Drive, Papillon ou MesPapiers.",
+      "permissions": {
+        "files": {
+          "description": "Utilisé pour sauvegarder les documents tels que les devoirs rendus, les fichiers de leçon, etc."
+        },
+        "calendar": {
+          "description": "Utilisé pour conserver votre emploi du temps, travaux à faire, événements de vie scolaire, etc."
+        },
+        "timeseries": {
+          "description": "Utilisé pour conserver vos notes, périodes scolaires, moyennes, etc."
+        },
+        "accounts": {
+          "description": "Utilisé pour obtenir et sauvegarder les informations de votre compte"
+        },
+        "identities": {
+          "description": "Utilisé pour sauvegarder vos données d'élève comme votre nom, votre classe, votre établissement, etc."
+        }
+      }
+    }
+  },
+  "features": [
+    "LOGIN_OK",
+    "SENTRY_V2"
+  ],
+  "manifest_version": "2"
+}
