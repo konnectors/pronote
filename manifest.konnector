@@ -69,7 +69,7 @@
         }
       },
       "short_description": "Accédez à l'ensemble de vos données scolaires, et conservez-les pour toujours.",
-      "long_description": "Ce connecteur sauvegarde vos données d'élève depuis le service Pronote à l'aide de vos identifiants d'élève et les sécurise pour votre usage personnel immédiat ou futur.\n\n<br> Vous pourrez visualiser ces données avec votre mobile ou votre ordinateur, dans votre Cozy, notamment au travers d'applications comme Drive, Papillon ou MesPapiers.\n\n<br> Ce connecteur regroupe ces données pour vous automatiquement :**\n\n- Emploi du temps\n- Devoirs & travaux rendus\n- Notes et corrections\n- Bulletins scolaires\n- Notifications de retard ou d'absence\n- ... Et même votre inénarrable photo de profil 🙂 !",
+      "long_description": "Ce connecteur **sauvegarde vos données d'élève** depuis le service Pronote à l'aide de vos identifiants d'élève et les sécurise **pour votre usage personnel immédiat ou futur.**\n\n<br> Vous pourrez visualiser ces données **avec votre mobile ou votre ordinateur**, dans votre Cozy, notamment au travers d'applications comme Drive, Papillon ou MesPapiers.\n\n<br> Vos données suivantes sont ainsi regroupées et **sauvegardées automatiquement** : :\n\n- Emploi du temps\n- Devoirs & travaux rendus\n- Notes et corrections\n- Bulletins scolaires\n- Notifications de retard ou d'absence\n- ... Et même votre inénarrable photo de profil 🙂 !",
       "permissions": {
         "files": {
           "description": "Utilisé pour sauvegarder les documents tels que les devoirs rendus, les fichiers de leçon, etc."
@@ -98,7 +98,7 @@
         }
       },
       "short_description": "Access all your school data and keep it forever.",
-      "long_description": "This connector saves your student data from the Pronote service using your student identifiers and secures it for your immediate or future personal use.\n\n<br> You can view these data on your mobile or computer, in your Cozy, particularly through applications like Drive, Papillon, or MesPapiers.\n\n<br> This connector automatically gathers these data for you:**\n\n- Timetable\n- Homework & assignments submitted\n- Grades and corrections\n- School report cards\n- Notifications of delay or absence\n- ... And even your unforgettable profile picture 🙂!",
+      "long_description": "This connector **saves your student data** from the Pronote service using your student identifiers and secures it **for your immediate or future personal use.**\n\n<br> You can view these data **on your mobile or computer**, in your Cozy, particularly through applications like Drive, Papillon, or MesPapiers.\n\n<br> These data are **automatically gathered:**\n\n- Timetable\n- Homework & assignments submitted\n- Grades and corrections\n- School report cards\n- Notifications of delay or absence\n- ... And even your unforgettable profile picture 🙂!",
       "permissions": {
         "files": {
           "description": "Used to save documents such as homework submitted, lesson files, etc."
