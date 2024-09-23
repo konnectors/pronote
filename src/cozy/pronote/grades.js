@@ -286,8 +286,14 @@ async function createGrades(pronote, fields, options) {
       evals.push(njs)
     }
 
-    const avgGrades =
-      evals.length === 1 ? evals[0].value.student : grade.averages.student
+    let avgGrades
+    if (evals.length === 1) {
+      // When there is only one eval, pronote does not give the student average
+      const scaleMult = 20 / evals[0].value.outOf // Necessary to normalise grades not on /20
+      avgGrades = evals[0].value.student * scaleMult
+    } else {
+      avgGrades = grade.averages.student
+    }
 
     // Create the doctype
     const json = {
