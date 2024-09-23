@@ -286,6 +286,9 @@ async function createGrades(pronote, fields, options) {
       evals.push(njs)
     }
 
+    const avgGrades =
+      evals.length === 1 ? evals[0].value.student : grade.averages.student
+
     // Create the doctype
     const json = {
       subject: processedCoursName,
@@ -294,7 +297,7 @@ async function createGrades(pronote, fields, options) {
       startDate: new Date(grade.period.start).toISOString(),
       endDate: new Date(grade.period.end).toISOString(),
       aggregation: {
-        avgGrades: grade.averages.student,
+        avgGrades: avgGrades,
         avgClass: grade.averages.class_average,
         maxClass: grade.averages.max,
         minClass: grade.averages.min
