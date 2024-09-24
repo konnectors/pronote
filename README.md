@@ -17,7 +17,7 @@ What's implemented ?
   + [x] Basic (username / password / url) authentification
   + CAS/ENT authentification
     + [x] Toutatice (via Educonnect)
-    + Generic ENTs (implemented but not enabled)
+    + [x] Generic ENTs (enabled for most ENT, still testing)
 - **Main features**
   + [x] Fetching student data
   + [x] Fetching student timetable
