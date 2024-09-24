@@ -7,7 +7,7 @@ const {
 } = require('pawnote')
 const uuid = require('../utils/misc/uuid')
 const { log } = require('cozy-konnector-libs')
-const { Toutatice, isInstanceToutatice } = require('./toutatice')
+const { ENTPronoteLogin, getCasName } = require('./ENT')
 
 // creates a Pawnote session using the provided credentials
 async function Pronote({ url, login, password }) {
@@ -24,14 +24,14 @@ async function Pronote({ url, login, password }) {
     const pronoteURL = info.pronoteRootURL + '/'
 
     // Asks instance information to Pawnote to check if it's a Toutatice instance
-    const isToutatice = await isInstanceToutatice(info)
+    const casName = await getCasName(info)
 
     // Check if the URL uses the login=true parameter (bypasses ENT redirection)
     const usesLoginTrue = url.includes('login=true')
 
-    if (isToutatice && !usesLoginTrue) {
-      // use Toutatice function to authenticate using retrived tokens
-      return Toutatice({ url: pronoteURL, login, password })
+    if (casName && !usesLoginTrue) {
+      // use ENT function to authenticate using retrived tokens
+      return ENTPronoteLogin({ url: pronoteURL, login, password, casName })
     }
 
     // creates a Pawnote session using the provided credentials
