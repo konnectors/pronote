@@ -59,8 +59,84 @@ function getCasName(info) {
   const url = info.entURL
   if (url.includes('ent.netocentre.fr')) {
     return 'ac-orleans-tours'
+  } else if (url.includes('cas.eclat-bfc.fr')) {
+    return 'ac-besancon'
+  } else if (url.includes('mon.lyceeconnecte.fr')) {
+    return 'ac-bordeaux'
+  } else if (url.includes('ent2d.ac-bordeaux.fr')) {
+    return 'ac-bordeaux2'
+  } else if (url.includes('fip.itslearning.com')) {
+    return 'ac-caen'
+    /* } else if (url.includes('cas.ent.auvergnerhonealpes.fr')) {
+    return 'ac-clermont'*/
+    /* } else if (url.includes('cas.eclat-bfc.fr')) {
+    return 'ac-dijon'*/
+    /* } else if (url.includes('cas.ent.auvergnerhonealpes.fr')) {
+    return 'ac-grenoble'*/
+  } else if (url.includes('cas.cybercolleges42.fr')) {
+    return 'cybercolleges42'
+  } else if (url.includes('cas.savoirsnumeriques62.fr')) {
+    return 'ac-lille'
+  } else if (url.includes('teleservices.ac-lille.fr')) {
+    return 'ac-lille2'
+    /* } else if (url.includes('mon.lyceeconnecte.fr')) {
+    return 'ac-limoges'*/
+  } else if (url.includes('cas.ent.auvergnerhonealpes.fr')) {
+    return 'ac-lyon'
+  } else if (url.includes('atrium-sud.fr')) {
+    return 'atrium-sud'
+  } else if (url.includes('cas.mon-ent-occitanie.fr')) {
+    return 'ac-montpellier'
+  } else if (url.includes('cas.monbureaunumerique.fr')) {
+    return 'ac-nancy-metz'
+    /* } else if (url.includes('cas.monbureaunumerique.fr')) {
+    return 'ac-nancy-metz'*/
+  } else if (url.includes('cas3.e-lyco.fr')) {
+    return 'ac-nantes'
+  } else if (url.includes('mon.lyceeconnecte.fr"')) {
+    return 'ac-poitiers'
+    /* } else if (url.includes('cas.monbureaunumerique.fr')) {
+    return 'ac-reims'*/
+  } else if (url.includes('cas.arsene76.fr')) {
+    return 'arsene76'
+  } else if (url.includes('nero.l-educdenormandie.fr')) {
+    return 'ac-rouen'
+    /* } else if (url.includes('cas.monbureaunumerique.fr')) {
+    return 'ac-strasbourg'*/
+    /* } else if (url.includes('cas.mon-ent-occitanie.fr')) {
+    return 'ac-toulouse'*/
+  } else if (url.includes('cas.moncollege.valdoise.fr')) {
+    return 'ac-valdoise'
+  } else if (url.includes('cas.agora06.fr')) {
+    return 'agora06'
+  } else if (url.includes('cas.ecollege.haute-garonne.fr')) {
+    return 'haute-garonne'
+  } else if (url.includes('enthdf.fr"')) {
+    return 'hdf'
+  } else if (url.includes('www.laclasse.com')) {
+    return 'laclasse'
+    /* } else if (url.includes('mon.lyceeconnecte.fr')) {
+    return 'lyceeconnecte'*/
+  } else if (url.includes('ent77.seine-et-marne.fr')) {
+    return 'seine-et-marne'
+  } else if (url.includes('college.entsomme.fr')) {
+    return 'somme'
+  } else if (url.includes('seshat.ac-orleans-tours.fr:8443')) {
+    return 'portail-famille'
   } else if (url.includes('www.toutatice.fr')) {
     return 'toutatice'
+  } else if (url.includes('ent.iledefrance.fr')) {
+    return 'iledefrance'
+  } else if (url.includes('www.moncollege-ent.essonne.fr')) {
+    return 'moncollege-essonne'
+  } else if (url.includes('ent.parisclassenumerique.fr')) {
+    return 'parisclassenumerique'
+  } else if (url.includes('cas.kosmoseducation.com')) {
+    return 'ljr-munich'
+  } else if (url.includes('cas.ent27.fr')) {
+    return 'eure-normandie'
+    /* } else if (url.includes('cas.monbureaunumerique.fr')) {
+    return 'monbureaunumerique-educonnect'*/
   } else {
     return undefined
   }
