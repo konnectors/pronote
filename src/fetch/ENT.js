@@ -123,7 +123,7 @@ function getCasName(info) {
     return 'somme'
   } else if (url.includes('seshat.ac-orleans-tours.fr:8443')) {
     return 'portail-famille'
-  } else if (url.includes('www.toutatice.fr')) {
+  } else if (url.includes('toutatice.fr')) {
     return 'toutatice'
   } else if (url.includes('ent.iledefrance.fr')) {
     return 'iledefrance'

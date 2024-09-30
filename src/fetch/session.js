@@ -25,6 +25,9 @@ async function Pronote({ url, login, password }) {
 
     // Asks instance information to Pawnote to check if it's a Toutatice instance
     const casName = await getCasName(info)
+    if (casName) {
+      log('debug', `Found a CAS name : ${casName}`)
+    }
 
     // Check if the URL uses the login=true parameter (bypasses ENT redirection)
     const usesLoginTrue = url.includes('login=true')
