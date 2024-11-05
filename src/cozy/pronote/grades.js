@@ -1,4 +1,5 @@
 const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
+const { gradesOverview: getGradesOverview, gradebookPDF } = require('pawnote')
 
 const {
   DOCTYPE_GRADE,
@@ -11,16 +12,16 @@ const findObjectByPronoteString = require('../../utils/format/format_cours_name'
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const { queryAllGrades } = require('../../queries')
 
-async function get_grades(pronote) {
+async function get_grades(session) {
   const allGrades = []
 
   // Get all periods (trimesters, semesters, etc.)
-  const periods = pronote.periods
+  const periods = session.instance.periods
 
   // For each period, get all grades
   for (const period of periods) {
     // Get all grades for each period
-    const gradesOverview = await pronote.getGradesOverview(period)
+    const gradesOverview = await getGradesOverview(session, period)
 
     // For each grade, get the subject and add it to the list
     for (const grade of gradesOverview.grades) {
@@ -46,7 +47,8 @@ async function get_grades(pronote) {
     }
 
     // For each average, get the subject and add it to the list
-    for (const average of gradesOverview.averages) {
+    for (const averageKey of ['classAverage', 'overallAveragegradesOvervie']) {
+      const average = gradesOverview[averageKey]
       // Get the subject of the average
       const subject = average.subject
 
@@ -71,14 +73,14 @@ async function get_grades(pronote) {
   return allGrades
 }
 
-async function getReports(pronote) {
+async function getReports(session) {
   const allReports = []
 
   // Get all reports
-  const reportPeriods = pronote.readPeriodsForGradesReport()
-  for (const period of reportPeriods) {
+  const periods = session.instance.periods
+  for (const period of periods) {
     try {
-      const reportURL = await pronote.generateGradesReportPDF(period)
+      const reportURL = await gradebookPDF(session, period)
       allReports.push({
         period: period.name,
         url: reportURL
@@ -122,9 +124,9 @@ async function saveReports(pronote, fields) {
   return data
 }
 
-async function createGrades(pronote, fields, options) {
+async function createGrades(session, fields, options) {
   // Get all grades
-  const grades = await get_grades(pronote, fields, options)
+  const grades = await get_grades(session, fields, options)
   const data = []
 
   // Get options
@@ -300,8 +302,8 @@ async function createGrades(pronote, fields, options) {
       subject: processedCoursName,
       sourceSubject: grade.subject?.name || 'Cours',
       title: grade.period.name,
-      startDate: new Date(grade.period.start).toISOString(),
-      endDate: new Date(grade.period.end).toISOString(),
+      startDate: new Date(grade.period.startDate).toISOString(),
+      endDate: new Date(grade.period.endDate).toISOString(),
       aggregation: {
         avgGrades: avgGrades,
         avgClass: grade.averages.class_average,
@@ -328,9 +330,9 @@ async function createGrades(pronote, fields, options) {
   return data
 }
 
-async function init(pronote, fields, options) {
+async function init(session, fields, options) {
   try {
-    let files = await createGrades(pronote, fields, options)
+    let files = await createGrades(session, fields, options)
 
     /*
     [Strategy] : don't update grades, they stay the same
@@ -361,7 +363,7 @@ async function init(pronote, fields, options) {
       }
     )
 
-    await saveReports(pronote, fields, options)
+    await saveReports(session, fields, options)
 
     return res
   } catch (error) {

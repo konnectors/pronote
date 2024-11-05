@@ -2,24 +2,24 @@ const identity = require('./pronote/identity')
 const timetable = require('./pronote/timetable')
 const homeworks = require('./pronote/homeworks')
 const grades = require('./pronote/grades')
-const presence = require('./pronote/presence')
+// const presence = require('./pronote/presence')
 const { log } = require('cozy-konnector-libs')
 
 const handlers = {
   identity,
   timetable,
   homeworks,
-  grades,
-  presence
+  grades
+  // presence
 }
 
-async function cozy_save(type, pronote, fields, options = {}) {
+async function cozy_save(type, session, fields, options = {}) {
   try {
     log('info', `🔁 Saving ${type}`)
 
     const handler = handlers[type]
     if (handler) {
-      return handler(pronote, fields, options)
+      return handler(session, fields, options)
     }
 
     return false

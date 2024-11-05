@@ -1,28 +1,26 @@
 const { saveFiles, log, saveIdentity } = require('cozy-konnector-libs')
+const { account } = require('pawnote')
 
 const { PATH_IDENTITY_PROFILE_PIC } = require('../../constants')
 
 const extract_pronote_name = require('../../utils/format/extract_pronote_name')
 const gen_pronoteIdentifier = require('../../utils/format/gen_pronoteIdentifier')
 
-async function createIdentity(pronote, fields) {
+async function createIdentity(session, fields) {
   // Getting personal information
-  const information = await pronote.getPersonalInformation()
+  const information = await account(session)
 
   // Getting profile picture
-  const profile_pic = await save_profile_picture(pronote, fields)
+  const profile_pic = await save_profile_picture(session, fields)
 
   // Formatting the JSON
-  const json = await format_json(pronote, information, profile_pic)
+  const json = await format_json(session, information, profile_pic)
 
   // Returning the identity
   return json
 }
 
-async function format_json(pronote, information, profile_pic) {
-  const etabInfo = pronote.user?.listeInformationsEtablissements['V'][0]
-  const scAdress = etabInfo['Coordonnees']
-
+async function format_json(session, information, profile_pic) {
   const address = []
 
   if (information.city && information.city.trim() !== '') {
@@ -38,39 +36,18 @@ async function format_json(pronote, information, profile_pic) {
     })
   }
 
-  if (scAdress && scAdress['LibelleVille']) {
-    address.push({
-      type: 'School',
-      label: 'work',
-      city: scAdress['LibelleVille'],
-      region: scAdress['Province'],
-      street: scAdress['Adresse1'],
-      country: scAdress['Pays'],
-      code: scAdress['CodePostal'],
-      formattedAddress:
-        scAdress['Adresse1'] +
-        ', ' +
-        scAdress['CodePostal'] +
-        ' ' +
-        scAdress['LibelleVille'] +
-        ', ' +
-        scAdress['Pays']
-    })
-  }
-
-  const identifier = gen_pronoteIdentifier(pronote)
+  const identifier = gen_pronoteIdentifier(session)
 
   const identity = {
-    // _id: genUUID(),
     source: 'connector',
     identifier: identifier,
     contact: {
-      fullname: pronote.studentName && pronote.studentName,
-      name: pronote.studentName && extract_pronote_name(pronote.studentName),
+      fullname: session.user.name && session.user.name,
+      name: session.user.name && extract_pronote_name(session.user.name),
       email: information.email && [
         {
           address: information.email,
-          type: 'Profressional',
+          type: 'Professional',
           label: 'work',
           primary: true
         }
@@ -84,13 +61,13 @@ async function format_json(pronote, information, profile_pic) {
         }
       ],
       address: address,
-      company: pronote.schoolName,
-      jobTitle: 'Élève de ' + pronote.studentClass
+      company: session.user.resources?.[0].establishmentName,
+      jobTitle: 'Élève de ' + session.user.resources?.[0].className
     },
     student: {
       ine: information.INE,
-      class: pronote.studentClass,
-      school: pronote.schoolName
+      class: session.user.resources?.[0].className,
+      school: session.user.resources?.[0].establishmentName
     },
     relationships: profile_pic &&
       profile_pic['_id'] && {
@@ -104,13 +81,13 @@ async function format_json(pronote, information, profile_pic) {
   return identity
 }
 
-async function save_profile_picture(pronote, fields) {
+async function save_profile_picture(session, fields) {
   log('info', `🖼️ Saving profile picture at ' + ${PATH_IDENTITY_PROFILE_PIC}`)
 
   const documents = [
     {
       filename: 'Photo de classe.jpg',
-      fileurl: pronote.studentProfilePictureURL,
+      fileurl: session.user.resources[0].profilePicture.url,
       shouldReplaceFile: false,
       subPath: PATH_IDENTITY_PROFILE_PIC
     }
@@ -128,9 +105,9 @@ async function save_profile_picture(pronote, fields) {
   return meta || null
 }
 
-async function init(pronote, fields) {
+async function init(session, fields) {
   try {
-    let identity = await createIdentity(pronote, fields)
+    let identity = await createIdentity(session, fields)
     log('info', '🗣️ Saving identity for ' + identity.identifier)
     return saveIdentity(identity, fields.login)
   } catch (error) {

@@ -1,4 +1,5 @@
 const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
+const { resourcesFromIntervals } = require('pawnote')
 
 const {
   DOCTYPE_HOMEWORK,
@@ -13,17 +14,17 @@ const { createDates, getIcalDate } = require('../../utils/misc/createDates')
 const save_resources = require('../../utils/stack/save_resources')
 const { queryFilesByName, queryHomeworksByDate } = require('../../queries')
 
-async function get_homeworks(pronote, fields, options) {
+async function get_homeworks(session, fields, options) {
   const dates = createDates(options)
-  const overview = await pronote.getHomeworkForInterval(dates.from, dates.to)
+  const overview = await resourcesFromIntervals(session, dates.from, dates.to)
 
   return {
     homeworks: overview
   }
 }
 
-async function createHomeworks(pronote, fields, options) {
-  const interval = await get_homeworks(pronote, fields, options)
+async function createHomeworks(session, fields, options) {
+  const interval = await get_homeworks(session, fields, options)
   const homeworks = interval.homeworks
 
   const data = []
@@ -142,9 +143,9 @@ async function createHomeworks(pronote, fields, options) {
   return data
 }
 
-async function init(pronote, fields, options) {
+async function init(session, fields, options) {
   try {
-    let files = await createHomeworks(pronote, fields, options)
+    let files = await createHomeworks(session, fields, options)
 
     /*
       [Strategy] : don't update past homeworks, only update future homeworks

@@ -17,7 +17,12 @@ module.exports = new BaseKonnector(start)
 // Variable globale pour savoir si on doit sauvegarder les fichiers
 const SHOULD_SAVE = true
 const SHOULD_GET_LESSON_CONTENT = false // ONLY for small requests, sends a request per course to get the content of the lesson
-const SAVES = ['timetable', 'homeworks', 'grades', 'presence']
+const SAVES = [
+  'timetable',
+  'homeworks',
+  'grades'
+  // 'presence'
+]
 
 // Fonction start qui va être exportée
 async function start(fields) {
@@ -26,25 +31,28 @@ async function start(fields) {
 
     // Initialisation de la session Pronote
     await this.deactivateAutoSuccessfulLogin()
-    const pronote = await Pronote({
-      url: fields.pronote_url,
-      login: fields.login,
-      password: fields.password
+    const session = await Pronote(fields, this.getAccountData())
+    await this.saveAccountData({
+      token: session.token,
+      navigatorIdentifier: session.navigatorIdentifier
     })
     await this.notifySuccessfulLogin()
 
-    log('info', 'Pronote session initialized successfully : ' + pronote)
+    log(
+      'info',
+      'Pronote session initialized successfully : ' + session.instance
+    )
 
     // Gets school year dates
-    let dateFrom = new Date(pronote.firstDate)
+    let dateFrom = new Date(session.instance.firstDate)
     let dateToday = new Date()
-    const dateTo = new Date(pronote.lastDate)
+    const dateTo = new Date(session.instance.lastDate)
 
     // Saves user identity
-    await cozy_save('identity', pronote, fields)
+    await cozy_save('identity', session, fields)
 
     SAVES.forEach(async save => {
-      await cozy_save(save, pronote, fields, {
+      await cozy_save(save, session, fields, {
         dateFrom: SAVES === 'homeworks' ? dateToday : dateFrom,
         dateTo: dateTo,
         saveFiles: SHOULD_SAVE && true,

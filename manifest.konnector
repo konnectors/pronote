@@ -12,14 +12,17 @@
     "education"
   ],
   "fields": {
-    "pronote_url": {
+    "url": {
       "type": "text"
     },
     "login": {
       "type": "text"
     },
-    "password": {
-      "type": "password"
+    "token": {
+      "type": "text"
+    },
+    "deviceUUID": {
+      "type": "text"
     }
   },
   "folders": [
