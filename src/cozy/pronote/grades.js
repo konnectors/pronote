@@ -47,14 +47,14 @@ async function get_grades(session) {
     }
 
     // For each average, get the subject and add it to the list
-    for (const averageKey of ['classAverage', 'overallAveragegradesOvervie']) {
+    for (const averageKey of ['classAverage', 'overallAveragegradesOverview']) {
       const average = gradesOverview[averageKey]
       // Get the subject of the average
-      const subject = average.subject
+      const subject = average?.subject
 
       // Find the subject in the list of all subjects
       const subjectIndex = allGrades.findIndex(
-        item => item.subject.name === subject.name && item.period === period
+        item => item.subject?.name === subject?.name && item?.period === period
       )
       if (subjectIndex === -1) {
         allGrades.push({
@@ -294,7 +294,7 @@ async function createGrades(session, fields, options) {
       const scaleMult = 20 / evals[0].value.outOf // Necessary to normalise grades not on /20
       avgGrades = evals[0].value.student * scaleMult
     } else {
-      avgGrades = grade.averages.student
+      avgGrades = grade.averages?.student
     }
 
     // Create the doctype
@@ -306,9 +306,9 @@ async function createGrades(session, fields, options) {
       endDate: new Date(grade.period.endDate).toISOString(),
       aggregation: {
         avgGrades: avgGrades,
-        avgClass: grade.averages.class_average,
-        maxClass: grade.averages.max,
-        minClass: grade.averages.min
+        avgClass: grade.averages?.class_average,
+        maxClass: grade.averages?.max,
+        minClass: grade.averages?.min
       },
       series: evals,
       relationships:
@@ -331,44 +331,40 @@ async function createGrades(session, fields, options) {
 }
 
 async function init(session, fields, options) {
-  try {
-    let files = await createGrades(session, fields, options)
+  let files = await createGrades(session, fields, options)
 
-    /*
+  /*
     [Strategy] : don't update grades, they stay the same
     */
 
-    const existing = await queryAllGrades()
+  const existing = await queryAllGrades()
 
-    // remove duplicates in files
-    const filtered = files.filter(file => {
-      const found = existing.find(item => {
-        return (
-          item.series.length === file.series.length &&
-          item.startDate === file.startDate &&
-          item.subject === file.subject
-        )
-      })
-
-      return !found
+  // remove duplicates in files
+  const filtered = files.filter(file => {
+    const found = existing.find(item => {
+      return (
+        item.series.length === file.series.length &&
+        item.startDate === file.startDate &&
+        item.subject === file.subject
+      )
     })
 
-    const res = await updateOrCreate(
-      filtered,
-      DOCTYPE_GRADE,
-      ['startDate', 'subject'],
-      {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      }
-    )
+    return !found
+  })
 
-    await saveReports(session, fields, options)
+  const res = await updateOrCreate(
+    filtered,
+    DOCTYPE_GRADE,
+    ['startDate', 'subject'],
+    {
+      sourceAccount: fields.account,
+      sourceAccountIdentifier: fields.login
+    }
+  )
 
-    return res
-  } catch (error) {
-    throw new Error(error)
-  }
+  await saveReports(session, fields, options)
+
+  return res
 }
 
 module.exports = init

@@ -3,10 +3,14 @@ const { loginToken, createSessionHandle } = require('pawnote')
 // const fs = require('fs')
 
 // creates a Pawnote session using the provided credentials
-async function Pronote(fields, accountData) {
+async function Pronote({ url, login, token, deviceUUID }, accountData) {
   const session = createSessionHandle()
-  await tryLogin(session, { ...fields, kind: 6 }, accountData)
-  return session
+  const loginResult = await tryLogin(
+    session,
+    { url, username: login, token, deviceUUID, kind: 6 },
+    accountData
+  )
+  return { session, loginResult }
 }
 
 module.exports = {

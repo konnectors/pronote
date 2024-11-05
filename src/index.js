@@ -31,10 +31,13 @@ async function start(fields) {
 
     // Initialisation de la session Pronote
     await this.deactivateAutoSuccessfulLogin()
-    const session = await Pronote(fields, this.getAccountData())
+    const { session, loginResult } = await Pronote(
+      fields,
+      this.getAccountData()
+    )
     await this.saveAccountData({
-      token: session.token,
-      navigatorIdentifier: session.navigatorIdentifier
+      token: loginResult.token,
+      navigatorIdentifier: loginResult.navigatorIdentifier
     })
     await this.notifySuccessfulLogin()
 

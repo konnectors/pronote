@@ -140,69 +140,65 @@ async function createTimetable(session, fields, options) {
 }
 
 async function init(session, fields, options) {
-  try {
-    const files = await createTimetable(session, fields, options)
+  const files = await createTimetable(session, fields, options)
 
-    /*
+  /*
       [Strategy] : don't update past lessons, only update future lessons
                    + don't update lessons that have been updated today
            Why ? : past lessons never update, only future ones can be edited / cancelled
     */
 
-    // query all lessons from dateFrom to dateTo
-    const existing = await queryLessonsByDate(
-      fields,
-      options.dateFrom,
-      options.dateTo
-    )
+  // query all lessons from dateFrom to dateTo
+  const existing = await queryLessonsByDate(
+    fields,
+    options.dateFrom,
+    options.dateTo
+  )
 
-    // filtered contains only events to update
-    const filtered = files.filter(file => {
-      // found returns true if the event is already in the database and doesn't need to be updated
-      const found = existing.find(item => {
-        // get the last update date
-        const updated = new Date(item.cozyMetadata.updatedAt)
+  // filtered contains only events to update
+  const filtered = files.filter(file => {
+    // found returns true if the event is already in the database and doesn't need to be updated
+    const found = existing.find(item => {
+      // get the last update date
+      const updated = new Date(item.cozyMetadata.updatedAt)
 
-        // get today's date
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+      // get today's date
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
-        // has the item been updated today ?
-        const updatedRecently = updated.getTime() > today.getTime()
+      // has the item been updated today ?
+      const updatedRecently = updated.getTime() > today.getTime()
 
-        // if the lesson is in the future, it can be updated
-        if (new Date(item.start) > new Date()) {
-          // only update if the lesson has not been updated
-          if (!updatedRecently) {
-            // needs an update since it's in the future and hasn't been updated today
-            return false
-          }
+      // if the lesson is in the future, it can be updated
+      if (new Date(item.start) > new Date()) {
+        // only update if the lesson has not been updated
+        if (!updatedRecently) {
+          // needs an update since it's in the future and hasn't been updated today
+          return false
         }
+      }
 
-        // else, match the label and start date to know if the event is already in the database
-        return item.label === file.label && item.start === file.start
-      })
-
-      // only return files that are not found or that needs an update (returned false)
-      return !found
+      // else, match the label and start date to know if the event is already in the database
+      return item.label === file.label && item.start === file.start
     })
 
-    log('info', `${filtered.length} new events to save out of ${files.length}`)
+    // only return files that are not found or that needs an update (returned false)
+    return !found
+  })
 
-    const res = await updateOrCreate(
-      filtered,
-      DOCTYPE_TIMETABLE_LESSON,
-      ['start', 'label'],
-      {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      }
-    )
+  log('info', `${filtered.length} new events to save out of ${files.length}`)
 
-    return res
-  } catch (error) {
-    throw new Error(error)
-  }
+  const res = await updateOrCreate(
+    filtered,
+    DOCTYPE_TIMETABLE_LESSON,
+    ['start', 'label'],
+    {
+      sourceAccount: this.accountId,
+      sourceAccountIdentifier: fields.login
+    }
+  )
+
+  return res
 }
 
 module.exports = init

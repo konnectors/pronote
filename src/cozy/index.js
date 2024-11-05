@@ -14,18 +14,14 @@ const handlers = {
 }
 
 async function cozy_save(type, session, fields, options = {}) {
-  try {
-    log('info', `🔁 Saving ${type}`)
+  log('info', `🔁 Saving ${type}`)
 
-    const handler = handlers[type]
-    if (handler) {
-      return handler(session, fields, options)
-    }
-
-    return false
-  } catch (err) {
-    throw new Error(err.message)
+  const handler = handlers[type]
+  if (handler) {
+    return handler(session, fields, options)
   }
+
+  return false
 }
 
 module.exports = {
