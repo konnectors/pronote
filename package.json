@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "cozy-client": "^48.8.0",
-    "cozy-flags": "^4.0.0",
+    "cozy-flags": "^4.6.1",
     "cozy-konnector-libs": "5.11.0",
     "globals": "^15.8.0",
     "pawnote": "^0.22.1",
