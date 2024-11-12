@@ -5884,9 +5884,11 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
     }, UUID)
     await this.goto(`${url}/mobile.eleve.html?fd=1`)
 
+    await this.setWorkerState({ visible: true })
     await this.runInWorkerUntilTrue({
       method: 'waitForLoginState'
     })
+    await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
 
     const loginTokenParams = {
