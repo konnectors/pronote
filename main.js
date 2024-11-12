@@ -5934,7 +5934,9 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
       mode: 'pronote-server',
       account: account._id
     })
-    console.log('🐛🐛🐛 jobResult', JSON.stringify(jobResult, null, 2))
+    if (jobResult.error) {
+      throw new Error(error)
+    }
   }
 
   async waitForLoginState() {

@@ -4,7 +4,7 @@
   "type": "konnector",
   "language": "node",
   "icon": "icon.svg",
-  "slug": "pronote",
+  "slug": "pronote-test",
   "source": "git@github.com:konnectors/pronote.git",
   "editor": "Cozy",
   "vendor_link": "https://www.index-education.com/fr/logiciel-gestion-vie-scolaire.php",
