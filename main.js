@@ -5935,7 +5935,7 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
       account: account._id
     })
     if (jobResult.error) {
-      throw new Error(error)
+      throw new Error(jobResult.error)
     }
   }
 
