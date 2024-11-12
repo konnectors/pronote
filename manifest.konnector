@@ -11,14 +11,7 @@
   "categories": [
     "education"
   ],
-  "fields": {
-    "login": {
-      "type": "text"
-    },
-    "password": {
-      "type": "password"
-    }
-  },
+  "clientSide": true,
   "folders": [
     {
       "defaultDir": "$administrative/$konnector/$account"
