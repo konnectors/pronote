@@ -1,4 +1,5 @@
 const remove_html = entryHtml => {
+  if (!entryHtml) return entryHtml
   // Remove HTML tags
   let html = entryHtml
   html = html.replace(/<[^>]*>?/gm, '')

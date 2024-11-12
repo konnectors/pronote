@@ -89,7 +89,7 @@ async function init(pronote, fields, options) {
     DOCTYPE_ATTENDANCE,
     ['label', 'start'],
     {
-      sourceAccount: this.accountId,
+      sourceAccount: fields.account,
       sourceAccountIdentifier: fields.login
     }
   )

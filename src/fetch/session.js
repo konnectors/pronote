@@ -1,50 +1,19 @@
 // Librairie Pawnote
 const { loginToken, createSessionHandle } = require('pawnote')
-// const fs = require('fs')
 
 // creates a Pawnote session using the provided credentials
-async function Pronote({ url, login, token, deviceUUID }, accountData) {
+async function Pronote({ url, login, token, deviceUUID }) {
   const session = createSessionHandle()
-  const loginResult = await tryLogin(
-    session,
-    { url, username: login, token, deviceUUID, kind: 6 },
-    accountData
-  )
+  const loginResult = await loginToken(session, {
+    url,
+    username: login,
+    token,
+    deviceUUID,
+    kind: 6
+  })
   return { session, loginResult }
 }
 
 module.exports = {
   Pronote
 }
-
-/** first try to login with with data saved in account
- * then only use fields in case the user updated login information himself
- */
-async function tryLogin(session, params, accountData = {}) {
-  try {
-    const result = await loginToken(session, { ...params, ...accountData })
-    return result
-  } catch (err) {
-    if (err.name === 'BadCredentialsError') {
-      const result = await loginToken(session, params)
-      return result
-    }
-    throw err
-  }
-}
-
-// function updateKonnectorDevConfigFields(loginResult) {
-//   const current = JSON.parse(fs.readFileSync('./konnector-dev-config.json'))
-//   const updated = {
-//     ...current,
-//     fields: {
-//       ...current.fields,
-//       token: loginResult.token,
-//       navigatorIdentifier: loginResult.navigatorIdentifier
-//     }
-//   }
-//   fs.writeFileSync(
-//     './konnector-dev-config.json',
-//     JSON.stringify(updated, null, 2)
-//   )
-// }

@@ -94,7 +94,7 @@ async function save_profile_picture(session, fields) {
   ]
 
   const files = await saveFiles(documents, fields, {
-    sourceAccount: this.accountId,
+    sourceAccount: fields.account,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
     qualificationLabel: 'identity_photo', // Class photo

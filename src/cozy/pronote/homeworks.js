@@ -95,7 +95,7 @@ async function createHomeworks(session, fields, options) {
         })
 
         const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
+          sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
           qualificationLabel: 'other_work_document', // Homework subject
@@ -198,7 +198,7 @@ async function init(session, fields, options) {
     DOCTYPE_HOMEWORK,
     ['start', 'label'],
     {
-      sourceAccount: this.accountId,
+      sourceAccount: fields.account,
       sourceAccountIdentifier: fields.login
     }
   )

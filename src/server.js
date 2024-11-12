@@ -31,11 +31,10 @@ async function start(fields) {
 
     // Initialisation de la session Pronote
     await this.deactivateAutoSuccessfulLogin()
-    const { session, loginResult } = await Pronote(
-      fields,
-      this.getAccountData()
-    )
+    const accountData = this.getAccountData()
+    const { session, loginResult } = await Pronote(accountData)
     await this.saveAccountData({
+      ...accountData,
       token: loginResult.token,
       navigatorIdentifier: loginResult.navigatorIdentifier
     })
@@ -52,15 +51,25 @@ async function start(fields) {
     const dateTo = new Date(session.instance.lastDate)
 
     // Saves user identity
-    await cozy_save('identity', session, fields)
+    const envFields = JSON.parse(process.env.COZY_FIELDS || '{}')
+    await cozy_save('identity', session, {
+      ...fields,
+      ...accountData,
+      ...envFields
+    })
 
     SAVES.forEach(async save => {
-      await cozy_save(save, session, fields, {
-        dateFrom: SAVES === 'homeworks' ? dateToday : dateFrom,
-        dateTo: dateTo,
-        saveFiles: SHOULD_SAVE && true,
-        getLessonContent: SHOULD_GET_LESSON_CONTENT
-      })
+      await cozy_save(
+        save,
+        session,
+        { ...fields, ...accountData, ...envFields },
+        {
+          dateFrom: SAVES === 'homeworks' ? dateToday : dateFrom,
+          dateTo: dateTo,
+          saveFiles: SHOULD_SAVE && true,
+          getLessonContent: SHOULD_GET_LESSON_CONTENT
+        }
+      )
     })
   } catch (err) {
     const error = err.toString()

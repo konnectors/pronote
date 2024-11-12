@@ -21,6 +21,7 @@ function createDates(options) {
 }
 
 function getIcalDate(date) {
+  if (!date) return date
   return (
     date.toISOString().replace(/-/g, '').replace(/:/g, '').replace(/\..+/, '') +
     'Z'

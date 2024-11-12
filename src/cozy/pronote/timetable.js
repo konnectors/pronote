@@ -193,7 +193,7 @@ async function init(session, fields, options) {
     DOCTYPE_TIMETABLE_LESSON,
     ['start', 'label'],
     {
-      sourceAccount: this.accountId,
+      sourceAccount: fields.account,
       sourceAccountIdentifier: fields.login
     }
   )

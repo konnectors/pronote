@@ -114,7 +114,7 @@ async function saveReports(pronote, fields) {
   }
 
   const data = await saveFiles(filesToDownload, fields, {
-    sourceAccount: this.accountId,
+    sourceAccount: fields.account,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
     qualificationLabel: 'gradebook', // Grade report
@@ -192,7 +192,7 @@ async function createGrades(session, fields, options) {
         })
 
         const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
+          sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
           qualificationLabel: 'other_work_document', // Given subject
@@ -243,7 +243,7 @@ async function createGrades(session, fields, options) {
         })
 
         const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
+          sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
           qualificationLabel: 'other_work_document', // Corrected subject
@@ -343,9 +343,9 @@ async function init(session, fields, options) {
   const filtered = files.filter(file => {
     const found = existing.find(item => {
       return (
-        item.series.length === file.series.length &&
-        item.startDate === file.startDate &&
-        item.subject === file.subject
+        item?.series?.length === file?.series?.length &&
+        item?.startDate === file?.startDate &&
+        item?.subject === file?.subject
       )
     })
 
