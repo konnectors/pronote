@@ -4,8 +4,6 @@ import waitFor, { TimeoutError } from 'p-wait-for'
 const log = Minilog('ContentScript')
 Minilog.enable()
 
-const baseUrl = 'about:blank'
-
 const UUID = uuid()
 
 monkeyPatch(UUID)
@@ -14,10 +12,14 @@ class PronoteContentScript extends ContentScript {
   async ensureAuthenticated({ account }) {
     this.log('info', '🤖 ensureAuthenticated')
 
+    await this.setWorkerState({ incognito: true })
     let url = account?.data?.url
     if (!url) {
       await this.setWorkerState({ visible: true })
-      await this.goto(baseUrl)
+      await this.goto(
+        'https://demo.index-education.net/pronote/mobile.eleve.html'
+      )
+      await this.waitForElementInWorker('nav')
       url = await this.evaluateInWorker(getUrlFromUser)
       await this.setWorkerState({ visible: false })
     }
@@ -46,9 +48,11 @@ class PronoteContentScript extends ContentScript {
     }, UUID)
     await this.goto(`${url}/mobile.eleve.html?fd=1`)
 
+    await this.setWorkerState({ visible: true })
     await this.runInWorkerUntilTrue({
       method: 'waitForLoginState'
     })
+    await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
 
     const loginTokenParams = {
@@ -96,7 +100,9 @@ class PronoteContentScript extends ContentScript {
       mode: 'pronote-server',
       account: account._id
     })
-    console.log('🐛🐛🐛 jobResult', JSON.stringify(jobResult, null, 2))
+    if (jobResult.error) {
+      throw new Error(jobResult.error)
+    }
   }
 
   async waitForLoginState() {
@@ -126,15 +132,22 @@ connector
     log.warn(err)
   })
 function getUrlFromUser() {
-  document.body.innerHTML = `
-<p>
-  <label for="url">URL:</label>
-  <br>
-  <input id="url" type="url" value="https://0780580g.index-education.net/pronote/mobile.eleve.html">
-</p>
-<p>
-  <input type="submit" value="Submit" id="submitButton">
-</p>`
+  document.querySelector('nav').remove()
+  document.querySelector('form').remove()
+  document.querySelector('main').innerHTML = `
+<fieldset class="login-contain">
+  <h3 class="logo_pronote">
+    <span>PRONOTE</span>
+</h3>
+<div class="input-field">
+  <input id="url" type="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" class="full-width" aria-required="true" />
+  <label for="url" class="icon_uniF2BD active">URL fournie par votre établissement</label>
+</div>
+<div class="btn-contain">
+  <button id="submitButton" class="themeBoutonPrimaire ieBouton ie-ripple NoWrap ieBoutonDefautSansImage AvecMain">Envoyer</button>
+</div>
+</fieldset>
+`
 
   function cleanURL(url) {
     let pronoteURL = url
