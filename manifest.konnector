@@ -12,6 +12,7 @@
     "education"
   ],
   "clientSide": true,
+  "fields": {},
   "folders": [
     {
       "defaultDir": "$administrative/$konnector/$account"
