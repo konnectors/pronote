@@ -5907,12 +5907,6 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
         deviceUUID: UUID
       }
       this.store = loginTokenParams
-
-      await this.evaluateInWorker(loginTokenParams => {
-        document.body.innerHTML = `<pre>
-    ${JSON.stringify(loginTokenParams, null, 2)}
-    </pre>`
-      }, loginTokenParams)
     } else {
       this.store = account?.data
     }
