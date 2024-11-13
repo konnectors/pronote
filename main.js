@@ -5849,6 +5849,7 @@ monkeyPatch(UUID)
 class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORTED_MODULE_0__.ContentScript {
   async ensureAuthenticated({ account, trigger }) {
     this.log('info', '🤖 ensureAuthenticated')
+    throw new Error('LOGIN_FAILED')
     const isLastJobError =
       trigger?.current_state?.last_failure >
       trigger?.current_state?.last_success
