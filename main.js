@@ -5850,7 +5850,8 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   async ensureAuthenticated({ account, trigger }) {
     this.log('info', '🤖 ensureAuthenticated')
     const isLastJobError =
-      trigger?.current_state?.last_failure > trigger.current_state?.last_success
+      trigger?.current_state?.last_failure >
+      trigger?.current_state?.last_success
     this.log('debug', 'isLastJobError: ' + isLastJobError)
     const lastJobError = trigger?.current_state?.last_error
     this.log('debug', 'lastJobError: ' + lastJobError)
