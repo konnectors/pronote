@@ -5862,7 +5862,6 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
     await this.setWorkerState({ incognito: true })
     let url = account?.data?.url
     this.log('debug', 'url: ' + url)
-    throw new Error('LOGIN_FAILED')
     if (!url || (isLastJobError && lastJobError === 'LOGIN_FAILED')) {
       await this.setWorkerState({ visible: true })
       await this.goto(
@@ -5937,6 +5936,7 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
         'No bridge is defined, you should call ContentScript.init before using this method'
       )
     }
+    throw new Error('LOGIN_FAILED')
 
     await this.bridge.call('saveAccountData', this.store)
     const jobResult = await this.bridge.call('runServerJob', {
