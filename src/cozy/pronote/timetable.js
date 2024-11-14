@@ -1,4 +1,5 @@
 const { updateOrCreate, log } = require('cozy-konnector-libs')
+const { timetableFromIntervals, parseTimetable } = require('pawnote')
 
 const {
   DOCTYPE_TIMETABLE_LESSON,
@@ -13,28 +14,26 @@ const save_resources = require('../../utils/stack/save_resources')
 const { queryLessonsByDate } = require('../../queries')
 
 // Obtains timetable from Pronote
-async function get_timetable(pronote, fields, options) {
+async function get_timetable(session, fields, options) {
   // Generate dates if needed (to get the full week or year)
   const dates = createDates(options)
 
   // Send request to get timetable
-  const overview = await pronote.getTimetableOverviewForInterval(
-    dates.from,
-    dates.to
-  )
+  const timetable = await timetableFromIntervals(session, dates.from, dates.to)
 
   // Parse timetable response with settings
-  return overview.parse({
+  parseTimetable(session, timetable, {
     withSuperposedCanceledClasses: false,
     withCanceledClasses: true,
     withPlannedClasses: true
   })
+  return timetable
 }
 
 // Process timetable and create doctypes
-async function createTimetable(pronote, fields, options) {
+async function createTimetable(session, fields, options) {
   // Get timetable from Pronote
-  const timetable = await get_timetable(pronote, fields, options)
+  const timetable = await get_timetable(session, fields, options)
   // Empty array to store doctypes
   const data = []
 
@@ -59,7 +58,8 @@ async function createTimetable(pronote, fields, options) {
     `[Timetable] : 📕 Content ${shouldGetContent ? 'saved' : 'ignored'}`
   )
 
-  for (const lesson of timetable) {
+  for (const lesson of timetable.classes) {
+    if (lesson.is !== 'lesson') continue
     // Get the formatted Cozy name
     const pronoteString = findObjectByPronoteString(lesson.subject?.name)
     const processedCoursName = pronoteString.label
@@ -139,70 +139,66 @@ async function createTimetable(pronote, fields, options) {
   return data
 }
 
-async function init(pronote, fields, options) {
-  try {
-    const files = await createTimetable(pronote, fields, options)
+async function init(session, fields, options) {
+  const files = await createTimetable(session, fields, options)
 
-    /*
+  /*
       [Strategy] : don't update past lessons, only update future lessons
                    + don't update lessons that have been updated today
            Why ? : past lessons never update, only future ones can be edited / cancelled
     */
 
-    // query all lessons from dateFrom to dateTo
-    const existing = await queryLessonsByDate(
-      fields,
-      options.dateFrom,
-      options.dateTo
-    )
+  // query all lessons from dateFrom to dateTo
+  const existing = await queryLessonsByDate(
+    fields,
+    options.dateFrom,
+    options.dateTo
+  )
 
-    // filtered contains only events to update
-    const filtered = files.filter(file => {
-      // found returns true if the event is already in the database and doesn't need to be updated
-      const found = existing.find(item => {
-        // get the last update date
-        const updated = new Date(item.cozyMetadata.updatedAt)
+  // filtered contains only events to update
+  const filtered = files.filter(file => {
+    // found returns true if the event is already in the database and doesn't need to be updated
+    const found = existing.find(item => {
+      // get the last update date
+      const updated = new Date(item.cozyMetadata.updatedAt)
 
-        // get today's date
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+      // get today's date
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
-        // has the item been updated today ?
-        const updatedRecently = updated.getTime() > today.getTime()
+      // has the item been updated today ?
+      const updatedRecently = updated.getTime() > today.getTime()
 
-        // if the lesson is in the future, it can be updated
-        if (new Date(item.start) > new Date()) {
-          // only update if the lesson has not been updated
-          if (!updatedRecently) {
-            // needs an update since it's in the future and hasn't been updated today
-            return false
-          }
+      // if the lesson is in the future, it can be updated
+      if (new Date(item.start) > new Date()) {
+        // only update if the lesson has not been updated
+        if (!updatedRecently) {
+          // needs an update since it's in the future and hasn't been updated today
+          return false
         }
+      }
 
-        // else, match the label and start date to know if the event is already in the database
-        return item.label === file.label && item.start === file.start
-      })
-
-      // only return files that are not found or that needs an update (returned false)
-      return !found
+      // else, match the label and start date to know if the event is already in the database
+      return item.label === file.label && item.start === file.start
     })
 
-    log('info', `${filtered.length} new events to save out of ${files.length}`)
+    // only return files that are not found or that needs an update (returned false)
+    return !found
+  })
 
-    const res = await updateOrCreate(
-      filtered,
-      DOCTYPE_TIMETABLE_LESSON,
-      ['start', 'label'],
-      {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      }
-    )
+  log('info', `${filtered.length} new events to save out of ${files.length}`)
 
-    return res
-  } catch (error) {
-    throw new Error(error)
-  }
+  const res = await updateOrCreate(
+    filtered,
+    DOCTYPE_TIMETABLE_LESSON,
+    ['start', 'label'],
+    {
+      sourceAccount: fields.account,
+      sourceAccountIdentifier: fields.login
+    }
+  )
+
+  return res
 }
 
 module.exports = init

@@ -11,17 +11,8 @@
   "categories": [
     "education"
   ],
-  "fields": {
-    "pronote_url": {
-      "type": "text"
-    },
-    "login": {
-      "type": "text"
-    },
-    "password": {
-      "type": "password"
-    }
-  },
+  "fields": {},
+  "clientSide": true,
   "folders": [
     {
       "defaultDir": "$administrative/$konnector/$account"
@@ -32,7 +23,6 @@
     "event",
     "document"
   ],
-  "screenshots": [],
   "permissions": {
     "files": {
       "type": "io.cozy.files"
@@ -57,17 +47,8 @@
   "langs": [
     "fr"
   ],
-  "frequency": "daily",
   "locales": {
     "fr": {
-      "fields": {
-        "login": {
-          "label": "Identifiant de l'élève"
-        },
-        "pronote_url": {
-          "label": "URL PRONOTE de l'établissement"
-        }
-      },
       "short_description": "Accédez à l'ensemble de vos données scolaires, et conservez-les pour toujours.",
       "long_description": "Ce connecteur **sauvegarde vos données d'élève** depuis le service Pronote à l'aide de vos identifiants d'élève et les sécurise **pour votre usage personnel immédiat ou futur.**\n\n<br> Vous pourrez visualiser ces données **avec votre mobile ou votre ordinateur**, dans votre Cozy, notamment au travers d'applications comme Drive, Papillon ou MesPapiers.\n\n<br> Vos données suivantes sont ainsi regroupées et **sauvegardées automatiquement** :\n\n- Emploi du temps\n- Devoirs & travaux rendus\n- Notes et corrections\n- Bulletins scolaires\n- Notifications de retard ou d'absence\n- ... Et même votre inénarrable photo de profil 🙂 !",
       "permissions": {
@@ -89,14 +70,6 @@
       }
     },
     "en": {
-      "fields": {
-        "login": {
-          "label": "Student identifier"
-        },
-        "pronote_url": {
-          "label": "School's Pronote URL "
-        }
-      },
       "short_description": "Access all your school data and keep it forever.",
       "long_description": "This connector **saves your student data** from the Pronote service using your student identifiers and secures it **for your immediate or future personal use.**\n\n<br> You can view these data **on your mobile or computer**, in your Cozy, particularly through applications like Drive, Papillon, or MesPapiers.\n\n<br> These data are **automatically gathered:**\n\n- Timetable\n- Homework & assignments submitted\n- Grades and corrections\n- School report cards\n- Notifications of delay or absence\n- ... And even your unforgettable profile picture 🙂!",
       "permissions": {

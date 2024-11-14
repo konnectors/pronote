@@ -79,7 +79,7 @@ URL=${file.url}`.trim()
 
   if (filesToDownload.length > 0) {
     const data = await saveFiles(filesToDownload, fields, {
-      sourceAccount: this.accountId,
+      sourceAccount: fields.account,
       sourceAccountIdentifier: fields.login,
       concurrency: 3,
       validateFile: () => true

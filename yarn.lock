@@ -1184,7 +1184,7 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cozy/minilog@1.0.0":
+"@cozy/minilog@1.0.0", "@cozy/minilog@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@cozy/minilog/-/minilog-1.0.0.tgz#1acc1aad849261e931e255a5f181b638315f7b84"
   integrity sha512-IkDHF9CLh0kQeSEVsou59ar/VehvenpbEUjLfwhckJyOUqZnKAWmXy8qrBgMT5Loxr8Xjs2wmMnj0D67wP00eQ==
@@ -1307,6 +1307,13 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
+
+"@literate.ink/utilities@1.0.0-10641118381.1":
+  version "1.0.0-10641118381.1"
+  resolved "https://registry.yarnpkg.com/@literate.ink/utilities/-/utilities-1.0.0-10641118381.1.tgz#8fb97ba575652101a545f1aba7c96ddd7dd5b418"
+  integrity sha512-omhzgwfAjNXqIjt6dmWbU8pm6QfEvNYetykEXYk+vVaJ8oICglvkChxkC6FkF8zJKMM/lFrNHgD42obQ8lwolQ==
+  dependencies:
+    set-cookie-parser "^2.7.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -2618,6 +2625,20 @@ cozy-client@^48.8.0:
     sift "^6.0.0"
     url-search-params-polyfill "^8.0.0"
 
+cozy-clisk@^0.38.0:
+  version "0.38.1"
+  resolved "https://registry.yarnpkg.com/cozy-clisk/-/cozy-clisk-0.38.1.tgz#0b42f723ebed7ef32c13cf6eac3a8bc241dc52c1"
+  integrity sha512-gSBcIKo3XSDRsoDNn4ocEkzj0S2YZIQMfG1HLnacHrAruay6kXmAF3VB3kTRctuSDpY4vjxUG379CS7i5qMwBQ==
+  dependencies:
+    "@cozy/minilog" "^1.0.0"
+    bluebird-retry "^0.11.0"
+    ky "^0.25.1"
+    lodash "^4.17.21"
+    microee "^0.0.6"
+    p-timeout "^6.0.0"
+    p-wait-for "^5.0.2"
+    post-me "^0.4.5"
+
 cozy-device-helper@^2.1.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/cozy-device-helper/-/cozy-device-helper-2.2.1.tgz#d5822afd818919fa871527e6f78b0265fc1e009b"
@@ -3926,7 +3947,7 @@ html-encoding-sniffer@^2.0.1:
   dependencies:
     whatwg-encoding "^1.0.5"
 
-html-entities@^2.4.0:
+html-entities@^2.5.2:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.5.2.tgz#201a3cf95d3a15be7099521620d19dfb4f65359f"
   integrity sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==
@@ -4465,6 +4486,11 @@ kind-of@^6.0.2:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
+
+ky@^0.25.1:
+  version "0.25.1"
+  resolved "https://registry.yarnpkg.com/ky/-/ky-0.25.1.tgz#0df0bd872a9cc57e31acd5dbc1443547c881bfbc"
+  integrity sha512-PjpCEWlIU7VpiMVrTwssahkYXX1by6NCT0fhTUX34F3DTinARlgMpriuroolugFPcMgpPWrOW4mTb984Qm1RXA==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -5016,10 +5042,22 @@ p-locate@^5.0.0:
   dependencies:
     p-limit "^3.0.2"
 
+p-timeout@^6.0.0:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-6.1.3.tgz#9635160c4e10c7b4c3db45b7d5d26f911d9fd853"
+  integrity sha512-UJUyfKbwvr/uZSV6btANfb+0t/mOhKV/KXcCUTp8FcQI+v/0d+wXqH4htrW0E4rR6WiEO/EPvUFiV9D5OI4vlw==
+
 p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
+
+p-wait-for@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/p-wait-for/-/p-wait-for-5.0.2.tgz#1546a15e64accf1897377cb1507fa4c756fffe96"
+  integrity sha512-lwx6u1CotQYPVju77R+D0vFomni/AqRfqLmqQ8hekklqZ6gAY9rONh7lBQ0uxWMkC2AuX9b2DVAl8To0NyP1JA==
+  dependencies:
+    p-timeout "^6.0.0"
 
 pako@^1.0.11:
   version "1.0.11"
@@ -5120,15 +5158,15 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-pawnote@^0.22.1:
-  version "0.22.1"
-  resolved "https://registry.yarnpkg.com/pawnote/-/pawnote-0.22.1.tgz#c9d18933433412a3312ccf3e6950e970f9c57573"
-  integrity sha512-MvB0yO3KWpzP7j9bHMHzMEkGHrFXMXhrs3cvBO1oQFcbh6IK1pN1EGUvghOJ8hqGiQPht6213ALg/URhhPs+3Q==
+pawnote@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/pawnote/-/pawnote-1.2.2.tgz#6cdfb8ef6f178e41140b1fadf9a6c0fee02dc028"
+  integrity sha512-7Q3noEiVCcUHkbn/cziHLtaZsTCShg364Srlnl1QScqCFwRljpbCqDXtKmFTvWyOZH+9nC2drV/oTr+aZIjCwQ==
   dependencies:
-    html-entities "^2.4.0"
+    "@literate.ink/utilities" "1.0.0-10641118381.1"
+    html-entities "^2.5.2"
     node-forge "^1.3.1"
     pako "^2.1.0"
-    set-cookie-parser "^2.6.0"
 
 peek-readable@^4.1.0:
   version "4.1.0"
@@ -5183,6 +5221,11 @@ polka@^0.5.2:
   dependencies:
     "@polka/url" "^0.5.0"
     trouter "^2.0.1"
+
+post-me@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/post-me/-/post-me-0.4.5.tgz#6171b721c7b86230c51cfbe48ddea047ef8831ce"
+  integrity sha512-XgPdktF/2M5jglgVDULr9NUb/QNv3bY3g6RG22iTb5MIMtB07/5FJB5fbVmu5Eaopowc6uZx7K3e7x1shPwnXw==
 
 postcss-selector-parser@^6.0.9:
   version "6.0.10"
@@ -5865,10 +5908,10 @@ set-cookie-parser@^2.3.5:
   resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.5.1.tgz#ddd3e9a566b0e8e0862aca974a6ac0e01349430b"
   integrity sha512-1jeBGaKNGdEq4FgIrORu/N570dwoPYio8lSoYLWmX7sQ//0JY08Xh9o5pBcgmHQ/MbsYp/aZnOe1s1lIsbLprQ==
 
-set-cookie-parser@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.6.0.tgz#131921e50f62ff1a66a461d7d62d7b21d5d15a51"
-  integrity sha512-RVnVQxTXuerk653XfuliOxBP81Sf0+qfQE73LIYKcyMYHG94AuH0kgrQpRDuTZnSmjpysHmzxJXKNfa6PjFhyQ==
+set-cookie-parser@^2.7.0:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/set-cookie-parser/-/set-cookie-parser-2.7.1.tgz#3016f150072202dfbe90fadee053573cc89d2943"
+  integrity sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==
 
 setprototypeof@1.1.1:
   version "1.1.1"

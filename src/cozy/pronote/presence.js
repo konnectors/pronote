@@ -73,32 +73,28 @@ async function createPresence(pronote, fields, options) {
 }
 
 async function init(pronote, fields, options) {
-  try {
-    let files = await createPresence(pronote, fields, options)
+  let files = await createPresence(pronote, fields, options)
 
-    /*
+  /*
     [Strategy] : only update events that are NOT justified yet
     */
 
-    // remove all justified absences
-    const filtered = files.filter(file => {
-      return file.xJustified === false
-    })
+  // remove all justified absences
+  const filtered = files.filter(file => {
+    return file.xJustified === false
+  })
 
-    const res = await updateOrCreate(
-      filtered,
-      DOCTYPE_ATTENDANCE,
-      ['label', 'start'],
-      {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      }
-    )
+  const res = await updateOrCreate(
+    filtered,
+    DOCTYPE_ATTENDANCE,
+    ['label', 'start'],
+    {
+      sourceAccount: fields.account,
+      sourceAccountIdentifier: fields.login
+    }
+  )
 
-    return res
-  } catch (error) {
-    throw new Error(error)
-  }
+  return res
 }
 
 module.exports = init

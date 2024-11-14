@@ -1,5 +1,5 @@
 {
-  "name": "cozy-konnector-pronote",
+  "name": "pronote",
   "version": "2.10.0",
   "description": "",
   "repository": {
@@ -27,20 +27,23 @@
     "start": "node ./src/index.js",
     "dev": "cozy-konnector-dev",
     "standalone": "cozy-konnector-standalone",
-    "pretest": "npm run clean",
     "clean": "rm -rf ./data",
-    "build": "webpack",
+    "build:client": "webpack --config ./webpack.config.client.js",
+    "build:server": "webpack --config ./webpack.config.server.js",
+    "build": "yarn build:client && yarn build:server",
     "lint": "eslint --fix .",
     "deploy": "git-directory-deploy --directory build/ --branch ${DEPLOY_BRANCH:-build} --repo=${DEPLOY_REPOSITORY:-$npm_package_repository_url}",
     "cozyPublish": "cozy-app-publish --token $REGISTRY_TOKEN --build-commit $(git rev-parse ${DEPLOY_BRANCH:-build})",
     "travisDeployKey": "./bin/generate_travis_deploy_key"
   },
   "dependencies": {
+    "@cozy/minilog": "1.0.0",
+    "cozy-clisk": "^0.38.0",
     "cozy-client": "^48.8.0",
     "cozy-flags": "^4.0.0",
     "cozy-konnector-libs": "5.11.0",
     "globals": "^15.8.0",
-    "pawnote": "^0.22.1",
+    "pawnote": "^1.2.2",
     "pronote-api-maintained": "^3.1.0"
   },
   "devDependencies": {

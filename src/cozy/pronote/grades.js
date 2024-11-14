@@ -1,4 +1,5 @@
 const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
+const { gradesOverview: getGradesOverview, gradebookPDF } = require('pawnote')
 
 const {
   DOCTYPE_GRADE,
@@ -11,16 +12,16 @@ const findObjectByPronoteString = require('../../utils/format/format_cours_name'
 const preprocessDoctype = require('../../utils/format/preprocess_doctype')
 const { queryAllGrades } = require('../../queries')
 
-async function get_grades(pronote) {
+async function get_grades(session) {
   const allGrades = []
 
   // Get all periods (trimesters, semesters, etc.)
-  const periods = pronote.periods
+  const periods = session.instance.periods
 
   // For each period, get all grades
   for (const period of periods) {
     // Get all grades for each period
-    const gradesOverview = await pronote.getGradesOverview(period)
+    const gradesOverview = await getGradesOverview(session, period)
 
     // For each grade, get the subject and add it to the list
     for (const grade of gradesOverview.grades) {
@@ -46,13 +47,14 @@ async function get_grades(pronote) {
     }
 
     // For each average, get the subject and add it to the list
-    for (const average of gradesOverview.averages) {
+    for (const averageKey of ['classAverage', 'overallAveragegradesOverview']) {
+      const average = gradesOverview[averageKey]
       // Get the subject of the average
-      const subject = average.subject
+      const subject = average?.subject
 
       // Find the subject in the list of all subjects
       const subjectIndex = allGrades.findIndex(
-        item => item.subject.name === subject.name && item.period === period
+        item => item.subject?.name === subject?.name && item?.period === period
       )
       if (subjectIndex === -1) {
         allGrades.push({
@@ -71,14 +73,14 @@ async function get_grades(pronote) {
   return allGrades
 }
 
-async function getReports(pronote) {
+async function getReports(session) {
   const allReports = []
 
   // Get all reports
-  const reportPeriods = pronote.readPeriodsForGradesReport()
-  for (const period of reportPeriods) {
+  const periods = session.instance.periods
+  for (const period of periods) {
     try {
-      const reportURL = await pronote.generateGradesReportPDF(period)
+      const reportURL = await gradebookPDF(session, period)
       allReports.push({
         period: period.name,
         url: reportURL
@@ -112,7 +114,7 @@ async function saveReports(pronote, fields) {
   }
 
   const data = await saveFiles(filesToDownload, fields, {
-    sourceAccount: this.accountId,
+    sourceAccount: fields.account,
     sourceAccountIdentifier: fields.login,
     concurrency: 3,
     qualificationLabel: 'gradebook', // Grade report
@@ -122,9 +124,9 @@ async function saveReports(pronote, fields) {
   return data
 }
 
-async function createGrades(pronote, fields, options) {
+async function createGrades(session, fields, options) {
   // Get all grades
-  const grades = await get_grades(pronote, fields, options)
+  const grades = await get_grades(session, fields, options)
   const data = []
 
   // Get options
@@ -190,7 +192,7 @@ async function createGrades(pronote, fields, options) {
         })
 
         const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
+          sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
           qualificationLabel: 'other_work_document', // Given subject
@@ -241,7 +243,7 @@ async function createGrades(pronote, fields, options) {
         })
 
         const data = await saveFiles(filesToDownload, fields, {
-          sourceAccount: this.accountId,
+          sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
           concurrency: 3,
           qualificationLabel: 'other_work_document', // Corrected subject
@@ -292,7 +294,7 @@ async function createGrades(pronote, fields, options) {
       const scaleMult = 20 / evals[0].value.outOf // Necessary to normalise grades not on /20
       avgGrades = evals[0].value.student * scaleMult
     } else {
-      avgGrades = grade.averages.student
+      avgGrades = grade.averages?.student
     }
 
     // Create the doctype
@@ -300,13 +302,13 @@ async function createGrades(pronote, fields, options) {
       subject: processedCoursName,
       sourceSubject: grade.subject?.name || 'Cours',
       title: grade.period.name,
-      startDate: new Date(grade.period.start).toISOString(),
-      endDate: new Date(grade.period.end).toISOString(),
+      startDate: new Date(grade.period.startDate).toISOString(),
+      endDate: new Date(grade.period.endDate).toISOString(),
       aggregation: {
         avgGrades: avgGrades,
-        avgClass: grade.averages.class_average,
-        maxClass: grade.averages.max,
-        minClass: grade.averages.min
+        avgClass: grade.averages?.class_average,
+        maxClass: grade.averages?.max,
+        minClass: grade.averages?.min
       },
       series: evals,
       relationships:
@@ -328,45 +330,41 @@ async function createGrades(pronote, fields, options) {
   return data
 }
 
-async function init(pronote, fields, options) {
-  try {
-    let files = await createGrades(pronote, fields, options)
+async function init(session, fields, options) {
+  let files = await createGrades(session, fields, options)
 
-    /*
+  /*
     [Strategy] : don't update grades, they stay the same
     */
 
-    const existing = await queryAllGrades()
+  const existing = await queryAllGrades()
 
-    // remove duplicates in files
-    const filtered = files.filter(file => {
-      const found = existing.find(item => {
-        return (
-          item.series.length === file.series.length &&
-          item.startDate === file.startDate &&
-          item.subject === file.subject
-        )
-      })
-
-      return !found
+  // remove duplicates in files
+  const filtered = files.filter(file => {
+    const found = existing.find(item => {
+      return (
+        item?.series?.length === file?.series?.length &&
+        item?.startDate === file?.startDate &&
+        item?.subject === file?.subject
+      )
     })
 
-    const res = await updateOrCreate(
-      filtered,
-      DOCTYPE_GRADE,
-      ['startDate', 'subject'],
-      {
-        sourceAccount: this.accountId,
-        sourceAccountIdentifier: fields.login
-      }
-    )
+    return !found
+  })
 
-    await saveReports(pronote, fields, options)
+  const res = await updateOrCreate(
+    filtered,
+    DOCTYPE_GRADE,
+    ['startDate', 'subject'],
+    {
+      sourceAccount: fields.account,
+      sourceAccountIdentifier: fields.login
+    }
+  )
 
-    return res
-  } catch (error) {
-    throw new Error(error)
-  }
+  await saveReports(session, fields, options)
+
+  return res
 }
 
 module.exports = init
