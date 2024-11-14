@@ -5848,15 +5848,12 @@ monkeyPatch(UUID)
 
 class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORTED_MODULE_0__.ContentScript {
   async ensureAuthenticated({ account, trigger }) {
-    console.log('🐛🐛🐛 trigger', JSON.stringify(trigger, null, 2))
     this.log('info', '🤖 ensureAuthenticated')
     const isLastJobError =
       trigger?.current_state?.last_failure >
       trigger?.current_state?.last_success
-    console.log('🐛🐛🐛 isLastJobError', isLastJobError)
     this.log('debug', 'isLastJobError: ' + isLastJobError)
     const lastJobError = trigger?.current_state?.last_error
-    console.log('🐛🐛🐛 lastJobError', lastJobError)
     this.log('debug', 'lastJobError: ' + lastJobError)
 
     await this.setWorkerState({ incognito: true })
@@ -5918,7 +5915,7 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   }
 
   async ensureNotAuthenticated() {
-    // always true if incognito mode
+    // always true in incognito mode
     return true
   }
 
@@ -5936,7 +5933,6 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
         'No bridge is defined, you should call ContentScript.init before using this method'
       )
     }
-    throw new Error('LOGIN_FAILED')
 
     await this.bridge.call('saveAccountData', this.store)
     const jobResult = await this.bridge.call('runServerJob', {
