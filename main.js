@@ -5886,6 +5886,8 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
 
   async userAuthenticate() {
     const url = await this.requestUrl()
+    await this.goto(`${url}/mobile.eleve.html`)
+    throw new Error('userAuthenticate normal error')
     await this.goto(
       url + '/infoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4'
     )
