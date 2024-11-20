@@ -5836,6 +5836,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _cozy_minilog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
 /* harmony import */ var _cozy_minilog__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_cozy_minilog__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var p_wait_for__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30);
+/* eslint no-constant-condition: off */
+/* eslint no-console: off */
+
 
 
 
@@ -5874,11 +5877,11 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   }
 
   async requestUrl() {
-    await this.setWorkerState({ visible: true })
     await this.goto(
       'https://demo.index-education.net/pronote/mobile.eleve.html'
     )
     await this.waitForElementInWorker('nav')
+    await this.setWorkerState({ visible: true })
     const url = await this.evaluateInWorker(getUrlFromUser)
     await this.setWorkerState({ visible: false })
     return url
@@ -5887,9 +5890,6 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   async userAuthenticate() {
     const url = await this.requestUrl()
     await this.goto(`${url}/mobile.eleve.html`)
-    // await this.setWorkerState({ visible: true })
-    // await new Promise(resolve => window.setTimeout(resolve, 60000))
-    // throw new Error('userAuthenticate normal error')
     await this.goto(
       url + '/infoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4'
     )
