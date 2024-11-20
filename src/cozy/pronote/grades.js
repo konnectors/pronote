@@ -30,7 +30,7 @@ async function get_grades(session) {
 
       // Find the subject in the list of all subjects
       const subjectIndex = allGrades.findIndex(
-        item => item.subject.name === subject.name && item.period === period
+        item => item.subject?.name === subject?.name && item.period === period
       )
 
       // If the subject is not yet in the list, add it
@@ -82,11 +82,11 @@ async function getReports(session) {
     try {
       const reportURL = await gradebookPDF(session, period)
       allReports.push({
-        period: period.name,
+        period: period?.name,
         url: reportURL
       })
     } catch (error) {
-      log('warn', 'Could not fetch report for period:', period.name)
+      log('warn', 'Could not fetch report for period:', period?.name)
     }
   }
 
