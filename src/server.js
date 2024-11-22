@@ -46,9 +46,9 @@ async function start(fields) {
     )
 
     // Gets school year dates
-    let dateFrom = new Date(session.instance.firstDate)
-    let dateToday = new Date()
-    const dateTo = new Date(session.instance.lastDate)
+    let dateFrom = offsetDate(new Date(session.instance.firstDate))
+    let dateToday = offsetDate(new Date())
+    const dateTo = offsetDate(new Date(session.instance.lastDate))
 
     // Saves user identity
     const envFields = JSON.parse(process.env.COZY_FIELDS || '{}')
@@ -104,4 +104,10 @@ async function start(fields) {
 
     throw new Error('UNKNOWN_ERROR')
   }
+}
+
+function offsetDate(date) {
+  const timestamp = date.getTime()
+  const offset = date.getTimezoneOffset() * 60 * 1000
+  return new Date(timestamp - offset)
 }
