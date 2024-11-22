@@ -97,7 +97,7 @@ async function createHomeworks(session, fields, options) {
         const data = await saveFiles(filesToDownload, fields, {
           sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
-          concurrency: 3,
+          concurrency: 1,
           qualificationLabel: 'other_work_document', // Homework subject
           validateFile: () => true
         })
