@@ -5928,6 +5928,10 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
       token: loginState.mdp,
       deviceUUID: UUID
     }
+    console.log(
+      '🐛🐛🐛 loginTokenParams',
+      JSON.stringify(loginTokenParams, null, 2)
+    )
     this.store = loginTokenParams
   }
 
