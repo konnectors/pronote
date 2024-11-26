@@ -5888,8 +5888,8 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   }
 
   async userAuthenticate() {
+    await this.ensureNotAuthenticated()
     const url = await this.requestUrl()
-    await this.goto(`${url}/mobile.eleve.html`)
     await this.goto(
       url + '/infoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4'
     )
@@ -5914,11 +5914,9 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
     }, UUID)
     await this.goto(`${url}/mobile.eleve.html?fd=1`)
 
-    await this.setWorkerState({ visible: true })
     await this.runInWorkerUntilTrue({
       method: 'waitForLoginState'
     })
-    await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
 
     const loginTokenParams = {
@@ -5928,15 +5926,20 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
       token: loginState.mdp,
       deviceUUID: UUID
     }
-    console.log(
-      '🐛🐛🐛 loginTokenParams',
-      JSON.stringify(loginTokenParams, null, 2)
-    )
     this.store = loginTokenParams
   }
 
   async ensureNotAuthenticated() {
-    // always true in incognito mode
+    await this.goto(
+      'https://demo.index-education.net/pronote/mobile.eleve.html'
+    )
+    if (await this.isElementInWorker('.icon_off')) {
+      this.log('info', 'Authenticated in pronote demo. Disconnecting...')
+      await this.clickAndWait('.icon_off', 'main.deconnexion')
+      await this.goto(
+        'https://demo.index-education.net/pronote/mobile.eleve.html'
+      )
+    }
     return true
   }
 
