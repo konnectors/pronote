@@ -76,11 +76,9 @@ class PronoteContentScript extends ContentScript {
     }, UUID)
     await this.goto(`${url}/mobile.eleve.html?fd=1`)
 
-    await this.setWorkerState({ visible: true })
     await this.runInWorkerUntilTrue({
       method: 'waitForLoginState'
     })
-    await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
 
     const loginTokenParams = {
