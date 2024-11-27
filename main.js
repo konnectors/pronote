@@ -5920,6 +5920,7 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
     })
     await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
+    this.log('info', '🐛🐛🐛 ' + JSON.stringify(loginState, null, 2))
 
     const loginTokenParams = {
       url,
@@ -5946,6 +5947,7 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
   }
 
   async getUserDataFromWebsite() {
+    this.log('info', '🐛🐛🐛 this.store ' + JSON.stringify(this.store, null, 2))
     this.log('info', '🤖 getUserDataFromWebsite')
     return {
       sourceAccountIdentifier: this.store.login
