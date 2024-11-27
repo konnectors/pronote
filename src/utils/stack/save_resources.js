@@ -23,7 +23,7 @@ const save_resources = async (
   path = path.replace('{subject}', prettyCoursName)
 
   for (const file of resources) {
-    if (file.type == 1) {
+    if (file.kind == 1) {
       // Downloadable file
       const extension = file.name.split('.').pop()
       let fileName = file.name.replace(/\.[^/.]+$/, '')
@@ -81,7 +81,7 @@ URL=${file.url}`.trim()
     const data = await saveFiles(filesToDownload, fields, {
       sourceAccount: fields.account,
       sourceAccountIdentifier: fields.login,
-      concurrency: 3,
+      concurrency: 1,
       validateFile: () => true
     })
 

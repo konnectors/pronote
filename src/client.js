@@ -50,8 +50,8 @@ class PronoteContentScript extends ContentScript {
   }
 
   async userAuthenticate() {
+    await this.ensureNotAuthenticated()
     const url = await this.requestUrl()
-    await this.goto(`${url}/mobile.eleve.html`)
     await this.goto(
       url + '/infoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4'
     )
@@ -82,6 +82,7 @@ class PronoteContentScript extends ContentScript {
     })
     await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
+    this.log('info', '🐛🐛🐛 ' + JSON.stringify(loginState, null, 2))
 
     const loginTokenParams = {
       url,
@@ -94,11 +95,21 @@ class PronoteContentScript extends ContentScript {
   }
 
   async ensureNotAuthenticated() {
-    // always true in incognito mode
+    await this.goto(
+      'https://demo.index-education.net/pronote/mobile.eleve.html'
+    )
+    if (await this.isElementInWorker('.icon_off')) {
+      this.log('info', 'Authenticated in pronote demo. Disconnecting...')
+      await this.clickAndWait('.icon_off', 'main.deconnexion')
+      await this.goto(
+        'https://demo.index-education.net/pronote/mobile.eleve.html'
+      )
+    }
     return true
   }
 
   async getUserDataFromWebsite() {
+    this.log('info', '🐛🐛🐛 this.store ' + JSON.stringify(this.store, null, 2))
     this.log('info', '🤖 getUserDataFromWebsite')
     return {
       sourceAccountIdentifier: this.store.login

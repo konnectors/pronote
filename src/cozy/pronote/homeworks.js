@@ -1,5 +1,5 @@
 const { saveFiles, updateOrCreate, log } = require('cozy-konnector-libs')
-const { resourcesFromIntervals } = require('pawnote')
+const { assignmentsFromIntervals } = require('pawnote')
 
 const {
   DOCTYPE_HOMEWORK,
@@ -16,7 +16,7 @@ const { queryFilesByName, queryHomeworksByDate } = require('../../queries')
 
 async function get_homeworks(session, fields, options) {
   const dates = createDates(options)
-  const overview = await resourcesFromIntervals(session, dates.from, dates.to)
+  const overview = await assignmentsFromIntervals(session, dates.from, dates.to)
 
   return {
     homeworks: overview
@@ -97,7 +97,7 @@ async function createHomeworks(session, fields, options) {
         const data = await saveFiles(filesToDownload, fields, {
           sourceAccount: fields.account,
           sourceAccountIdentifier: fields.login,
-          concurrency: 3,
+          concurrency: 1,
           qualificationLabel: 'other_work_document', // Homework subject
           validateFile: () => true
         })
