@@ -1,5 +1,5 @@
 {
-  "version": "2.10.0",
+  "version": "2.11.0",
   "name": "Pronote",
   "type": "konnector",
   "language": "node",
@@ -13,6 +13,7 @@
   ],
   "fields": {},
   "clientSide": true,
+  "serverSide": true,
   "folders": [
     {
       "defaultDir": "$administrative/$konnector/$account"
