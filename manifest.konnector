@@ -13,6 +13,7 @@
   ],
   "fields": {},
   "clientSide": true,
+  "serverSide": true,
   "folders": [
     {
       "defaultDir": "$administrative/$konnector/$account"
