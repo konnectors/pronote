@@ -32,6 +32,10 @@ async function start(fields) {
     // Initialisation de la session Pronote
     await this.deactivateAutoSuccessfulLogin()
     const accountData = this.getAccountData()
+    if (process.node_env === 'standalone' && !accountData.token) {
+      // Use konnector-dev-config.json fields in standalone mode
+      Object.assign(accountData, fields)
+    }
     const { session, loginResult } = await Pronote(accountData)
     await this.saveAccountData({
       ...accountData,
