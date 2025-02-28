@@ -40,10 +40,7 @@ async function start(fields) {
     })
     await this.notifySuccessfulLogin()
 
-    log(
-      'info',
-      'Pronote session initialized successfully : ' + session.instance
-    )
+    log('info', 'Pronote session initialized successfully')
 
     // Gets school year dates
     let dateFrom = offsetDate(new Date(session.instance.firstDate))
