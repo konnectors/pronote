@@ -5842,7 +5842,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+const DESKTOP_USER_AGENT =
+  'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36'
+
 const log = _cozy_minilog__WEBPACK_IMPORTED_MODULE_1___default()('ContentScript')
+
 _cozy_minilog__WEBPACK_IMPORTED_MODULE_1___default().enable()
 
 const UUID = uuid()
@@ -5863,7 +5868,9 @@ class PronoteContentScript extends cozy_clisk_dist_contentscript__WEBPACK_IMPORT
     this.log('debug', 'lastJobError: ' + lastJobError)
 
     await this.setWorkerState({ incognito: true })
-    let url = account?.data?.url
+    log('info', 'Setting user agent')
+    await this.bridge.call('setUserAgent', DESKTOP_USER_AGENT)
+    const url = account?.data?.url
     this.log('debug', 'url: ' + url)
     const needsUserAuthenticate =
       !url || (isLastJobError && lastJobError === 'LOGIN_FAILED')
