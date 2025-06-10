@@ -84,6 +84,11 @@ async function format_json(session, information, profile_pic) {
 async function save_profile_picture(session, fields) {
   log('info', `🖼️ Saving profile picture at ' + ${PATH_IDENTITY_PROFILE_PIC}`)
 
+  if (!session.user?.resources[0]?.profilePicture) {
+    log('warn', 'Found no profile picture.')
+    return
+  }
+
   const documents = [
     {
       filename: 'Photo de classe.jpg',

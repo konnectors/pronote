@@ -4,7 +4,12 @@
 import { ContentScript } from 'cozy-clisk/dist/contentscript'
 import Minilog from '@cozy/minilog'
 import waitFor, { TimeoutError } from 'p-wait-for'
+
+const DESKTOP_USER_AGENT =
+  'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36'
+
 const log = Minilog('ContentScript')
+
 Minilog.enable()
 
 const UUID = uuid()
@@ -25,7 +30,9 @@ class PronoteContentScript extends ContentScript {
     this.log('debug', 'lastJobError: ' + lastJobError)
 
     await this.setWorkerState({ incognito: true })
-    let url = account?.data?.url
+    log('info', 'Setting user agent')
+    await this.bridge.call('setUserAgent', DESKTOP_USER_AGENT)
+    const url = account?.data?.url
     this.log('debug', 'url: ' + url)
     const needsUserAuthenticate =
       !url || (isLastJobError && lastJobError === 'LOGIN_FAILED')

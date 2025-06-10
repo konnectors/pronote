@@ -26,7 +26,7 @@
   "scripts": {
     "start": "node ./src/index.js",
     "dev": "cozy-konnector-dev",
-    "standalone": "cozy-konnector-standalone",
+    "standalone": "cozy-konnector-standalone ./src/server.js",
     "clean": "rm -rf ./data",
     "build:client": "webpack --config ./webpack.config.client.js",
     "build:server": "webpack --config ./webpack.config.server.js",
@@ -43,7 +43,7 @@
     "cozy-flags": "^4.0.0",
     "cozy-konnector-libs": "5.12.1",
     "globals": "^15.8.0",
-    "pawnote": "^1.2.2",
+    "pawnote": "1.4.1",
     "pronote-api-maintained": "^3.1.0"
   },
   "devDependencies": {
