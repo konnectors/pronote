@@ -89,7 +89,6 @@ class PronoteContentScript extends ContentScript {
     })
     await this.setWorkerState({ visible: false })
     const loginState = await this.evaluateInWorker(() => window.loginState)
-    this.log('info', '🐛🐛🐛 ' + JSON.stringify(loginState, null, 2))
 
     const loginTokenParams = {
       url,
