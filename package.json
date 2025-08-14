@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@cozy/minilog": "1.0.0",
-    "cozy-client": "^48.8.0",
+    "cozy-client": "^48.25.0",
     "cozy-clisk": "^0.38.0",
     "cozy-flags": "^4.0.0",
     "cozy-konnector-libs": "5.12.1",
